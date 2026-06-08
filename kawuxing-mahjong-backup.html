@@ -1,0 +1,1269 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>卡五星麻将</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&family=Noto+Serif+SC:wght@700;900&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Noto Sans SC','Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  background:#1a0e0a;color:#e8dcc8;height:100vh;overflow:hidden;
+  display:flex;flex-direction:column;user-select:none
+}
+
+/* ═══════ HEADER BAR ═══════ */
+.hdr{
+  background:linear-gradient(180deg,#2a1810 0%,#1a0e08 100%);
+  padding:4px 16px;
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:8px;
+  border-bottom:1px solid #3d2815;
+  box-shadow:0 2px 12px rgba(0,0,0,.5)
+}
+.hdr .hl{display:flex;align-items:center;gap:10px}
+.hdr .hl h1{
+  font-family:'Noto Serif SC',serif;font-size:15px;font-weight:900;
+  background:linear-gradient(180deg,#f5d680,#c8913a);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  letter-spacing:2px;text-shadow:0 0 20px rgba(245,196,80,.15);
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))
+}
+.hdr .hl .wall{
+  font-size:10px;color:#8a7a60;
+  background:rgba(255,255,255,.04);padding:2px 8px;border-radius:10px;
+  border:1px solid rgba(255,255,255,.06)
+}
+.scr{display:flex;gap:10px;font-size:10px}
+.scr .si{display:flex;align-items:center;gap:3px}
+.scr .si .d{width:6px;height:6px;border-radius:50%;box-shadow:0 0 4px currentColor}
+.scr .si .lb{color:#8a7a60;font-weight:700;letter-spacing:.5px}
+.scr .si .v{font-weight:700;min-width:16px;color:#d4b886}
+.scr .si .v.hl{color:#f5d680;text-shadow:0 0 8px rgba(245,214,128,.3)}
+
+/* ═══════ MAIN TABLE ═══════ */
+.main{
+  flex:1;display:flex;flex-direction:column;position:relative;overflow:hidden;
+  background:
+    radial-gradient(ellipse at 50% 50%,#1e5a35 0%,#14472a 30%,#0d3520 60%,#091e12 100%)
+}
+/* Wood grain texture overlay */
+.table-edge{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 50% 50%,rgba(26,90,53,.1) 0%,rgba(9,30,18,.6) 70%),
+    repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.03) 3px,rgba(0,0,0,.03) 4px);
+  pointer-events:none
+}
+/* Central decorative circle */
+.table-edge::after{
+  content:'';position:absolute;
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  width:min(70vh,90vw);height:min(70vh,90vw);
+  border-radius:50%;
+  border:2px solid rgba(255,215,0,.08);
+  box-shadow:inset 0 0 60px rgba(0,0,0,.3),0 0 40px rgba(0,0,0,.2);
+  pointer-events:none
+}
+
+/* ═══════ PLAYER SECTIONS ═══════ */
+.ps{position:relative;z-index:2;display:flex;flex-direction:column;padding:3px 14px;flex-shrink:0}
+.ps .pnm{
+  font-size:10px;color:#a89070;display:flex;align-items:center;gap:4px;margin-bottom:2px;
+  font-weight:700;letter-spacing:.5px
+}
+.ps .pnm .d{width:7px;height:7px;border-radius:50%;flex-shrink:0;box-shadow:0 0 6px currentColor}
+.ps .pnm .st{font-size:8px;color:#6a5a40;margin-left:4px}
+.ps .md{display:flex;gap:2px;min-height:20px;flex-wrap:wrap;margin:2px 0}
+.ps .ht{display:flex;gap:2px;min-height:24px;flex-wrap:wrap;margin:2px 0}
+.ps .rv{
+  display:flex;flex-wrap:wrap;gap:2px;padding:3px 0;min-height:22px;
+  border-top:1px solid rgba(255,215,0,.06);margin:2px 0
+}
+.ps .rv .rt{animation:dIn .2s ease-out;flex-shrink:0}
+.ps.bot .rv{order:0;border-top:none;border-bottom:1px solid rgba(255,215,0,.06)}
+.ps.bot .md{order:1}.ps.bot .ht{order:2}
+
+.ci{
+  flex:1;position:relative;z-index:2;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:40px
+}
+.ti{
+  font-size:11px;color:#f5d680;
+  background:linear-gradient(180deg,rgba(30,20,10,.9),rgba(20,12,6,.95));
+  padding:4px 16px;border-radius:20px;display:none;
+  border:1px solid rgba(245,214,128,.15);
+  box-shadow:0 0 20px rgba(0,0,0,.3);
+  font-weight:700;letter-spacing:1px
+}
+.ti.on{display:block;animation:fadeIn .3s ease}
+.ci .ng{position:absolute;top:6px;right:10px;z-index:10}
+.ci .ng button{
+  padding:3px 10px;border:1px solid rgba(255,215,0,.15);border-radius:6px;
+  background:linear-gradient(180deg,rgba(40,25,15,.9),rgba(25,15,8,.95));
+  color:#c8a870;font-size:10px;cursor:pointer;font-family:inherit;
+  transition:all .2s;font-weight:700
+}
+.ci .ng button:hover{
+  background:linear-gradient(180deg,rgba(60,40,20,.9),rgba(40,25,12,.95));
+  color:#f5d680;border-color:rgba(245,214,128,.3);
+  box-shadow:0 0 12px rgba(245,214,128,.1)
+}
+
+/* ═══════ TILE STYLES (日麻风) ═══════ */
+.t{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:44px;height:60px;
+  background:linear-gradient(180deg,#faf6ee 0%,#f0e8d4 40%,#e6dcc4 100%);
+  border:1px solid #b8a88a;
+  border-radius:5px;
+  font-size:16px;font-weight:700;position:relative;user-select:none;
+  transition:transform .12s ease,box-shadow .12s ease;
+  box-shadow:
+    0 2px 4px rgba(0,0,0,.3),
+    inset 0 1px 0 rgba(255,255,255,.8),
+    inset 0 -1px 0 rgba(0,0,0,.05);
+  flex-shrink:0;line-height:1;
+  background-size:cover;background-position:center
+}
+.t .fv{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%}
+.t .fv .nm{font-size:18px;font-weight:900;line-height:1.1}
+.t .fv .sm{font-size:7px;opacity:.4;line-height:1;margin-top:-1px}
+.t.zhong .fv{color:#c62828}
+.t.fa .fv{color:#2e7d32}
+.t.bai .fv{color:#555}
+
+/* ═══════ CLASSIC TILE FACE PATTERNS ═══════ */
+/* Tong (circles/dots) pattern */
+.t.tong .fv{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0}
+.t.tong .fv .nm{display:grid;gap:1px;line-height:1;font-size:0}
+.t.tong .fv .sm{display:none}
+.t.tong .fv .dot{
+  width:7px;height:7px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#50b0e0,#1a6a9a);
+  border:1px solid #1a6a9a;display:inline-block
+}
+.t.s.tong .fv .dot{width:5px;height:5px}
+.t.xs.tong .fv .dot{width:4px;height:4px}
+.t.rv.tong .fv .dot{width:4px;height:4px}
+/* Dot grid layouts per number */
+.t.tong[data-n="1"] .fv .nm{grid-template-columns:1fr}
+.t.tong[data-n="2"] .fv .nm{grid-template-columns:1fr}
+.t.tong[data-n="3"] .fv .nm{grid-template-columns:1fr 1fr 1fr}
+.t.tong[data-n="4"] .fv .nm{grid-template-columns:1fr 1fr}
+.t.tong[data-n="5"] .fv .nm{grid-template-columns:1fr 1fr 1fr}
+.t.tong[data-n="6"] .fv .nm{grid-template-columns:1fr 1fr}
+.t.tong[data-n="7"] .fv .nm{grid-template-columns:1fr 1fr 1fr}
+.t.tong[data-n="8"] .fv .nm{grid-template-columns:1fr 1fr}
+.t.tong[data-n="9"] .fv .nm{grid-template-columns:1fr 1fr 1fr}
+
+/* Tiao (bamboo/line) pattern */
+.t.tiao .fv{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.t.tiao .fv .nm{font-size:0;line-height:0;display:flex;gap:1px;flex-wrap:wrap;justify-content:center;align-items:center}
+.t.tiao .fv .sm{display:none}
+.t.tiao .fv .stk{
+  width:4px;border-radius:2px;
+  background:linear-gradient(180deg,#2e8b3a 0%,#1a6b2a 40%,#2e8b3a 42%,#1a6b2a 100%);
+  border:1px solid #145a20;display:inline-block
+}
+.t.s.tiao .fv .stk{width:3px}
+.t.xs.tiao .fv .stk,.t.rv.tiao .fv .stk{width:3px}
+
+/* Wan (万 character) pattern */
+.t.wan .fv{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.t.wan .fv .nm{font-size:20px;font-weight:900;color:#1a1a1a}
+.t.wan .fv .sm{font-size:11px;font-weight:700;color:#333;margin-top:0}
+.t.s.wan .fv .nm{font-size:14px}.t.s.wan .fv .sm{font-size:8px}
+.t.xs.wan .fv .nm{font-size:11px}.t.xs.wan .fv .sm{font-size:7px}
+.t.rv.wan .fv .nm{font-size:12px}.t.rv.wan .fv .sm{font-size:8px}
+
+/* Zhong (red 中) */
+.t.zhong .fv{display:flex;align-items:center;justify-content:center}
+.t.zhong .fv .nm{font-size:26px;font-weight:900;color:#c62828;text-shadow:0 1px 2px rgba(0,0,0,.15)}
+.t.s.zhong .fv .nm{font-size:18px}
+.t.xs.zhong .fv .nm,.t.rv.zhong .fv .nm{font-size:14px}
+
+/* Fa (green 發) */
+.t.fa .fv{display:flex;align-items:center;justify-content:center}
+.t.fa .fv .nm{font-size:24px;font-weight:900;color:#2e7d32;text-shadow:0 1px 2px rgba(0,0,0,.1)}
+.t.s.fa .fv .nm{font-size:17px}
+.t.xs.fa .fv .nm,.t.rv.fa .fv .nm{font-size:13px}
+
+/* Bai (white 白 - bordered rectangle) */
+.t.bai{background:linear-gradient(180deg,#f8f4ec,#eae2d0,#ddd5c0)}
+.t.bai .fv{display:flex;align-items:center;justify-content:center}
+.t.bai .fv .nm{
+  width:18px;height:24px;border:2px solid #666;border-radius:2px;
+  font-size:0;background:transparent
+}
+.t.s.bai .fv .nm{width:13px;height:17px;border-width:1.5px}
+.t.xs.bai .fv .nm,.t.rv.bai .fv .nm{width:10px;height:14px;border-width:1px}
+.t.bai .fv .sm{display:none}
+
+
+/* Tile back - deep navy with pattern */
+.t.bk{
+  background:linear-gradient(180deg,#2a4a6e 0%,#1a3050 50%,#102040 100%);
+  border-color:#0d1f3c;cursor:default;
+  box-shadow:0 2px 4px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.05)
+}
+.t.bk::after{content:'🀫';font-size:12px;opacity:.15}
+.t.bk:hover{transform:none}
+
+/* Size variants */
+.t.s{width:28px;height:38px;font-size:10px;box-shadow:0 1px 3px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.6)}
+.t.s .fv .nm{font-size:12px}.t.s .fv .sm{font-size:6px}
+.t.xs{width:22px;height:30px;font-size:8px;box-shadow:0 1px 2px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.5)}
+.t.xs .fv .nm{font-size:9px}.t.xs .fv .sm{font-size:5px}
+.t.rv{width:26px;height:35px;font-size:9px;cursor:default}
+.t.rv .fv .nm{font-size:10px}.t.rv .fv .sm{font-size:5px}
+.t.rv:hover{transform:none}
+.mg{display:inline-flex}
+.mg .t:not(:first-child){margin-left:-5px}
+.t.clk{cursor:pointer}
+.t.clk:hover{
+  transform:translateY(-10px);
+  box-shadow:0 6px 16px rgba(0,0,0,.4),0 0 20px rgba(245,214,128,.1);
+  z-index:10
+}
+.t.drn{transform:translateY(-10px)}
+/* 亮倒 protected tile glow */
+.t.ld-r{
+  box-shadow:0 0 0 2px #f5d680,0 0 12px rgba(245,214,128,.4),0 0 24px rgba(245,214,128,.15);
+  border-color:#f5d680
+}
+
+/* ═══════ ACTION BUTTONS ═══════ */
+.act{
+  display:flex;gap:6px;padding:6px 16px 8px;flex-shrink:0;
+  justify-content:center;flex-wrap:wrap;
+  background:linear-gradient(180deg,rgba(15,8,4,.85),rgba(20,12,6,.95));
+  border-top:1px solid rgba(255,215,0,.06)
+}
+.ab{
+  padding:6px 20px;border:none;border-radius:6px;
+  font-size:13px;font-weight:700;cursor:pointer;
+  transition:all .15s;font-family:inherit;display:none;line-height:1.3;
+  letter-spacing:1px;text-shadow:0 1px 2px rgba(0,0,0,.3)
+}
+.ab.on{display:inline-block}
+.ab:active{transform:scale(.92)}
+.ab.pri{background:linear-gradient(180deg,#e8b840,#c8913a);color:#1a0e08;box-shadow:0 2px 8px rgba(200,145,58,.3)}
+.ab.sec{background:linear-gradient(180deg,#5a7ac8,#3a5aa0);color:#fff;box-shadow:0 2px 8px rgba(90,122,200,.3)}
+.ab.dgr{background:linear-gradient(180deg,#d84040,#b02828);color:#fff;box-shadow:0 2px 8px rgba(216,64,64,.3)}
+.ab.inf{background:linear-gradient(180deg,#40a8d0,#2888a8);color:#fff;box-shadow:0 2px 8px rgba(64,168,208,.3)}
+.ab.gry{
+  background:linear-gradient(180deg,#3a3028,#2a2018);color:#a89070;
+  border:1px solid rgba(255,215,0,.1);box-shadow:0 2px 4px rgba(0,0,0,.3)
+}
+.ab:hover{filter:brightness(1.1);box-shadow:0 4px 16px rgba(0,0,0,.3)}
+
+/* ═══════ OVERLAY / RESULT ═══════ */
+.ol{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:linear-gradient(180deg,rgba(20,12,6,.96),rgba(10,6,3,.98));
+  padding:24px 36px;border-radius:12px;
+  z-index:100;text-align:center;display:none;
+  border:1px solid rgba(245,214,128,.2);
+  min-width:280px;
+  backdrop-filter:blur(10px);
+  box-shadow:0 0 60px rgba(0,0,0,.6),0 0 30px rgba(245,214,128,.05)
+}
+.ol.on{display:block;animation:resultIn .4s cubic-bezier(.2,1,.3,1)}
+.ol .rt{font-size:20px;font-weight:900;margin-bottom:8px;letter-spacing:2px}
+.ol .rt.w{color:#f5d680;text-shadow:0 0 20px rgba(245,214,128,.4)}
+.ol .rt.l{color:#d84040;text-shadow:0 0 20px rgba(216,64,64,.3)}
+.ol .rt.t{color:#8a7a60}
+.ol .rd{font-size:12px;color:#c8b898;margin-bottom:14px;line-height:1.6}
+.ol .rd .p{color:#f5d680}
+.ol .rd .s{font-size:16px;font-weight:900;color:#40c8e8;text-shadow:0 0 8px rgba(64,200,232,.2)}
+.ol .ng{
+  padding:8px 28px;border:none;border-radius:8px;
+  background:linear-gradient(180deg,#e8b840,#c8913a);color:#1a0e08;
+  font-size:13px;font-weight:900;cursor:pointer;font-family:inherit;
+  letter-spacing:2px;transition:all .2s;
+  box-shadow:0 3px 12px rgba(200,145,58,.4)
+}
+.ol .ng:hover{transform:scale(1.04);box-shadow:0 6px 20px rgba(200,145,58,.5)}
+
+.ts{
+  position:absolute;top:34%;left:50%;transform:translateX(-50%);
+  background:linear-gradient(180deg,rgba(30,20,10,.92),rgba(20,12,6,.96));
+  color:#f5d680;padding:6px 18px;border-radius:20px;font-size:12px;
+  z-index:50;pointer-events:none;white-space:nowrap;
+  border:1px solid rgba(245,214,128,.15);
+  box-shadow:0 4px 20px rgba(0,0,0,.4);
+  font-weight:700;letter-spacing:1px;
+  animation:tt 2.2s ease forwards
+}
+
+/* ═══════ WIN EFFECT ANIMATION ═══════ */
+.win-overlay{
+  position:fixed;inset:0;z-index:200;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 50%,rgba(245,214,128,.08),transparent 70%);
+  animation:winFlash .8s ease-out
+}
+.win-sakura{
+  position:fixed;z-index:201;pointer-events:none;
+  font-size:20px;animation:sakuraFall 3s ease-in forwards;opacity:0
+}
+.win-text{
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  z-index:202;pointer-events:none;
+  font-family:'Noto Serif SC',serif;font-size:64px;font-weight:900;
+  color:#f5d680;
+  text-shadow:0 0 40px rgba(245,214,128,.6),0 0 80px rgba(245,214,128,.3),0 4px 8px rgba(0,0,0,.5);
+  animation:winTextIn 1s cubic-bezier(.2,1,.3,1) forwards;
+  opacity:0;letter-spacing:8px
+}
+.win-ring{
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  z-index:199;pointer-events:none;
+  width:200px;height:200px;border-radius:50%;
+  border:3px solid rgba(245,214,128,.4);
+  animation:ringExpand 1s ease-out forwards;
+  opacity:0
+}
+
+/* ═══════ DEAL ANIMATION ═══════ */
+.dealing-indicator{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  z-index:80;pointer-events:none;
+  font-family:'Noto Serif SC',serif;font-size:16px;font-weight:900;
+  color:#f5d680;letter-spacing:2px;
+  text-shadow:0 0 20px rgba(245,214,128,.5),0 2px 4px rgba(0,0,0,.5);
+  animation:dealPulse .8s ease-in-out infinite alternate;
+  opacity:0;transition:opacity .3s
+}
+.dealing-indicator.show{opacity:1}
+.t.deal-fly{
+  position:fixed;z-index:90;
+  animation:dealFly .18s ease-out forwards;
+  pointer-events:none
+}
+.t.deal-arrive{
+  animation:dealArrive .2s ease-out;
+}
+.hand-flash{
+  animation:handFlash .4s ease-out;
+}
+@keyframes dealPulse{
+  from{opacity:.7;transform:translate(-50%,-50%) scale(.95)}
+  to{opacity:1;transform:translate(-50%,-50%) scale(1.05)}
+}
+@keyframes dealFly{
+  0%{opacity:.5;transform:scale(.3) rotate(20deg)}
+  60%{opacity:1;transform:scale(1.1) rotate(-3deg)}
+  100%{opacity:1;transform:scale(1) rotate(0deg)}
+}
+@keyframes dealArrive{
+  0%{transform:scale(1.3);opacity:.5;box-shadow:0 0 16px rgba(245,214,128,.6)}
+  50%{transform:scale(.95)}
+  100%{transform:scale(1);opacity:1;box-shadow:none}
+}
+@keyframes handFlash{
+  0%{filter:brightness(1.8) saturate(1.5);transform:scale(1.03)}
+  50%{filter:brightness(1.4) saturate(1.2)}
+  100%{filter:brightness(1) saturate(1);transform:scale(1)}
+}
+
+/* ═══════ ANIMATIONS ═══════ */
+@keyframes dIn{from{transform:translateY(-8px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@keyframes resultIn{from{opacity:0;transform:translate(-50%,-50%) scale(.85)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@keyframes tt{0%{opacity:0;transform:translateX(-50%) translateY(6px)}12%{opacity:1;transform:translateX(-50%) translateY(0)}75%{opacity:1}100%{opacity:0;transform:translateX(-50%) translateY(-14px)}}
+@keyframes winFlash{0%{opacity:0}30%{opacity:1}100%{opacity:0}}
+@keyframes sakuraFall{
+  0%{opacity:0;transform:translateY(-20px) rotate(0deg) scale(.5)}
+  20%{opacity:1}
+  100%{opacity:0;transform:translateY(100vh) rotate(720deg) scale(0)}
+}
+@keyframes winTextIn{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(2)}
+  60%{opacity:1;transform:translate(-50%,-50%) scale(.95)}
+  100%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+}
+@keyframes ringExpand{
+  0%{opacity:.8;transform:translate(-50%,-50%) scale(.3)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(3)}
+}
+
+/* ═══════ RESPONSIVE ═══════ */
+@media(max-width:640px){
+  .t{width:34px;height:46px;font-size:13px}
+  .t .fv .nm{font-size:14px}.t .fv .sm{font-size:6px}
+  .t.s{width:22px;height:30px;font-size:8px}
+  .t.s .fv .nm{font-size:10px}.t.xs{width:18px;height:24px;font-size:7px}
+  .t.xs .fv .nm{font-size:8px}.t.rv{width:20px;height:28px;font-size:7px}
+  .t.rv .fv .nm{font-size:8px}
+  .mg .t:not(:first-child){margin-left:-4px}
+  .hdr{padding:3px 8px}.scr{font-size:8px;gap:4px}
+  .ol{min-width:220px;padding:16px 20px}.ol .rt{font-size:16px}
+  .win-text{font-size:40px;letter-spacing:4px}
+  .ab{padding:5px 14px;font-size:12px}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hl">
+    <h1>🀄 卡五星</h1>
+    <span class="wall" id="wc">牌墙: 52张</span>
+  </div>
+  <div class="scr">
+    <div class="si"><span class="d" style="background:#f5d680"></span><span class="lb">你</span><span class="v hl" id="s0">¥10000</span></div>
+    <div class="si"><span class="d" style="background:#e87040"></span><span class="lb">AI-1</span><span class="v" id="s1">¥10000</span></div>
+    <div class="si"><span class="d" style="background:#60c878"></span><span class="lb">AI-2</span><span class="v" id="s2">¥10000</span></div>
+  </div>
+</div>
+
+<div class="main" id="main">
+  <div class="table-edge"></div>
+
+  <div class="ps top" id="ps1">
+    <div class="pnm"><span class="d" style="background:#e87040"></span>AI-1 <span class="st" id="a1s"></span></div>
+    <div class="md" id="a1m"></div>
+    <div class="ht" id="a1t"></div>
+    <div class="rv" id="a1r"></div>
+  </div>
+
+  <div class="ci">
+    <div class="ti" id="ti"></div>
+    <div class="ng"><button onclick="newGame()">↻</button></div>
+    <div class="ol" id="ol">
+      <div class="rt" id="rtitle"></div>
+      <div class="rd" id="rdetail"></div>
+      <button class="ng" onclick="newGame()">↻ 再来一局</button>
+    </div>
+  </div>
+
+  <div class="ps mid" id="ps2">
+    <div class="pnm"><span class="d" style="background:#60c878"></span>AI-2 <span class="st" id="a2s"></span></div>
+    <div class="md" id="a2m"></div>
+    <div class="ht" id="a2t"></div>
+    <div class="rv" id="a2r"></div>
+  </div>
+
+  <div class="ps bot" id="ps0">
+    <div class="rv" id="p0r"></div>
+    <div class="md" id="p0m"></div>
+    <div class="ht" id="p0t"></div>
+    <div class="pnm" style="margin-top:3px"><span class="d" style="background:#f5d680"></span>你 <span class="st" id="p0s"></span></div>
+  </div>
+
+  <div class="act">
+    <button class="ab dgr" id="bHu" onclick="doHu()">🏆 胡</button>
+    <button class="ab sec" id="bPeng" onclick="doPeng()">碰</button>
+    <button class="ab inf" id="bGang" onclick="doGang()">杠</button>
+    <button class="ab inf" id="bAnGang" onclick="doAnGang()">暗杠</button>
+    <button class="ab inf" id="bBuGang" onclick="doBuGang()">补杠</button>
+    <button class="ab pri" id="bLiang" onclick="doLiang()">💡 亮倒</button>
+    <button class="ab gry" id="bPass" onclick="doPass()">❌ 过</button>
+    <button class="ab pri" id="bSelf" style="display:none" onclick="doSelf()">🀄 自摸</button>
+  </div>
+</div>
+
+<script src="tiles/tile_img.js"></script>
+<script>
+// ════════════════════════════════════════════════
+//  WIN EFFECT SYSTEM
+// ════════════════════════════════════════════════
+function playWinEffect(){
+  const flash=document.createElement('div');
+  flash.className='win-overlay';
+  document.body.appendChild(flash);
+  setTimeout(()=>flash.remove(),1000);
+  for(let i=0;i<3;i++){
+    const ring=document.createElement('div');
+    ring.className='win-ring';
+    ring.style.animationDelay=(i*.2)+'s';
+    document.body.appendChild(ring);
+    setTimeout(()=>ring.remove(),1200+i*200);
+  }
+  const txt=document.createElement('div');
+  txt.className='win-text';
+  txt.textContent='胡了！';
+  document.body.appendChild(txt);
+  setTimeout(()=>{txt.style.transition='opacity .5s';txt.style.opacity='0';setTimeout(()=>txt.remove(),600)},2000);
+  const petals=['🌸','❀','✿','🌺'];
+  for(let i=0;i<20;i++){
+    const p=document.createElement('div');
+    p.className='win-sakura';
+    p.textContent=petals[Math.floor(Math.random()*petals.length)];
+    p.style.left=Math.random()*100+'vw';
+    p.style.top='-20px';
+    p.style.fontSize=(14+Math.random()*18)+'px';
+    p.style.animationDelay=(Math.random()*1.5)+'s';
+    p.style.animationDuration=(2+Math.random()*2)+'s';
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),5000);
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  CORE DEFS
+// ═══════════════════════════════════════════════
+const SUITS = ['tong','tiao'];
+const HONORS = ['zhong','fa','bai'];
+const HDISP = {zhong:'中',fa:'发',bai:'白'};
+
+function mkDeck(){
+  const d=[];
+  for(const s of SUITS)for(let v=1;v<=9;v++)for(let i=0;i<4;i++)d.push({suit:s,val:v});
+  for(const h of HONORS)for(let i=0;i<4;i++)d.push({suit:'hon',val:h});
+  return d;
+}
+function tid(t){return t.suit+'_'+t.val}
+function teq(a,b){return a.suit===b.suit&&a.val===b.val}
+function tdisp(t){
+  return t.suit==='tong'||t.suit==='tiao'?t.val:HDISP[t.val]||'?';
+}
+function tdispSuit(t){
+  if(t.suit==='tong')return '●';
+  if(t.suit==='tiao')return '│';
+  return '';
+}
+function tcls(t){return t.suit==='hon'?t.val:t.suit}
+function tsk(t){
+  const so={tong:0,tiao:1,hon:2};
+  const v=typeof t.val==='number'?t.val:HONORS.indexOf(t.val)+10;
+  return so[t.suit]*100+v;
+}
+function srt(a){return[...a].sort((x,y)=>tsk(x)-tsk(y))}
+function shf(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a}
+
+function cnts(h){
+  const c={};
+  for(const t of h)c[tid(t)]=(c[tid(t)]||0)+1;
+  return c;
+}
+function rm(h,t,n){
+  const r=[...h];let k=0;
+  for(let i=r.length-1;i>=0&&k<n;i--)if(teq(r[i],t)){r.splice(i,1);k++}
+  return r;
+}
+
+// ═══════════════════════════════════════════════
+//  WIN DETECTION
+// ═══════════════════════════════════════════════
+function canMelds(t){
+  if(t.length===0)return true;
+  if(t.length%3!==0)return false;
+  const s=srt(t),f=s[0],c=cnts(s),id=tid(f);
+  if(c[id]>=3&&canMelds(rm(s,f,3)))return true;
+  if(f.suit!=='hon'){
+    const v=f.val;
+    if(v+2<=9&&c[tid({suit:f.suit,val:v+1})]>0&&c[tid({suit:f.suit,val:v+2})]>0){
+      let r=rm(s,f,1);r=rm(r,{suit:f.suit,val:v+1},1);r=rm(r,{suit:f.suit,val:v+2},1);
+      if(canMelds(r))return true;
+    }
+  }
+  return false;
+}
+function is7p(t){
+  if(t.length!==14)return false;
+  const c=cnts(t);let p=0;
+  for(const k in c){if(c[k]%2!==0)return false;p+=c[k]/2}
+  return p===7;
+}
+function canWin(h){
+  if(h.length%3!==2)return false;
+  if(is7p(h))return true;
+  const c=cnts(h);
+  for(const id in c){
+    if(c[id]>=2){
+      const p=id.split('_');
+      const tile={suit:p[0],val:isNaN(p[1])?p[1]:parseInt(p[1])};
+      if(canMelds(rm(h,tile,2)))return true;
+    }
+  }
+  return false;
+}
+function waits(h){
+  const d=mkDeck(),ck=new Set(),w=[];
+  for(const t of d){const id=tid(t);if(ck.has(id))continue;ck.add(id);if(canWin([...h,{suit:t.suit,val:t.val}]))w.push(t)}
+  return w;
+}
+
+// ═══════════════════════════════════════════════
+//  SCORING
+// ═══════════════════════════════════════════════
+const PV={'碰碰胡':2,'明四归':2,'卡五星':2,'暗四归':4,'清一色':4,'手抓一':4,'小三元':4,'大三元':8,
+  '七对':4,'龙七对':8,'双龙七对':16,'超超豪华七对':128,
+  '三元七对':32,'龙三元七对':256,'双龙三元七对':512,
+  '清七对':16,'清碰碰胡':8,'清龙七对':32,'清双龙七对':64,'清超超豪华七对':512};
+const BASE_BET = 10;
+
+function detect(h,winTile,melds){
+  const p=[],c=cnts(h);
+  const pc=melds.filter(m=>m.t==='peng'||m.t==='gang').length;
+  let ct=0;
+  for(const id in c){if(c[id]>=3){const parts=id.split('_');const tile={suit:parts[0],val:isNaN(parts[1])?parts[1]:parseInt(parts[1])};if(!melds.some(m=>teq(m.ts[0],tile)))ct++;}}
+  const totalP=pc+ct;
+  const allTiles=[...h];for(const m of melds)for(const t of m.ts)allTiles.push(t);
+  const tn2=allTiles.filter(t=>t.suit==='tong').length,ta2=allTiles.filter(t=>t.suit==='tiao').length;
+  const qys=(tn2===allTiles.length)||(ta2===allTiles.length);
+  const ac=cnts(allTiles);
+  const zc=ac['hon_zhong']||0,fc=ac['hon_fa']||0,bc=ac['hon_bai']||0;
+  const ht=[zc,fc,bc].filter(x=>x>=3).length,hp=[zc,fc,bc].filter(x=>x>=2).length;
+
+  if(winTile&&winTile.val===5&&(winTile.suit==='tong'||winTile.suit==='tiao'))p.push('卡五星');
+  if(winTile&&melds.some(m=>m.t==='peng'&&teq(m.ts[0],winTile)))p.push('明四归');
+  // 暗四归: 七对家族中的四同已由龙七对等倍率涵盖，不可重复计算
+  const is7pHand=is7p(h);
+  if(winTile&&!is7pHand){const inc=h.filter(t=>teq(t,winTile)).length;if(inc===4)p.push('暗四归');}
+  if(totalP===4&&!p.includes('暗四归'))p.push('碰碰胡');
+  if(is7pHand){
+    const hasSY=(zc>=2&&fc>=2&&bc>=2);
+    const fours=Object.values(c).filter(x=>x===4).length;
+    if(hasSY&&fours>=2)p.push('双龙三元七对');
+    else if(hasSY&&fours>=1)p.push('龙三元七对');
+    else if(hasSY)p.push('三元七对');
+    else if(fours>=3)p.push('超超豪华七对');
+    else if(fours>=2)p.push('双龙七对');
+    else if(fours>=1)p.push('龙七对');
+    else p.push('七对');
+  }
+  if(qys)p.push('清一色');
+  if(melds.length===4){const hc=h.filter(t=>!winTile||!teq(t,winTile)).length;if(hc<=1)p.push('手抓一')}
+  if(ht>=2&&(hp>=3||(ht===2&&hp>=2)))p.push('小三元');
+  if(ht>=3)p.push('大三元');
+  return p;
+}
+function calc(patterns,isSelf,isKongDraw,isLast){
+  let m=1;for(const pt of patterns)if(PV[pt])m*=PV[pt];
+  if(m===1&&!isSelf)return null;if(isKongDraw)m*=2;if(isLast)m*=2;return m;
+}
+function calcLD(patterns,isSelf,isKongDraw,isLast,isLDWinner,isLDPayer){
+  let m=1;for(const pt of patterns)if(PV[pt])m*=PV[pt];
+  // 亮倒点炮屁胡: 弃牌者亮倒时, 屁胡也有效(用1番基础)
+  if(m===1&&!isSelf&&!isLDPayer)return null;
+  if(isKongDraw)m*=2;if(isLast)m*=2;
+  if(isLDWinner)m*=2;if(isLDPayer)m*=2;
+  return m;
+}
+
+// ═══════════════════════════════════════════════
+//  GAME STATE
+// ═══════════════════════════════════════════════
+const G={
+  players:[{h:[],m:[],d:[],s:10000,n:'你'},{h:[],m:[],d:[],s:10000,n:'AI-1'},{h:[],m:[],d:[],s:10000,n:'AI-2'}],
+  cur:0,dealer:0,wall:[],last:null,lastP:-1,
+  phase:'idle',pend:null,over:false,rnd:0,
+  lastDrawn:null,waitingClaim:false,
+  passed:[false,false,false], // 过圈: 点炮没胡标记
+  ld:[null,null,null]
+};
+
+// ═══════════════════════════════════════════════
+//  START HAND OPTIMIZATION
+// ═══════════════════════════════════════════════
+function optimizeStartHands(){
+  for(let i=0;i<3;i++){G.wall.push(...G.players[i].h);G.players[i].h=[]}
+  G.players[0].h=genOpt(16,128);if(G.dealer!==0&&G.players[0].h.length===14){G.wall.push(G.players[0].h.pop())}
+  G.players[1].h=genOpt(2,16);if(G.dealer!==1&&G.players[1].h.length===14){G.wall.push(G.players[1].h.pop())}
+  G.players[2].h=genOpt(2,16);if(G.dealer!==2&&G.players[2].h.length===14){G.wall.push(G.players[2].h.pop())}
+  toast('💡 起手牌优化: 你→16~128番(替换4张) | AI→2~16番(替换4张)');
+}
+function genOpt(mn,mx){
+  const tgt=genWin(mn,mx);
+  if(!tgt)return takeN(13);
+  // 替换4张
+  for(let i=0;i<4;i++){
+    const si=Math.floor(Math.random()*tgt.length);
+    const inn=G.wall.pop();
+    if(inn){G.wall.push(tgt[si]);tgt[si]=inn}
+  }
+  return tgt;
+}
+function takeN(n){const h=[];for(let i=0;i<n&&G.wall.length>0;i++)h.push(G.wall.pop());return h}
+function wTake(s,v,c){
+  const t=[];for(let i=G.wall.length-1;i>=0&&t.length<c;i--)
+    if(G.wall[i].suit===s&&G.wall[i].val===v)t.push(G.wall.splice(i,1)[0]);
+  if(t.length<c){G.wall.push(...t);return null}return t;
+}
+function wHas(s,v,c){let n=0;for(const t of G.wall)if(t.suit===s&&t.val===v)n++;return n>=c}
+function genWin(mn,mx){
+  const cs=[];
+  // [quadCount, qing, sanyuan, type] type:0=七对 1=碰碰胡
+  if(mn<=4&&mx>=4)cs.push([0,0,0,0]);        // 七对 4番
+  if(mn<=8&&mx>=8)cs.push([1,0,0,0]);        // 龙七对 8番
+  if(mn<=16&&mx>=16){cs.push([2,0,0,0]);cs.push([0,1,0,0])} // 双龙七对16 / 清七对16
+  if(mn<=32&&mx>=32){cs.push([0,0,1,0]);cs.push([1,1,0,0])} // 三元七对32 / 清龙七对32
+  if(mn<=64&&mx>=64)cs.push([2,1,0,0]);      // 清双龙七对 64
+  if(mn<=128&&mx>=128)cs.push([3,0,0,0]);    // 超超豪华七对 128
+  if(mn<=2&&mx>=2)cs.push([0,0,0,1]);        // 碰碰胡 2番
+  if(mn<=8&&mx>=8)cs.push([0,1,0,1]);        // 清碰碰胡 8番
+  shf(cs);
+  for(const c of cs){
+    const hand=c[3]===0?tryQD(c[0],!!c[1],!!c[2]):tryPP(!!c[1]);
+    if(hand)return hand;
+  }
+  return null;
+}
+function tryQD(qc,qing,sy){
+  const spec=[];
+  if(sy){
+    spec.push({s:'hon',v:'zhong',c:2},{s:'hon',v:'fa',c:2},{s:'hon',v:'bai',c:2});
+    const su=Math.random()<.5?'tong':'tiao';
+    const av=[];for(let v=1;v<=9;v++)if(wHas(su,v,2))av.push(v);
+    if(av.length<4)return null;shf(av);
+    for(let i=0;i<4;i++)spec.push({s:su,v:av[i],c:2});
+  }else if(qing){
+    const su=Math.random()<.5?'tong':'tiao';
+    const rp=7-qc*2;
+    const a4=[];for(let v=1;v<=9;v++)if(wHas(su,v,4))a4.push(v);
+    if(a4.length<qc)return null;shf(a4);
+    const qv=a4.slice(0,qc);
+    for(const v of qv)spec.push({s:su,v,c:4});
+    const a2=[];for(let v=1;v<=9;v++){if(qv.includes(v))continue;if(wHas(su,v,2))a2.push(v)}
+    if(a2.length<rp)return null;shf(a2);
+    for(let i=0;i<rp;i++)spec.push({s:su,v:a2[i],c:2});
+  }else{
+    const s1=Math.random()<.5?'tong':'tiao',s2=s1==='tong'?'tiao':'tong';
+    const rp=7-qc*2;
+    const a4=[];for(let v=1;v<=9;v++)if(wHas(s1,v,4))a4.push(v);
+    if(a4.length<qc)return null;shf(a4);
+    const qv=a4.slice(0,qc);
+    for(const v of qv)spec.push({s:s1,v,c:4});
+    const nm=[];for(let v=1;v<=9;v++)if(wHas(s2,v,2))nm.push({s:s2,v});
+    for(const h of HONORS)if(wHas('hon',h,2))nm.push({s:'hon',v:h});
+    if(nm.length===0)return null;shf(nm);
+    const nmc=Math.min(Math.max(1,1+Math.floor(Math.random()*2)),nm.length,rp);
+    for(let i=0;i<nmc;i++)spec.push({s:nm[i].s,v:nm[i].v,c:2});
+    const rem=rp-nmc;
+    const a2=[];for(let v=1;v<=9;v++){if(qv.includes(v))continue;if(wHas(s1,v,2))a2.push(v)}
+    if(a2.length<rem)return null;shf(a2);
+    for(let i=0;i<rem;i++)spec.push({s:s1,v:a2[i],c:2});
+  }
+  let tot=0;for(const x of spec)tot+=x.c;
+  if(tot!==14)return null;
+  return execSpec(spec);
+}
+function tryPP(qing){
+  const spec=[];
+  if(qing){
+    const su=Math.random()<.5?'tong':'tiao';
+    const a3=[];for(let v=1;v<=9;v++)if(wHas(su,v,3))a3.push(v);
+    if(a3.length<4)return null;shf(a3);
+    const tv=a3.slice(0,4);
+    for(const v of tv)spec.push({s:su,v,c:3});
+    const pa=[];for(let v=1;v<=9;v++){if(tv.includes(v))continue;if(wHas(su,v,2))pa.push(v)}
+    if(pa.length<1)return null;shf(pa);
+    spec.push({s:su,v:pa[0],c:2});
+  }else{
+    const opts=[];
+    for(const su of ['tong','tiao'])for(let v=1;v<=9;v++)if(wHas(su,v,3))opts.push({s:su,v});
+    for(const h of HONORS)if(wHas('hon',h,3))opts.push({s:'hon',v:h});
+    if(opts.length<4)return null;shf(opts);
+    const tv=opts.slice(0,4);
+    for(const o of tv)spec.push({s:o.s,v:o.v,c:3});
+    const used=new Set(tv.map(o=>o.s+'_'+o.v));
+    const pa=[];
+    for(const su of ['tong','tiao'])for(let v=1;v<=9;v++){if(used.has(su+'_'+v))continue;if(wHas(su,v,2))pa.push({s:su,v})}
+    for(const h of HONORS){if(used.has('hon_'+h))continue;if(wHas('hon',h,2))pa.push({s:'hon',v:h})}
+    if(pa.length<1)return null;shf(pa);
+    spec.push({s:pa[0].s,v:pa[0].v,c:2});
+  }
+  let tot=0;for(const x of spec)tot+=x.c;
+  if(tot!==14)return null;
+  return execSpec(spec);
+}
+function execSpec(spec){
+  const need={};
+  for(const x of spec){const k=x.s+'_'+x.v;need[k]=(need[k]||0)+x.c}
+  for(const k in need){
+    const p=k.split('_');const su=p[0];
+    const vl=p.length>2?p.slice(1).join('_'):p[1];
+    const vv=isNaN(vl)?vl:parseInt(vl);
+    if(!wHas(su,vv,need[k]))return null;
+  }
+  const hand=[];
+  for(const k in need){
+    const p=k.split('_');const su=p[0];
+    const vl=p.length>2?p.slice(1).join('_'):p[1];
+    const vv=isNaN(vl)?vl:parseInt(vl);
+    const t=wTake(su,vv,need[k]);
+    if(!t){G.wall.push(...hand);return null}
+    hand.push(...t);
+  }
+  return hand.length===14?hand:null;
+}
+
+
+const COLORS=['#ffd700','#ff8a65','#aed581'];
+const RIVER_IDS=['p0r','a1r','a2r'];
+const HAND_IDS=['p0t','a1t','a2t'];
+const MELD_IDS=['p0m','a1m','a2m'];
+
+// ════════════════════════════════════════════════
+//  DEAL ANIMATION
+// ════════════════════════════════════════════════
+function dealAnimation(onComplete){
+  var finalHands = G.players.map(function(p){return p.h.slice()});
+  for(var i=0;i<3;i++) G.players[i].h = [];
+  var DEAL_DELAY = 50;
+  var GROUP_DELAY = 133;
+  var sequence = [];
+  for(var round=0;round<3;round++){
+    for(var p=0;p<3;p++){
+      var pi = (G.dealer+p)%3;
+      for(var cc=0;cc<4;cc++) sequence.push(pi);
+    }
+  }
+  sequence.push(G.dealer, G.dealer);
+  sequence.push((G.dealer+1)%3);
+  sequence.push((G.dealer+2)%3);
+  var cardIdx = [0,0,0];
+  var savedWallCount = G.wall.length; // real wall count (final)
+  var indicator = document.createElement('div');
+  indicator.className = 'dealing-indicator';
+  indicator.textContent = '发牌中...';
+  document.getElementById('main').appendChild(indicator);
+  setTimeout(function(){indicator.classList.add('show')},50);
+  var HAND_EL_IDS = ['p0t','a1t','a2t'];
+  var seqIdx = 0;
+  function dealNext(){
+    if(seqIdx >= sequence.length){
+      indicator.classList.remove('show');
+      setTimeout(function(){indicator.remove();sortFlashAndFinish()},100);
+      return;
+    }
+    var pi = sequence[seqIdx];
+    var tileData = finalHands[pi][cardIdx[pi]];
+    cardIdx[pi]++;
+    G.players[pi].h.push(tileData);
+    var container = document.getElementById(HAND_EL_IDS[pi]);
+    var isMe = pi === 0;
+    var el = mkTile(tileData, isMe ? {} : {back:true,size:'s'});
+    el.classList.add('deal-arrive');
+    container.appendChild(el);
+    // Simulate wall decreasing for visual effect
+    var totalDealt = cardIdx[0]+cardIdx[1]+cardIdx[2];
+    var wallDisplay = savedWallCount + (finalHands[0].length+finalHands[1].length+finalHands[2].length) - totalDealt;
+    document.getElementById('wc').textContent = '牌墙: '+wallDisplay+'张';
+    seqIdx++;
+    var nextDelay = (cardIdx[pi] % 4 === 0) ? GROUP_DELAY : DEAL_DELAY;
+    setTimeout(dealNext, nextDelay);
+  }
+  function sortFlashAndFinish(){
+    for(var i=0;i<3;i++){
+      G.players[i].h = srt(finalHands[i]);
+    }
+    render();
+    for(var ii=0;ii<3;ii++){
+      var container2 = document.getElementById(HAND_EL_IDS[ii]);
+      container2.classList.add('hand-flash');
+      (function(el){setTimeout(function(){el.classList.remove('hand-flash')},200)})(container2);
+    }
+    setTimeout(function(){onComplete()},250);
+  }
+  setTimeout(dealNext, 150);
+}
+
+// ═══════════════════════════════════════════════
+//  GAME FLOW
+// ═══════════════════════════════════════════════
+function newGame(){
+  const ol=document.getElementById('ol');if(ol)ol.classList.remove('on');
+  G.over=false;G.waitingClaim=false;G.ld=[null,null,null];G.passed=[false,false,false];
+  for(const p of G.players){p.h=[];p.m=[];p.d=[]}
+  G.deck=shf(mkDeck());G.wall=[...G.deck];
+  G.last=null;G.lastP=-1;G.phase='idle';G.pend=null;G.lastDrawn=null;
+  G.rnd++;
+  G.dealer=G.rnd===1?Math.floor(Math.random()*3):(G.dealer+1)%3;
+  G.cur=G.dealer;
+  // 发13张基础牌 + 优化
+  for(let i=0;i<3;i++)for(let j=0;j<13;j++)G.players[i].h.push(G.wall.pop());
+  optimizeStartHands();
+  // 使用发牌动画: 先渲染底板(不渲染手牌), 再逐张发牌
+  document.getElementById('wc').textContent='牌墙: '+G.wall.length+'张';
+  for(let i=0;i<3;i++){rScore(i);rRiver(i);document.getElementById(HAND_IDS[i]).innerHTML='';rMelds(i)}
+  updSt();
+  dealAnimation(function(){
+    // 发牌完成后开始游戏
+    G.dealer===0?(setPhase('discard',0),render()):(setPhase('draw',G.dealer),render(),setTimeout(()=>aiTurn(G.dealer),500));
+  });
+}
+
+function setPhase(ph,pi){
+  G.cur=pi;G.phase=ph;
+  const ti=document.getElementById('ti');const pn=G.players[pi].n;
+  ti.className='ti';
+  if(ph==='draw'){ti.textContent='⏳ '+pn+' 摸牌';ti.classList.add('on')}
+  else if(ph==='discard'){ti.textContent=pi===0?'✋ 请你出牌':'💭 '+pn+' 思考...';ti.classList.add('on')}
+  else if(ph==='action'){ti.textContent='⚡ 请操作';ti.classList.add('on')}
+  updSt();
+}
+function updSt(){
+  for(let i=0;i<3;i++){
+    const el=document.getElementById((i===0?'p0':i===1?'a1':'a2')+'s');
+    if(G.over)el.textContent='✓ 结束';
+    else if(G.phase==='discard'&&G.cur===i)el.textContent=i===0?'请出牌':'思考中';
+    else el.textContent='';
+  }
+}
+
+function render(){
+  document.getElementById('wc').textContent='牌墙: '+G.wall.length+'张';
+  for(let i=0;i<3;i++){rScore(i);rRiver(i);rHand(i);rMelds(i)}
+  updSt();
+}
+function rScore(i){document.getElementById('s'+i).textContent='¥'+G.players[i].s}
+
+function mkTile(t,opts){
+  if(!opts)opts={};
+  const size=opts.size||'n',clk=!!opts.clk,idx=opts.idx!==void 0?opts.idx:-1,back=!!opts.back,extra=opts.extra||'';
+  const sz=size==='s'?'s':size==='xs'?'xs':size==='rv'?'rv':'';
+  const el=document.createElement('span');
+  const suitCls=t.suit==='hon'?t.val:t.suit;
+  let cls='t '+suitCls+(sz?' '+sz:'')+(back?' bk':'')+(clk?' clk':'')+(extra?' '+extra:'');
+  el.className=cls;
+  if(!back){
+    if(t.suit==='tong'){
+      el.dataset.n=t.val;
+      let dots='';for(let i=0;i<t.val;i++)dots+='<span class="dot"></span>';
+      el.innerHTML='<span class="fv"><span class="nm">'+dots+'</span><span class="sm"></span></span>';
+    }else if(t.suit==='tiao'){
+      const h=t.val<=3?t.val*14:t.val<=6?Math.ceil(t.val/2)*14:t.val<=9?Math.ceil(t.val/3)*12:14;
+      const count=t.val;
+      let sticks='';for(let i=0;i<count;i++)sticks+='<span class="stk" style="height:'+h+'px"></span>';
+      el.innerHTML='<span class="fv"><span class="nm">'+sticks+'</span><span class="sm"></span></span>';
+    }else if(t.suit==='hon'){
+      const labels={zhong:'中',fa:'發',bai:''};
+      if(t.val==='bai'){
+        el.innerHTML='<span class="fv"><span class="nm"></span><span class="sm"></span></span>';
+      }else{
+        el.innerHTML='<span class="fv"><span class="nm">'+labels[t.val]+'</span><span class="sm"></span></span>';
+      }
+    }
+  }
+  if(clk&&idx>=0)el.dataset.idx=idx;
+  return el;
+}
+function mkMeld(ts){
+  const g=document.createElement('span');g.className='mg';
+  for(const t of ts)g.appendChild(mkTile(t,{size:'xs'}));
+  return g;
+}
+
+function rHand(pi){
+  const a=document.getElementById(HAND_IDS[pi]);a.innerHTML='';
+  const h=G.players[pi].h,isMe=pi===0;
+  const canSel=isMe&&G.phase==='discard'&&G.cur===0&&!G.over;
+  const ld=G.ld[pi];
+  for(let i=0;i<h.length;i++){
+    const t=h[i],isR=ld&&ld.revealed.some(r=>teq(r,t));
+    const el=mkTile(t,isMe?{clk:canSel,idx:i}:{back:!isR,size:'s',extra:isR?' ld-r':''});
+    if(isMe&&i===h.length-1&&G.phase==='discard')el.classList.add('drn');
+    a.appendChild(el);
+  }
+  if(!isMe&&h.length>0){const c=document.createElement('span');c.style.cssText='font-size:8px;color:#666;margin-left:2px;display:flex;align-items:center';c.textContent=h.length+'张';a.appendChild(c)}
+  if(ld){const tag=document.createElement('span');tag.style.cssText='font-size:9px;color:#ffd700;margin-left:4px;font-weight:700';tag.textContent='💡亮倒';a.appendChild(tag)}
+}
+function rMelds(pi){const a=document.getElementById(MELD_IDS[pi]);a.innerHTML='';for(const m of G.players[pi].m)a.appendChild(mkMeld(m.ts))}
+function rRiver(pi){
+  const a=document.getElementById(RIVER_IDS[pi]);a.innerHTML='';
+  const d=G.players[pi].d;if(d.length===0)return;
+  for(let i=0;i<d.length;i++){const el=mkTile(d[i],{size:'rv'});el.classList.add('rt');if(i===d.length-1)el.classList.add('lst');a.appendChild(el)}
+}
+
+// ═══════════════════════════════════════════════
+//  DRAW / DISCARD / CLAIMS
+// ═══════════════════════════════════════════════
+function draw(pi){
+  if(G.wall.length===0){endGame(null);return null}
+  const t=G.wall.pop();G.players[pi].h.push(t);return t;
+}
+function discard(pi,tile){
+  const p=G.players[pi],idx=p.h.findIndex(t=>teq(t,tile));
+  if(idx===-1)return false;
+  p.h.splice(idx,1);p.d.push(tile);
+  G.last=tile;G.lastP=pi;
+  checkClaims(pi,tile);
+  return true;
+}
+function checkClaims(dp,tile){
+  const claims=[];const dpIsLD=G.ld[dp]!==null;
+  for(let i=0;i<3;i++){
+    if(i===dp)continue;
+    const h=G.players[i].h;
+    const iIsLD=G.ld[i]!==null;
+    if(canWin([...h,tile])){
+      if(G.passed[i])continue; // 过圈: 点炮没胡不能再胡
+      if(dpIsLD)claims.push({pi:i,type:'hu',pri:3});
+      else{const sc=calc(detect([...h,tile],tile,G.players[i].m),false,false,G.wall.length===0);if(sc!==null)claims.push({pi:i,type:'hu',pri:3})}
+      continue;
+    }
+    // 亮倒玩家不能碰/明杠，只能胡/暗杠/补杠
+    if(iIsLD)continue;
+    const n=cnts(h)[tid(tile)]||0;
+    if(n===3)claims.push({pi:i,type:'gang',pri:1});
+    else if(n>=2)claims.push({pi:i,type:'peng',pri:1});
+  }
+  if(claims.length===0){setTimeout(()=>{if(!G.over)startTurn((dp+1)%3)},300);render();return;}
+  claims.sort((a,b)=>b.pri-a.pri);
+  const byP={};
+  for(const c of claims){if(!byP[c.pi])byP[c.pi]=[];byP[c.pi].push(c)}
+  if(byP[0]){
+    G.phase='action';G.pend={tile,from:dp};G.waitingClaim=true;
+    const hu=byP[0].some(c=>c.type==='hu'),peng=byP[0].some(c=>c.type==='peng'),gang=byP[0].some(c=>c.type==='gang');
+    showBtns(hu,peng&&!hu,gang&&!hu);
+    setPhase('action',0);render();
+    if(hu&&!G.ld[dp]){const sc=calc(detect([...G.players[0].h,tile],tile,G.players[0].m),false,false,G.wall.length===0);if(sc===null)setTimeout(()=>{if(G.pend&&G.waitingClaim)doPass()},1200)}
+  }else{handleAI(claims,tile,dp)}
+}
+function handleAI(claims,tile,dp){
+  const ai=claims.filter(c=>c.pi!==0);
+  if(ai.length===0){setTimeout(()=>{if(!G.over)startTurn((dp+1)%3)},300);return;}
+  const hu=ai.find(c=>c.type==='hu');
+  if(hu){setTimeout(()=>{if(!G.over)execWin(hu.pi,tile,dp,false)},400);return;}
+  const gang=ai.find(c=>c.type==='gang');
+  if(gang){setTimeout(()=>{if(!G.over)execGang(gang.pi,tile,dp)},300);return;}
+  const peng=ai.find(c=>c.type==='peng');
+  if(peng&&shouldPeng(peng.pi,tile)){setTimeout(()=>{if(!G.over)execPeng(peng.pi,tile,dp)},300);return;}
+  setTimeout(()=>{if(!G.over)startTurn((dp+1)%3)},300);
+}
+function shouldPeng(pi,tile){
+  const h=G.players[pi].h,c=cnts(h);let iso=0;
+  for(const t of h){if(c[tid(t)]>=2)continue;if(t.suit==='hon'){iso++;continue;}let adj=false;for(const d of[-1,1]){const v=t.val+d;if(v<1||v>9)continue;if(c[tid({suit:t.suit,val:v})]>0){adj=true;break}}if(!adj)iso++}
+  return iso<5;
+}
+
+// ═══════════════════════════════════════════════
+//  EXECUTE
+// ═══════════════════════════════════════════════
+function execPeng(pi,tile,from){
+  const p=G.players[pi];let k=0;
+  for(let i=p.h.length-1;i>=0&&k<2;i--)if(teq(p.h[i],tile)){p.h.splice(i,1);k++}
+  p.m.push({t:'peng',ts:[tile,tile,tile],from});
+  G.waitingClaim=false;G.last=null;G.pend=null;
+  toast(p.n+' 碰！');
+  setPhase('discard',pi);render();
+  if(pi!==0)setTimeout(()=>aiTurn(pi),400);
+}
+function execGang(pi,tile,from){
+  const p=G.players[pi];let k=0;
+  for(let i=p.h.length-1;i>=0&&k<4;i--)if(teq(p.h[i],tile)){p.h.splice(i,1);k++}
+  p.m.push({t:'gang',ts:[tile,tile,tile,tile],from});
+  G.waitingClaim=false;G.pend=null;
+  if(from>=0){G.players[from].s-=BASE_BET*2;p.s+=BASE_BET*2}
+  toast(p.n+' 杠！');render();
+  setTimeout(()=>{if(G.over)return;const rep=draw(pi);if(!rep)return;if(canWin(p.h)){execWin(pi,rep,-2,true);return}setPhase('discard',pi);render();if(pi!==0)setTimeout(()=>aiTurn(pi),400)},300);
+}
+function execWin(pi,winTile,from,self){
+  if(G.over)return;
+  G.over=true;G.waitingClaim=false;G.pend=null;
+  const p=G.players[pi];
+  let h=srt([...p.h]);
+  if(h.length===13)h.push(winTile); // 点炮/抢杠时手牌13张需补入winTile
+  h=srt(h);
+  const pat=detect(h,winTile,p.m);
+  const isLDWinner=G.ld[pi]!==null;
+  const isLDPayer=from>=0&&G.ld[from]!==null;
+  const sc=calcLD(pat,self,from===-2,G.wall.length===0,isLDWinner,isLDPayer);
+  if(sc===null)return;
+  const payout = BASE_BET * sc;
+  let extraInfo='';
+  if(isLDWinner&&!self){
+    // 包胡: 点炮者包赔(等同自摸两家金额)
+    G.players[from].s-=payout*2;p.s+=payout*2;
+    extraInfo='<br>【包胡】点炮者包赔';
+  }else if(self){
+    for(let i=0;i<3;i++){if(i!==pi){const px=G.ld[i]!==null?2:1;G.players[i].s-=payout*px;p.s+=payout*px}}
+  }else if(from>=0){
+    const px=G.ld[from]!==null?2:1;G.players[from].s-=payout*px;p.s+=payout*px;
+  }else if(G.lastP>=0){
+    const px=G.ld[G.lastP]!==null?2:1;G.players[G.lastP].s-=payout*px;p.s+=payout*px;
+  }
+  render();
+  showResult(pi===0?'🎉 你胡牌了！':p.n+' 胡牌！',pi===0?'w':'l',
+    '牌型: <span class="p">'+(pat.join(' + ')||'屁胡')+'</span><br>番数: <span class="s">×'+sc+'</span>'+(self?'<br>自摸！':'<br>'+(G.players[from>=0?from:G.lastP]?.n||'对手')+'放炮')+
+    extraInfo+'<br>收入: <span style="color:#ffd700;font-weight:700">¥'+(isLDWinner&&!self?payout*2:payout)+'</span>');
+}
+
+// ═══════════════════════════════════════════════
+//  TURN / AI
+// ═══════════════════════════════════════════════
+function startTurn(pi){
+  if(G.over)return;
+  G.passed[pi]=false; // 过圈: 轮到自己时清除标记
+  const t=draw(pi);if(!t)return;
+  setPhase('draw',pi);G.lastDrawn=t;
+  G.players[pi].h=srt(G.players[pi].h);render();
+  if(pi===0){
+    if(G.ld[0]){
+      // 亮倒后可以杠/暗杠/补杠，不能碰
+      const anGang=findAnGang(0),buGang=findBuGang(0);
+      let canAn=anGang,canBu=buGang;
+      if(anGang){
+        const test=[...G.players[0].h];let k=0;
+        for(let i=test.length-1;i>=0&&k<4;i--)if(teq(test[i],anGang)){test.splice(i,1);k++}
+        if(waits(test).length===0)canAn=null; // 杠后不听牌则不能暗杠
+      }
+      if(canAn||canBu){showAnGangBtns(canAn,canBu);G.phase='action';setPhase('action',0);return}
+      setPhase('discard',0);render();return
+    }
+    if(canWin(G.players[0].h)){G.phase='action';hideBtns();document.getElementById('bSelf').style.display='inline-block';document.getElementById('bSelf').classList.add('on');document.getElementById('bPass').classList.add('on');return}
+    const anGang=findAnGang(0),buGang=findBuGang(0);
+    if(anGang||buGang){showAnGangBtns(anGang,buGang);G.phase='action';setPhase('action',0);return}
+    const h13=[...G.players[0].h],di=h13.findIndex(t=>teq(t,G.lastDrawn));if(di!==-1)h13.splice(di,1);
+    const w=waits(h13);
+    if(w.length>0){document.getElementById('bLiang').classList.add('on');document.getElementById('bPass').classList.add('on');setPhase('action',0);return}
+    setPhase('discard',0);render();
+  }else{
+    if(G.ld[pi]){
+      // 亮倒后可以杠/暗杠/补杠
+      const anGang=findAnGang(pi),buGang=findBuGang(pi);
+      if(anGang){
+        const test=[...G.players[pi].h];let k=0;
+        for(let i=test.length-1;i>=0&&k<4;i--)if(teq(test[i],anGang)){test.splice(i,1);k++}
+        if(waits(test).length>0){setTimeout(()=>{if(!G.over)execConcealedGang(pi,anGang)},600);return}
+      }
+      if(buGang){setTimeout(()=>{if(!G.over)execAddToPung(pi,buGang)},600);return}
+      setTimeout(()=>aiTurn(pi),400);return
+    }
+    if(canWin(G.players[pi].h)){execWin(pi,G.lastDrawn,-2,true);return}
+    const h13=[...G.players[pi].h],di=h13.findIndex(t=>teq(t,G.lastDrawn));if(di!==-1)h13.splice(di,1);
+    const w=waits(h13);
+    if(w.length>0&&Math.random()<0.35){setTimeout(()=>execLiang(pi),500);return}
+    const anGang=findAnGang(pi),buGang=findBuGang(pi);
+    if(anGang){setTimeout(()=>{if(!G.over)execConcealedGang(pi,anGang)},600);return}
+    if(buGang){var qc=[];for(let i=0;i<3;i++){if(i===pi)continue;if(canWin([...G.players[i].h,buGang]))qc.push({pi:i,type:'hu',pri:3})}if(qc.length>0){handleAI(qc,buGang,pi);return}setTimeout(()=>{if(!G.over)execAddToPung(pi,buGang)},600);return}
+    setTimeout(()=>aiTurn(pi),400);
+  }
+}
+
+function findAnGang(pi){const h=G.players[pi].h,c=cnts(h);for(const id in c)if(c[id]===4){const p=id.split('_');return {suit:p[0],val:isNaN(p[1])?p[1]:parseInt(p[1])}}return null}
+function findBuGang(pi){const h=G.players[pi].h,c=cnts(h);for(const m of G.players[pi].m){if(m.t==='peng'&&c[tid(m.ts[0])]>=1)return {suit:m.ts[0].suit,val:m.ts[0].val}}return null}
+function showAnGangBtns(an,bg){document.getElementById('bAnGang').classList.toggle('on',!!an);document.getElementById('bBuGang').classList.toggle('on',!!bg);document.getElementById('bPass').classList.toggle('on',!!(an||bg))}
+
+function execConcealedGang(pi,tile){
+  const p=G.players[pi];let k=0;
+  for(let i=p.h.length-1;i>=0&&k<4;i--)if(teq(p.h[i],tile)){p.h.splice(i,1);k++}
+  p.m.push({t:'gang',ts:[tile,tile,tile,tile],from:-1});
+  for(let i=0;i<3;i++)if(i!==pi){G.players[i].s-=BASE_BET*2;p.s+=BASE_BET*2}
+  toast(p.n+' 暗杠！¥20×2');hideBtns();render();
+  setTimeout(()=>{if(G.over)return;const rep=draw(pi);if(!rep)return;if(canWin(p.h)){execWin(pi,rep,-2,true);return}setPhase('discard',pi);render();if(pi!==0)setTimeout(()=>aiTurn(pi),400)},300);
+}
+function execAddToPung(pi,tile){
+  const p=G.players[pi];let k=0;
+  for(let i=p.h.length-1;i>=0&&k<1;i--)if(teq(p.h[i],tile)){p.h.splice(i,1);k++}
+  for(let i=0;i<p.m.length;i++){if(p.m[i].t==='peng'&&teq(p.m[i].ts[0],tile)){p.m[i].t='gang';p.m[i].ts=[tile,tile,tile,tile];break}}
+  for(let i=0;i<3;i++)if(i!==pi){G.players[i].s-=BASE_BET;p.s+=BASE_BET}
+  toast(p.n+' 补杠！¥10×2');hideBtns();render();
+  setTimeout(()=>{if(G.over)return;const rep=draw(pi);if(!rep)return;if(canWin(p.h)){execWin(pi,rep,-2,true);return}setPhase('discard',pi);render();if(pi!==0)setTimeout(()=>aiTurn(pi),400)},300);
+}
+
+// ═══════════════════════════════════════════════
+//  亮倒
+// ═══════════════════════════════════════════════
+function execLiang(pi){
+  if(G.ld[pi])return;
+  const hand=[...G.players[pi].h],di=hand.findIndex(t=>teq(t,G.lastDrawn));if(di!==-1)hand.splice(di,1);
+  const w=waits(hand);if(!w.length)return;
+  const cnt=cnts(hand),revealed=[];
+  for(const wt of w){
+    if(wt.suit!=='hon'){for(const d of[-2,-1,1,2]){const v=wt.val+d;if(v<1||v>9)continue;const adj={suit:wt.suit,val:v};if(cnt[tid(adj)]>0&&!revealed.some(t=>teq(t,adj)))revealed.push(adj)}}
+    if(cnt[tid(wt)]>0&&!revealed.some(t=>teq(t,wt)))revealed.push(wt);
+  }
+  G.ld[pi]={waits:w,revealed:revealed};hideBtns();
+  toast(G.players[pi].n+' 亮倒！等: '+w.map(t=>tdisp(t)+tdispSuit(t)).join(','));
+  setPhase('discard',pi);render();
+  if(pi!==0)setTimeout(()=>aiTurn(pi),500);
+}
+function isProtectedTile(pi,tile){for(let i=0;i<3;i++){if(i===pi||!G.ld[i])continue;if(G.ld[i].waits.some(t=>teq(t,tile)))return true}return false}
+function isLDSelfWin(pi,winTile){if(!G.ld[pi])return true;return G.ld[pi].waits.some(t=>teq(t,winTile))}
+
+function aiTurn(pi){
+  if(G.over||G.waitingClaim||pi!==G.cur)return;
+  const h=G.players[pi].h,idx=aiPick(pi);
+  if(idx===-1)return;
+  const tile=h[idx];
+  if(isProtectedTile(pi,tile)){for(let i=0;i<h.length;i++)if(i!==idx&&!isProtectedTile(pi,h[i])){discard(pi,h[i]);render();return}return}
+  discard(pi,tile);render();
+}
+function aiPick(pi){
+  const h=G.players[pi].h;if(h.length===0)return -1;
+  const c=cnts(h);
+  const sc=h.map((t,i)=>{let s=0;const id=tid(t);if(c[id]>=3)s-=200;else if(c[id]===2)s+=15;if(t.suit==='hon'){s+=c[id]>=2?10:-3}else{for(const d of[-2,-1,1,2]){const v=t.val+d;if(v<1||v>9)continue;if(c[tid({suit:t.suit,val:v})]>0)s+=d===-1||d===1?8:4}s+=t.val>=3&&t.val<=7?3:-1}return{i,score:s}});
+  sc.sort((a,b)=>a.score-b.score);
+  return sc[0].i;
+}
+
+// ═══════════════════════════════════════════════
+//  PLAYER ACTIONS
+// ═══════════════════════════════════════════════
+function showBtns(hu,peng,gang){
+  document.getElementById('bHu').classList.toggle('on',hu);
+  document.getElementById('bPeng').classList.toggle('on',peng);
+  document.getElementById('bGang').classList.toggle('on',gang);
+  document.getElementById('bPass').classList.toggle('on',hu||peng||gang);
+}
+function hideBtns(){['bHu','bPeng','bGang','bAnGang','bBuGang','bLiang','bPass','bSelf'].forEach(id=>{const e=document.getElementById(id);e.classList.remove('on');e.style.display=''})}
+function doPass(){
+  hideBtns();
+  // 场景1: 跳过碰/杠/胡(Claim)
+  if(G.waitingClaim&&G.pend){
+    G.passed[0]=true; // 过圈: 点炮没胡标记
+    G.pend=null;G.waitingClaim=false;
+    const dp=G.lastP,tile=G.last;if(dp<0)return;
+    const claims=[];
+    for(let i=1;i<3;i++){const hh=G.players[i].h;if(canWin([...hh,tile])){claims.push({pi:i,type:'hu',pri:3});continue;}const n=cnts(hh)[tid(tile)]||0;if(n===3)claims.push({pi:i,type:'gang',pri:1});else if(n>=2)claims.push({pi:i,type:'peng',pri:1})}
+    if(claims.length>0)handleAI(claims,tile,dp);
+    else setTimeout(()=>{if(!G.over)startTurn((dp+1)%3)},300);
+    return;
+  }
+  // 场景2: 跳过亮倒/自摸/暗杠/补杠 → 进入出牌阶段
+  if(G.cur===0&&G.phase==='action'){
+    G.waitingClaim=false;G.pend=null;
+    setPhase('discard',0);render();
+  }
+}
+
+document.addEventListener('click',function(e){
+  const tile=e.target.closest('.t.clk');
+  if(tile){
+    const idx=parseInt(tile.dataset.idx);
+    if(!isNaN(idx)&&G.phase==='discard'&&G.cur===0&&!G.over){
+      const h=G.players[0].h;
+      if(idx>=0&&idx<h.length){
+        const tile=h[idx];
+        if(isProtectedTile(0,tile)){toast('这张牌被亮倒保护，不能打出');return}
+        discard(0,tile);hideBtns()
+      }
+    }
+  }
+});
+
+window.doLiang=function(){hideBtns();execLiang(0)};
+window.doHu=function(){if(!G.pend||!G.waitingClaim)return;const{tile,from}=G.pend;G.pend=null;G.waitingClaim=false;hideBtns();execWin(0,tile,from,false)};
+window.doPeng=function(){if(!G.pend||!G.waitingClaim)return;const{tile,from}=G.pend;G.pend=null;G.waitingClaim=false;hideBtns();execPeng(0,tile,from)};
+window.doGang=function(){if(!G.pend||!G.waitingClaim)return;const{tile,from}=G.pend;G.pend=null;G.waitingClaim=false;hideBtns();execGang(0,tile,from)};
+window.doAnGang=function(){hideBtns();const tile=findAnGang(0);if(tile)execConcealedGang(0,tile)};
+window.doBuGang=function(){
+  hideBtns();const tile=findBuGang(0);if(!tile)return;
+  const claims=[];for(let i=1;i<3;i++){if(canWin([...G.players[i].h,tile])){claims.push({pi:i,type:'hu',pri:3})}}
+  if(claims.length>0){G.waitingClaim=false;G.pend=null;handleAI(claims,tile,0);toast('抢杠胡！');return}
+  execAddToPung(0,tile);
+};
+window.doPass=doPass;
+window.doSelf=function(){hideBtns();execWin(0,G.lastDrawn,-2,true)};
+window.newGame=newGame;
+
+function toast(msg){const o=document.querySelector('.ts');if(o)o.remove();const el=document.createElement('div');el.className='ts';el.textContent=msg;document.getElementById('main').appendChild(el);setTimeout(()=>el.remove(),2000)}
+function showResult(title,cls,detail){
+  if(cls==='w')playWinEffect();
+  const o=document.getElementById('ol');
+  const rt=document.getElementById('rtitle');
+  rt.className='rt '+cls;rt.textContent=title.replace(/<[^>]*>/g,'');
+  document.getElementById('rdetail').innerHTML=detail;o.classList.add('on');
+}
+
+
+newGame();
+</script>
+</body>
+</html>
