@@ -1717,6 +1717,14 @@ function showResult(title,cls,detail){
 }`
 `
 newGame();
+
+/* author credit */
+(function(){
+  var el=document.createElement('div');
+  el.textContent='作者 胡老板';
+  el.style.cssText='position:fixed;bottom:36px;right:8px;font-size:10px;color:rgba(255,255,255,0.35);z-index:9999;pointer-events:none;';
+  document.body.appendChild(el);
+})();
 </script>
 </body>
 </html>
