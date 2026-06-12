@@ -510,12 +510,16 @@ body{
 
   .ci .ng button{padding:2px 8px;font-size:9px}
 }
-/* Portrait fallback: rotate body to landscape, scale to fit */
+/* Portrait fallback: rotate body to landscape */
 @media(max-aspect-ratio:1/1){
   body{
-    transform:rotate(90deg) scale(calc(100vw / 100vh));
-    transform-origin:center center;
-    width:100vh;height:100vw;
+    transform:rotate(90deg);
+    transform-origin:top left;
+    width:100vh;
+    height:100vw;
+    position:fixed;
+    top:0;
+    left:100vh;
     overflow:hidden;
   }
 }
@@ -543,14 +547,13 @@ body{
     var body = document.body;
     var css = body.style;
     if(rotate){
-      var scale = (window.innerHeight / window.innerWidth).toFixed(4);
-      css.transform = 'rotate(90deg) scale(' + scale + ')';
-      css.transformOrigin = 'center center';
+      css.transform = 'rotate(90deg)';
+      css.transformOrigin = 'top left';
       css.width = '100vh';
       css.height = '100vw';
-      css.position = 'relative';
+      css.position = 'fixed';
       css.top = '0';
-      css.left = '0';
+      css.left = '100vh';
     } else {
       css.transform = css.transformOrigin = css.width = css.height = css.position = css.top = css.left = '';
     }
