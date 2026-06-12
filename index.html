@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -510,68 +510,62 @@ body{
 
   .ci .ng button{padding:2px 8px;font-size:9px}
 }
-
-/* PORTRAIT FALLBACK: rotate the game table only */
+/* Portrait fallback: rotate body to landscape, scale to fit */
 @media(max-aspect-ratio:1/1){
-  .main{transform:rotate(90deg);transform-origin:center center;position:fixed;top:50%;left:50%;margin-top:0}
-  .hdr{transform:rotate(90deg);transform-origin:center center;position:fixed;top:12px;left:56px}
+  body{
+    transform:rotate(90deg) scale(calc(100vw / 100vh));
+    transform-origin:center center;
+    width:100vh;height:100vw;
+    overflow:hidden;
+  }
 }
-/* Desktop: ignore orientation entirely — always landscape */
+/* Desktop: no rotation */
 @media(min-width:1024px){
-  .main{transform:none;position:relative;top:auto;left:auto;margin-top:0}
-  .hdr{transform:none;position:relative;top:auto;left:auto}
+  body{
+    transform:none!important;
+    width:100vw!important;
+    height:100vh!important;
+    position:relative!important;
+    top:auto!important;
+    left:auto!important;
+    overflow:hidden!important;
+  }
 }
 </style>
 
 <script>
-  // Cross-platform orientation detection
-  (function(){
-    function isTouchDevice(){
-      return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
-    }
-    function getVisualOrientation(){
-      var w = window.innerWidth, h = window.innerHeight
-      if(screen.orientation && screen.orientation.type){
-        if(screen.orientation.type.indexOf('portrait') !== -1) return true
-        if(screen.orientation.type.indexOf('landscape') !== -1) return false
-      }
-      return w < h
-    }
-    function applyOrientation(){
-      var mobile = isTouchDevice() && window.innerWidth < 1024
-      var portrait = getVisualOrientation()
-      var rotate = mobile && portrait
-      var mainEl = document.getElementById('main')
-      var hdrEl = document.querySelector('.hdr')
-      if(rotate){
-        mainEl.style.transform = 'rotate(90deg)'
-        mainEl.style.transformOrigin = 'center center'
-        mainEl.style.position = 'fixed'
-        mainEl.style.top = '50%'
-        mainEl.style.left = '50%'
-        mainEl.style.marginTop = '0'
-        hdrEl.style.transform = 'rotate(90deg)'
-        hdrEl.style.transformOrigin = 'center center'
-        hdrEl.style.position = 'fixed'
-        hdrEl.style.top = '12px'
-        hdrEl.style.left = '56px'
-      } else {
-        mainEl.style.transform = mainEl.style.transformOrigin = mainEl.style.position = mainEl.style.top = mainEl.style.left = mainEl.style.marginTop = ''
-        hdrEl.style.transform = hdrEl.style.transformOrigin = hdrEl.style.position = hdrEl.style.top = hdrEl.style.left = ''
-      }
-    }
-    if(document.readyState === 'loading'){
-      document.addEventListener('DOMContentLoaded', applyOrientation)
+// Cross-platform orientation detection
+(function(){
+  function applyOrientation(){
+    var isMobile = ('ontouchstart' in window || navigator.maxTouchPoints > 0) && window.innerWidth < 1024;
+    var isPortrait = (screen.orientation && screen.orientation.type && screen.orientation.type.indexOf('portrait') !== -1) || (window.innerWidth < window.innerHeight);
+    var rotate = isMobile && isPortrait;
+    var body = document.body;
+    var css = body.style;
+    if(rotate){
+      var scale = (window.innerHeight / window.innerWidth).toFixed(4);
+      css.transform = 'rotate(90deg) scale(' + scale + ')';
+      css.transformOrigin = 'center center';
+      css.width = '100vh';
+      css.height = '100vw';
+      css.position = 'relative';
+      css.top = '0';
+      css.left = '0';
     } else {
-      applyOrientation()
+      css.transform = css.transformOrigin = css.width = css.height = css.position = css.top = css.left = '';
     }
-    window.addEventListener('resize', applyOrientation)
-    if(screen.orientation && screen.orientation.addEventListener){
-      screen.orientation.addEventListener('change', applyOrientation)
-    }
-    window.addEventListener('orientationchange', applyOrientation)
-  })()
-
+  }
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', applyOrientation);
+  } else {
+    applyOrientation();
+  }
+  window.addEventListener('resize', applyOrientation);
+  if(screen.orientation && screen.orientation.addEventListener){
+    screen.orientation.addEventListener('change', applyOrientation);
+  }
+  window.addEventListener('orientationchange', applyOrientation);
+})();
 </script>
 </head>
 <body>
@@ -1831,4 +1825,3 @@ newGame();
 </script>
 </body>
 </html>
-
