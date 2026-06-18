@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>卡五星麻将</title>
+<title>�������齫</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&family=Noto+Serif+SC:wght@700;900&display=swap');
 
@@ -14,7 +14,7 @@ body{
   display:flex;flex-direction:column;user-select:none
 }
 
-/* ═══════ HEADER BAR ═══════ */
+/* �T�T�T�T�T�T�T HEADER BAR �T�T�T�T�T�T�T */
 .hdr{
   background:linear-gradient(180deg,#2a1810 0%,#1a0e08 100%);
   padding:4px 16px;
@@ -42,12 +42,73 @@ body{
 .scr .si .v{font-weight:700;min-width:16px;color:#d4b886}
 .scr .si .v.hl{color:#f5d680;text-shadow:0 0 8px rgba(245,214,128,.3)}
 
-/* ═══════ MAIN TABLE ═══════ */
+/* �T�T�T�T�T�T�T MAIN TABLE �T�T�T�T�T�T�T */
 .main{
-  flex:1;display:flex;flex-direction:column;position:relative;overflow:hidden;
+  flex:1;display:grid;
+  grid-template-columns:110px 1fr 110px;
+  grid-template-rows:auto minmax(0,1fr) auto auto;
+  padding:12px 16px;
+  gap:8px;
+  position:relative;overflow:hidden;
   background:
     radial-gradient(ellipse at 50% 50%,#1e5a35 0%,#14472a 30%,#0d3520 60%,#091e12 100%)
+;
+  min-height:0
 }
+/* Grid areas: N=top-center, W=mid-left, E=mid-right, S=bot-center, act=bottom */
+.ps.north{grid-column:2;grid-row:1}
+.ps.west{grid-column:1;grid-row:2}
+
+/* �T�T�T�T�T�T�T DIRECTIONAL SEATS �T�T�T�T�T�T�T */
+/* East/West: small horizontal tiles stacked vertically */
+.ps.east,.ps.west{
+  display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2px;
+  padding:6px;z-index:2;position:relative;
+}
+.ps.east .pnm,.ps.west .pnm{
+  font-size:9px;color:#a89070;font-weight:700;letter-spacing:.5px;
+  white-space:nowrap;text-align:center;margin-bottom:2px
+}
+.ps.east .pnm .d,.ps.west .pnm .d{width:5px;height:5px}
+.ps.east .md,.ps.west .md{
+  display:flex;flex-direction:row;gap:1px;align-items:center;justify-content:center;flex-wrap:wrap;
+  max-height:34px;overflow-y:auto;min-height:0;width:100%
+}
+.ps.east .ht,.ps.west .ht{
+  display:flex;flex-direction:row;gap:1px;align-items:center;justify-content:center;flex-wrap:wrap;
+  max-height:70px;overflow-y:auto;min-height:0;width:100%
+}
+.ps.east .rv,.ps.west .rv{
+  display:flex;flex-direction:row;gap:2px;align-items:flex-start;justify-content:center;flex-wrap:wrap;
+  padding:2px 0;min-height:18px;max-height:60px;overflow-y:auto;
+  border-top:1px solid rgba(255,215,0,.06);margin:2px 0;width:100%
+}
+.ps.east .rv .rt,.ps.west .rv .rt{animation:dIn .2s ease-out;flex-shrink:0}
+/* Direction indicator */
+.dir-badge{
+  position:absolute;z-index:3;
+  font-family:'Noto Serif SC',serif;font-size:12px;font-weight:900;
+  color:rgba(245,214,128,.25);letter-spacing:2px;
+  pointer-events:none;
+  text-shadow:0 0 10px rgba(245,214,128,.1)
+}
+.dir-n{top:4px;left:50%;transform:translateX(-50%)}
+.dir-s{bottom:6px;left:50%;transform:translateX(-50%)}
+.dir-e{right:8px;top:50%;transform:translateY(-50%) rotate(90deg)}
+.dir-w{left:8px;top:50%;transform:translateY(-50%) rotate(-90deg)}
+/* North seat: just shows direction marker */
+.ps.north{
+  display:flex;flex-direction:row;align-items:center;justify-content:center;
+  padding:6px 0;z-index:2;position:relative;min-height:32px;
+  color:rgba(245,214,128,.2);font-family:'Noto Serif SC',serif;
+  font-size:14px;font-weight:900;letter-spacing:4px
+}
+
+.ci{grid-column:2;grid-row:2;position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:40px}
+.ci,.ps{min-height:0;overflow:hidden}
+.ps.east{grid-column:3;grid-row:2}
+.ps.south{grid-column:2;grid-row:3}
+.act-wrap{grid-column:1/4;grid-row:4}
 /* Wood grain texture overlay */
 .table-edge{
   position:absolute;inset:0;
@@ -67,8 +128,9 @@ body{
   pointer-events:none
 }
 
-/* ═══════ PLAYER SECTIONS ═══════ */
+/* �T�T�T�T�T�T�T PLAYER SECTIONS �T�T�T�T�T�T�T */
 .ps{position:relative;z-index:2;display:flex;flex-direction:column;padding:3px 14px;flex-shrink:0}
+.ps.east,.ps.west{padding:4px 4px}
 .ps .pnm{
   font-size:10px;color:#a89070;display:flex;align-items:center;gap:4px;margin-bottom:2px;
   font-weight:700;letter-spacing:.5px
@@ -82,13 +144,9 @@ body{
   border-top:1px solid rgba(255,215,0,.06);margin:2px 0
 }
 .ps .rv .rt{animation:dIn .2s ease-out;flex-shrink:0}
-.ps.bot .rv{order:0;border-top:none;border-bottom:1px solid rgba(255,215,0,.06)}
-.ps.bot .md{order:1}.ps.bot .ht{order:2}
+.ps.south .rv{order:0;border-top:none;border-bottom:1px solid rgba(255,215,0,.06)}
+.ps.south .md{order:1}.ps.south .ht{order:2}
 
-.ci{
-  flex:1;position:relative;z-index:2;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:40px
-}
 .ti{
   font-size:11px;color:#f5d680;
   background:linear-gradient(180deg,rgba(30,20,10,.9),rgba(20,12,6,.95));
@@ -111,21 +169,51 @@ body{
   box-shadow:0 0 12px rgba(245,214,128,.1)
 }
 
-/* ═══════ TILE STYLES (日麻风) ═══════ */
+/* �T�T�T�T�T�T�T TILE STYLES (�����齫) �T�T�T�T�T�T�T */
 .t{
   display:inline-flex;align-items:center;justify-content:center;
   width:44px;height:60px;
-  background:linear-gradient(180deg,#faf6ee 0%,#f0e8d4 40%,#e6dcc4 100%);
-  border:1px solid #b8a88a;
-  border-radius:5px;
-  font-size:16px;font-weight:700;position:relative;user-select:none;
+  position:relative;user-select:none;
+  border-radius:4px;
+  font-size:16px;font-weight:700;
   transition:transform .12s ease,box-shadow .12s ease;
-  box-shadow:
-    0 2px 4px rgba(0,0,0,.3),
-    inset 0 1px 0 rgba(255,255,255,.8),
-    inset 0 -1px 0 rgba(0,0,0,.05);
   flex-shrink:0;line-height:1;
-  background-size:cover;background-position:center
+  background:linear-gradient(175deg,#fffff8 0%,#f8f4ea 30%,#f0ead8 100%);
+  box-shadow:
+    0 0 0 1px #d8d0bc,
+    0 0 0 2.5px #c8bfa8,
+    0 3px 6px rgba(0,0,0,.28),
+    0 1px 2px rgba(0,0,0,.18),
+    inset 0 1.5px 0 rgba(255,255,255,.9),
+    inset 0 -0.5px 0 rgba(0,0,0,.04);
+}
+.t:hover{
+  transform:translateY(-1px);
+  box-shadow:
+    0 0 0 1px #d8d0bc,
+    0 0 0 2.5px #c8bfa8,
+    0 5px 10px rgba(0,0,0,.32),
+    0 2px 4px rgba(0,0,0,.2),
+    inset 0 1.5px 0 rgba(255,255,255,.9),
+    inset 0 -0.5px 0 rgba(0,0,0,.04);
+}
+.t.clk:hover{
+  transform:translateY(-2px);
+  box-shadow:
+    0 0 0 1px #d8d0bc,
+    0 0 0 2.5px #c8bfa8,
+    0 6px 14px rgba(0,0,0,.35),
+    0 0 0 3px rgba(245,200,80,.35);
+}
+.t.drn{
+  box-shadow:
+    0 0 0 1px #d8d0bc,
+    0 0 0 2.5px #c8bfa8,
+    0 3px 6px rgba(0,0,0,.28),
+    0 1px 2px rgba(0,0,0,.18),
+    inset 0 1.5px 0 rgba(255,255,255,.9),
+    inset 0 -0.5px 0 rgba(0,0,0,.04),
+    0 0 8px rgba(245,200,80,.3);
 }
 .t .fv{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%}
 .t .fv .nm{font-size:18px;font-weight:900;line-height:1.1}
@@ -133,94 +221,84 @@ body{
 .t.zhong .fv{color:#c62828}
 .t.fa .fv{color:#2e7d32}
 .t.bai .fv{color:#555}
-
-/* ═══════ CLASSIC TILE FACE PATTERNS ═══════ */
-/* Tong (circles/dots) pattern */
-.t.tong .fv{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0}
-.t.tong .fv .nm{display:grid;gap:1px;line-height:1;font-size:0}
-.t.tong .fv .sm{display:none}
-.t.tong .fv .dot{
-  width:7px;height:7px;border-radius:50%;
-  background:radial-gradient(circle at 35% 35%,#50b0e0,#1a6a9a);
-  border:1px solid #1a6a9a;display:inline-block
+.t.ld-r{
+  box-shadow:
+    0 0 0 1px #b8d8b0,
+    0 0 0 2.5px #a0c898,
+    0 3px 6px rgba(0,0,0,.22),
+    0 1px 2px rgba(0,0,0,.14),
+    inset 0 1.5px 0 rgba(255,255,255,.85),
+    0 0 6px rgba(80,200,80,.25);
 }
-.t.s.tong .fv .dot{width:5px;height:5px}
-.t.xs.tong .fv .dot{width:4px;height:4px}
-.t.rv.tong .fv .dot{width:4px;height:4px}
-/* Dot grid layouts per number */
-.t.tong[data-n="1"] .fv .nm{grid-template-columns:1fr}
-.t.tong[data-n="2"] .fv .nm{grid-template-columns:1fr}
-.t.tong[data-n="3"] .fv .nm{grid-template-columns:1fr 1fr 1fr}
-.t.tong[data-n="4"] .fv .nm{grid-template-columns:1fr 1fr}
-.t.tong[data-n="5"] .fv .nm{grid-template-columns:1fr 1fr 1fr}
-.t.tong[data-n="6"] .fv .nm{grid-template-columns:1fr 1fr}
-.t.tong[data-n="7"] .fv .nm{grid-template-columns:1fr 1fr 1fr}
-.t.tong[data-n="8"] .fv .nm{grid-template-columns:1fr 1fr}
-.t.tong[data-n="9"] .fv .nm{grid-template-columns:1fr 1fr 1fr}
-
-/* Tiao (bamboo/line) pattern */
-.t.tiao .fv{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
-.t.tiao .fv .nm{font-size:0;line-height:0;display:flex;gap:1px;flex-wrap:wrap;justify-content:center;align-items:center}
-.t.tiao .fv .sm{display:none}
-.t.tiao .fv .stk{
-  width:4px;border-radius:2px;
-  background:linear-gradient(180deg,#2e8b3a 0%,#1a6b2a 40%,#2e8b3a 42%,#1a6b2a 100%);
-  border:1px solid #145a20;display:inline-block
+.t.ld-w{
+  box-shadow:
+    0 0 0 1px #d8d0a0,
+    0 0 0 2.5px #c8b878,
+    0 3px 6px rgba(0,0,0,.22),
+    0 1px 2px rgba(0,0,0,.14),
+    inset 0 1.5px 0 rgba(255,255,255,.85),
+    0 0 6px rgba(245,200,80,.3);
 }
-.t.s.tiao .fv .stk{width:3px}
-.t.xs.tiao .fv .stk,.t.rv.tiao .fv .stk{width:3px}
 
-/* Wan (万 character) pattern */
-.t.wan .fv{display:flex;flex-direction:column;align-items:center;justify-content:center}
-.t.wan .fv .nm{font-size:20px;font-weight:900;color:#1a1a1a}
-.t.wan .fv .sm{font-size:11px;font-weight:700;color:#333;margin-top:0}
-.t.s.wan .fv .nm{font-size:14px}.t.s.wan .fv .sm{font-size:8px}
-.t.xs.wan .fv .nm{font-size:11px}.t.xs.wan .fv .sm{font-size:7px}
-.t.rv.wan .fv .nm{font-size:12px}.t.rv.wan .fv .sm{font-size:8px}
+/* �T�T�T�T�T�T�T TILE FACE RENDERING (Canvas) �T�T�T�T�T�T�T */
+.t .fv{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%}
+.t .fv canvas{display:block;border-radius:2px;max-width:100%;max-height:100%;object-fit:contain}
+.t .fv .nm,.t .fv .sm{display:none}
 
-/* Zhong (red 中) */
-.t.zhong .fv{display:flex;align-items:center;justify-content:center}
-.t.zhong .fv .nm{font-size:26px;font-weight:900;color:#c62828;text-shadow:0 1px 2px rgba(0,0,0,.15)}
-.t.s.zhong .fv .nm{font-size:18px}
-.t.xs.zhong .fv .nm,.t.rv.zhong .fv .nm{font-size:14px}
-
-/* Fa (green 發) */
-.t.fa .fv{display:flex;align-items:center;justify-content:center}
-.t.fa .fv .nm{font-size:24px;font-weight:900;color:#2e7d32;text-shadow:0 1px 2px rgba(0,0,0,.1)}
-.t.s.fa .fv .nm{font-size:17px}
-.t.xs.fa .fv .nm,.t.rv.fa .fv .nm{font-size:13px}
-
-/* Bai (white 白 - bordered rectangle) */
-.t.bai{background:linear-gradient(180deg,#f8f4ec,#eae2d0,#ddd5c0)}
-.t.bai .fv{display:flex;align-items:center;justify-content:center}
-.t.bai .fv .nm{
-  width:18px;height:24px;border:2px solid #666;border-radius:2px;
-  font-size:0;background:transparent
+/* �T�T�T�T�T�T�T EAST/WEST: horizontal tiles, stacked vertically �T�T�T�T�T�T�T */
+.ps.east .ht,.ps.west .ht{
+  flex-direction:column;gap:1px;align-items:center;justify-content:flex-start;flex-wrap:nowrap;
+  max-height:150px;overflow-y:auto;overflow-x:hidden;width:100%;
 }
-.t.s.bai .fv .nm{width:13px;height:17px;border-width:1.5px}
-.t.xs.bai .fv .nm,.t.rv.bai .fv .nm{width:10px;height:14px;border-width:1px}
-.t.bai .fv .sm{display:none}
+.ps.east .rv,.ps.west .rv{
+  flex-direction:column;gap:1px;align-items:center;justify-content:flex-start;flex-wrap:nowrap;
+  max-height:150px;overflow-y:auto;overflow-x:hidden;
+}
+.ps.east .t,.ps.west .t{
+  display:flex;
+  width:42px;height:30px;
+  border-radius:3px;
+  flex-shrink:0;
+}
+.ps.east .t.s,.ps.west .t.s{
+  width:30px;height:22px;font-size:8px;
+}
+.ps.east .t.rv,.ps.west .t.rv{
+  width:30px;height:22px;font-size:8px;
+}
+.ps.east .t.bk,.ps.west .t.bk{
+  width:42px;height:30px;
+}
+.ps.east .t.s.bk,.ps.west .t.s.bk{
+  width:30px;height:22px;
+}
 
-
-/* Tile back - deep navy with pattern */
+/* Tile back �� classic green mahjong tile back */
 .t.bk{
-  background:linear-gradient(180deg,#2a4a6e 0%,#1a3050 50%,#102040 100%);
-  border-color:#0d1f3c;cursor:default;
-  box-shadow:0 2px 4px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.05)
+  background:
+    repeating-linear-gradient(45deg,transparent,transparent 3px,rgba(255,255,255,.02) 3px,rgba(255,255,255,.02) 4px),
+    repeating-linear-gradient(-45deg,transparent,transparent 3px,rgba(255,255,255,.02) 3px,rgba(255,255,255,.02) 4px),
+    linear-gradient(180deg,#1e7a3a 0%,#166830 40%,#0e5020 100%);
+  border-color:#0a4018;
+  border-width:1.5px;
+  cursor:default;
+  box-shadow:
+    0 0 0 1px #083010,
+    0 0 0 2px #0a4018,
+    0 3px 6px rgba(0,0,0,.35),
+    inset 0 1px 0 rgba(255,255,255,.1);
 }
-.t.bk::after{content:'🀫';font-size:12px;opacity:.15}
-.t.bk:hover{transform:none}
-
-/* Size variants */
-.t.s{width:28px;height:38px;font-size:10px;box-shadow:0 1px 3px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.6)}
+.t.bk:hover{transform:none}/* Size variants */
+.t.s{width:36px;height:50px;font-size:10px;box-shadow:0 1px 3px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.6)}
 .t.s .fv .nm{font-size:12px}.t.s .fv .sm{font-size:6px}
-.t.xs{width:22px;height:30px;font-size:8px;box-shadow:0 1px 2px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.5)}
+.t.xs{width:28px;height:38px;font-size:8px;box-shadow:0 1px 2px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.5)}
 .t.xs .fv .nm{font-size:9px}.t.xs .fv .sm{font-size:5px}
-.t.rv{width:26px;height:35px;font-size:9px;cursor:default}
+.t.rv{width:32px;height:44px;font-size:9px;cursor:default}
 .t.rv .fv .nm{font-size:10px}.t.rv .fv .sm{font-size:5px}
 .t.rv:hover{transform:none}
 .mg{display:inline-flex}
 .mg .t:not(:first-child){margin-left:-5px}
+.ps.east .mg,.ps.west .mg{display:inline-flex}
 .t.clk{cursor:pointer}
 .t.clk:hover{
   transform:translateY(-10px);
@@ -228,13 +306,19 @@ body{
   z-index:10
 }
 .t.drn{transform:translateY(-10px)}
-/* 亮倒 protected tile glow */
+/* ���� protected tile glow */
 .t.ld-r{
   box-shadow:0 0 0 2px #f5d680,0 0 12px rgba(245,214,128,.4),0 0 24px rgba(245,214,128,.15);
   border-color:#f5d680
 }
+.t.ld-w{
+  box-shadow:0 0 0 2px #ffd700,0 0 10px rgba(255,215,0,.5);
+  border-color:#ffd700;
+  background:linear-gradient(180deg,#fff8e0,#fff0c0,#ffe680);
+  z-index:5
+}
 
-/* ═══════ ACTION BUTTONS ═══════ */
+/* �T�T�T�T�T�T�T ACTION BUTTONS �T�T�T�T�T�T�T */
 .act{
   display:flex;gap:6px;padding:6px 16px 8px;flex-shrink:0;
   justify-content:center;flex-wrap:wrap;
@@ -259,7 +343,7 @@ body{
 }
 .ab:hover{filter:brightness(1.1);box-shadow:0 4px 16px rgba(0,0,0,.3)}
 
-/* ═══════ OVERLAY / RESULT ═══════ */
+/* �T�T�T�T�T�T�T OVERLAY / RESULT �T�T�T�T�T�T�T */
 .ol{
   position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
   background:linear-gradient(180deg,rgba(20,12,6,.96),rgba(10,6,3,.98));
@@ -298,7 +382,7 @@ body{
   animation:tt 2.2s ease forwards
 }
 
-/* ═══════ WIN EFFECT ANIMATION ═══════ */
+/* �T�T�T�T�T�T�T WIN EFFECT ANIMATION �T�T�T�T�T�T�T */
 .win-overlay{
   position:fixed;inset:0;z-index:200;pointer-events:none;
   background:radial-gradient(ellipse at 50% 50%,rgba(245,214,128,.08),transparent 70%);
@@ -326,7 +410,7 @@ body{
   opacity:0
 }
 
-/* ═══════ DEAL ANIMATION ═══════ */
+/* �T�T�T�T�T�T�T DEAL ANIMATION �T�T�T�T�T�T�T */
 .dealing-indicator{
   position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
   z-index:80;pointer-events:none;
@@ -368,7 +452,7 @@ body{
   100%{filter:brightness(1) saturate(1);transform:scale(1)}
 }
 
-/* ═══════ ANIMATIONS ═══════ */
+/* �T�T�T�T�T�T�T ANIMATIONS �T�T�T�T�T�T�T */
 @keyframes dIn{from{transform:translateY(-8px);opacity:0}to{transform:translateY(0);opacity:1}}
 @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 @keyframes resultIn{from{opacity:0;transform:translate(-50%,-50%) scale(.85)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
@@ -389,7 +473,7 @@ body{
   100%{opacity:0;transform:translate(-50%,-50%) scale(3)}
 }
 
-/* ═══════ RESPONSIVE ═══════ */
+/* �T�T�T�T�T�T�T RESPONSIVE �T�T�T�T�T�T�T */
 @media(max-width:640px){
   .t{width:34px;height:46px;font-size:13px}
   .t .fv .nm{font-size:14px}.t .fv .sm{font-size:6px}
@@ -403,73 +487,137 @@ body{
   .win-text{font-size:40px;letter-spacing:4px}
   .ab{padding:5px 14px;font-size:12px}
 }
+
+/* �T�T�T�T�T�T�T LANDSCAPE OPTIMIZATION �T�T�T�T�T�T�T */
+@media (orientation: landscape) and (min-width: 800px) {
+  .main {
+    grid-template-columns:110px 1fr 110px;
+    grid-template-rows: 20px minmax(0,1fr) auto auto;
+    padding: 4px 24px;
+    gap: 4px;
+  }
+  .t {
+    width: 38px;
+    height: 52px;
+  }
+  .hdr {
+    padding: 3px 16px;
+  }
+  .act {
+    padding: 4px 16px 6px;
+  }
+  .ab {
+    padding: 5px 16px;
+    font-size: 12px;
+  }
+  .ps.south .ht{flex-wrap:nowrap;justify-content:center}
+  .ps.south .rv{max-height:34px;overflow-y:auto}
+  .ps.south .ht{min-height:56px}
+  .ps.south{padding:2px 8px}
+  .ci{justify-content:flex-start}
+  /* east/west: compact tiles, bounded river/meld, top-aligned */
+  .ps.east,.ps.west{justify-content:flex-start;padding:4px 3px;gap:2px}
+  .ps.east .t,.ps.west .t{width:44px;height:32px}
+  .ps.east .t.s,.ps.west .t.s{width:32px;height:24px}
+  .ps.east .t.rv,.ps.west .t.rv{width:30px;height:22px;font-size:8px}
+  .ps.east .t.bk,.ps.west .t.bk{width:44px;height:32px}
+  .ps.east .t.s.bk,.ps.west .t.s.bk{width:32px;height:24px}
+  .ps.east .md,.ps.west .md{max-height:18px}
+  .ps.east .ht,.ps.west .ht{flex-direction:column;flex-wrap:nowrap;max-height:120px;overflow-y:auto;align-items:center}
+  .ps.east .rv,.ps.west .rv{flex-direction:column;flex-wrap:nowrap;max-height:120px;overflow-y:auto;align-items:center}
+  .ps.east .pnm,.ps.west .pnm{font-size:8px;margin-bottom:1px}
+}
+
+.orientation-hint{
+  position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+  z-index:1000;background:rgba(8,10,8,.88);color:#f5d680;text-align:center;
+  padding:24px;font-family:'Noto Sans SC','Microsoft YaHei',sans-serif
+}
+.orientation-hint.on{display:flex}
+.orientation-card{max-width:320px;border:1px solid rgba(245,214,128,.22);background:rgba(24,18,10,.86);border-radius:8px;padding:22px 20px;box-shadow:0 18px 60px rgba(0,0,0,.35)}
+.orientation-icon{font-size:22px;font-weight:900;margin-bottom:10px;color:#ffd978}
+.orientation-title{font-size:20px;font-weight:900;margin-bottom:8px}
+.orientation-subtitle{font-size:13px;line-height:1.55;color:#c8a870}
+body.portrait-locked .main,body.portrait-locked .hdr,body.portrait-locked .act-wrap{filter:blur(1px)}
+
 </style>
 </head>
 <body>
 
 <div class="hdr">
   <div class="hl">
-    <h1>🀄 卡五星</h1>
-    <span class="wall" id="wc">牌墙: 52张</span>
+    <h1>?? ������</h1>
+    <span class="wall" id="wc">��ǽ: 52��</span>
   </div>
   <div class="scr">
-    <div class="si"><span class="d" style="background:#f5d680"></span><span class="lb">你</span><span class="v hl" id="s0">¥10000</span></div>
-    <div class="si"><span class="d" style="background:#e87040"></span><span class="lb">AI-1</span><span class="v" id="s1">¥10000</span></div>
-    <div class="si"><span class="d" style="background:#60c878"></span><span class="lb">AI-2</span><span class="v" id="s2">¥10000</span></div>
+    <div class="si"><span class="d" style="background:#f5d680"></span><span class="lb">��</span><span class="v hl" id="s0">��10000</span></div>
+    <div class="si"><span class="d" style="background:#e87040"></span><span class="lb">��</span><span class="v" id="s1">��10000</span></div>
+    <div class="si"><span class="d" style="background:#60c878"></span><span class="lb">��</span><span class="v" id="s2">��10000</span></div>
   </div>
 </div>
 
 <div class="main" id="main">
   <div class="table-edge"></div>
+  <span class="dir-badge dir-n">��</span>
+  <span class="dir-badge dir-s">��</span>
+  <span class="dir-badge dir-e">��</span>
+  <span class="dir-badge dir-w">��</span>
 
-  <div class="ps top" id="ps1">
-    <div class="pnm"><span class="d" style="background:#e87040"></span>AI-1 <span class="st" id="a1s"></span></div>
-    <div class="md" id="a1m"></div>
-    <div class="ht" id="a1t"></div>
-    <div class="rv" id="a1r"></div>
-  </div>
+  <!-- ��(��): ����, ����λ��� -->
+  <div class="ps north" id="ps-north">��</div>
 
-  <div class="ci">
-    <div class="ti" id="ti"></div>
-    <div class="ng"><button onclick="newGame()">↻</button></div>
-    <div class="ol" id="ol">
-      <div class="rt" id="rtitle"></div>
-      <div class="rd" id="rdetail"></div>
-      <button class="ng" onclick="newGame()">↻ 再来一局</button>
-    </div>
-  </div>
-
-  <div class="ps mid" id="ps2">
-    <div class="pnm"><span class="d" style="background:#60c878"></span>AI-2 <span class="st" id="a2s"></span></div>
+  <!-- ��(��): AI-2 -->
+  <div class="ps west" id="ps2">
+    <div class="pnm"><span class="d" style="background:#60c878"></span>����AI-2 <span class="st" id="a2s"></span></div>
     <div class="md" id="a2m"></div>
     <div class="ht" id="a2t"></div>
     <div class="rv" id="a2r"></div>
   </div>
 
-  <div class="ps bot" id="ps0">
+  <div class="ci">
+    <div class="ti" id="ti"></div>
+    <div class="ng"><button onclick="newGame()">?</button></div>
+    <div class="ol" id="ol">
+      <div class="rt" id="rtitle"></div>
+      <div class="rd" id="rdetail"></div>
+      <button class="ng" onclick="newGame()">? ����һ��</button>
+    </div>
+  </div>
+
+  <!-- ��(��): AI-1 -->
+  <div class="ps east" id="ps1">
+    <div class="pnm"><span class="d" style="background:#e87040"></span>����AI-1 <span class="st" id="a1s"></span></div>
+    <div class="md" id="a1m"></div>
+    <div class="ht" id="a1t"></div>
+    <div class="rv" id="a1r"></div>
+  </div>
+
+  <!-- ��(��): �� -->
+  <div class="ps south" id="ps0">
     <div class="rv" id="p0r"></div>
     <div class="md" id="p0m"></div>
     <div class="ht" id="p0t"></div>
-    <div class="pnm" style="margin-top:3px"><span class="d" style="background:#f5d680"></span>你 <span class="st" id="p0s"></span></div>
+    <div class="pnm" style="margin-top:3px"><span class="d" style="background:#f5d680"></span>�ϡ��� <span class="st" id="p0s"></span></div>
   </div>
 
-  <div class="act">
-    <button class="ab dgr" id="bHu" onclick="doHu()">🏆 胡</button>
-    <button class="ab sec" id="bPeng" onclick="doPeng()">碰</button>
-    <button class="ab inf" id="bGang" onclick="doGang()">杠</button>
-    <button class="ab inf" id="bAnGang" onclick="doAnGang()">暗杠</button>
-    <button class="ab inf" id="bBuGang" onclick="doBuGang()">补杠</button>
-    <button class="ab pri" id="bLiang" onclick="doLiang()">💡 亮倒</button>
-    <button class="ab gry" id="bPass" onclick="doPass()">❌ 过</button>
-    <button class="ab pri" id="bSelf" style="display:none" onclick="doSelf()">🀄 自摸</button>
+  <div class="act act-wrap">
+    <button class="ab dgr" id="bHu" onclick="doHu()">?? ��</button>
+    <button class="ab sec" id="bPeng" onclick="doPeng()">��</button>
+    <button class="ab inf" id="bGang" onclick="doGang()">��</button>
+    <button class="ab inf" id="bAnGang" onclick="doAnGang()">����</button>
+    <button class="ab inf" id="bBuGang" onclick="doBuGang()">����</button>
+    <button class="ab pri" id="bLiang" onclick="doLiang()">?? ����</button>
+    <button class="ab gry" id="bPass" onclick="doPass()">? ��</button>
+    <button class="ab pri" id="bSelf" style="display:none" onclick="doSelf()">?? ����</button>
   </div>
 </div>
 
 <script src="tiles/tile_img.js"></script>
+<script src="kawuxing-rules.js"></script>
 <script>
-// ════════════════════════════════════════════════
+// �T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T
 //  WIN EFFECT SYSTEM
-// ════════════════════════════════════════════════
+// �T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T
 function playWinEffect(){
   const flash=document.createElement('div');
   flash.className='win-overlay';
@@ -484,10 +632,10 @@ function playWinEffect(){
   }
   const txt=document.createElement('div');
   txt.className='win-text';
-  txt.textContent='胡了！';
+  txt.textContent='���ˣ�';
   document.body.appendChild(txt);
   setTimeout(()=>{txt.style.transition='opacity .5s';txt.style.opacity='0';setTimeout(()=>txt.remove(),600)},2000);
-  const petals=['🌸','❀','✿','🌺'];
+  const petals=['??','?','?','??'];
   for(let i=0;i<20;i++){
     const p=document.createElement('div');
     p.className='win-sakura';
@@ -502,175 +650,38 @@ function playWinEffect(){
   }
 }
 
-// ═══════════════════════════════════════════════
+// �T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T
 //  CORE DEFS
-// ═══════════════════════════════════════════════
-const SUITS = ['tong','tiao'];
-const HONORS = ['zhong','fa','bai'];
-const HDISP = {zhong:'中',fa:'发',bai:'白'};
+// �T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T
+const Rules = window.KawuxingRules;
+const {
+  BASE_BET, HDISP, HONORS, SUITS, calc, calcLD, canMelds, canWin, cnts,
+  detect, is7p, mkDeck, rm, shf, srt, tcls, tdisp, tdispSuit, teq, tid, tsk, waits
+} = Rules;
 
-function mkDeck(){
-  const d=[];
-  for(const s of SUITS)for(let v=1;v<=9;v++)for(let i=0;i<4;i++)d.push({suit:s,val:v});
-  for(const h of HONORS)for(let i=0;i<4;i++)d.push({suit:'hon',val:h});
-  return d;
-}
-function tid(t){return t.suit+'_'+t.val}
-function teq(a,b){return a.suit===b.suit&&a.val===b.val}
-function tdisp(t){
-  return t.suit==='tong'||t.suit==='tiao'?t.val:HDISP[t.val]||'?';
-}
-function tdispSuit(t){
-  if(t.suit==='tong')return '●';
-  if(t.suit==='tiao')return '│';
-  return '';
-}
-function tcls(t){return t.suit==='hon'?t.val:t.suit}
-function tsk(t){
-  const so={tong:0,tiao:1,hon:2};
-  const v=typeof t.val==='number'?t.val:HONORS.indexOf(t.val)+10;
-  return so[t.suit]*100+v;
-}
-function srt(a){return[...a].sort((x,y)=>tsk(x)-tsk(y))}
-function shf(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a}
-
-function cnts(h){
-  const c={};
-  for(const t of h)c[tid(t)]=(c[tid(t)]||0)+1;
-  return c;
-}
-function rm(h,t,n){
-  const r=[...h];let k=0;
-  for(let i=r.length-1;i>=0&&k<n;i--)if(teq(r[i],t)){r.splice(i,1);k++}
-  return r;
-}
-
-// ═══════════════════════════════════════════════
-//  WIN DETECTION
-// ═══════════════════════════════════════════════
-function canMelds(t){
-  if(t.length===0)return true;
-  if(t.length%3!==0)return false;
-  const s=srt(t),f=s[0],c=cnts(s),id=tid(f);
-  if(c[id]>=3&&canMelds(rm(s,f,3)))return true;
-  if(f.suit!=='hon'){
-    const v=f.val;
-    if(v+2<=9&&c[tid({suit:f.suit,val:v+1})]>0&&c[tid({suit:f.suit,val:v+2})]>0){
-      let r=rm(s,f,1);r=rm(r,{suit:f.suit,val:v+1},1);r=rm(r,{suit:f.suit,val:v+2},1);
-      if(canMelds(r))return true;
-    }
-  }
-  return false;
-}
-function is7p(t){
-  if(t.length!==14)return false;
-  const c=cnts(t);let p=0;
-  for(const k in c){if(c[k]%2!==0)return false;p+=c[k]/2}
-  return p===7;
-}
-function canWin(h){
-  if(h.length%3!==2)return false;
-  if(is7p(h))return true;
-  const c=cnts(h);
-  for(const id in c){
-    if(c[id]>=2){
-      const p=id.split('_');
-      const tile={suit:p[0],val:isNaN(p[1])?p[1]:parseInt(p[1])};
-      if(canMelds(rm(h,tile,2)))return true;
-    }
-  }
-  return false;
-}
-function waits(h){
-  const d=mkDeck(),ck=new Set(),w=[];
-  for(const t of d){const id=tid(t);if(ck.has(id))continue;ck.add(id);if(canWin([...h,{suit:t.suit,val:t.val}]))w.push(t)}
-  return w;
-}
-
-// ═══════════════════════════════════════════════
-//  SCORING
-// ═══════════════════════════════════════════════
-const PV={'碰碰胡':2,'明四归':2,'卡五星':2,'暗四归':4,'清一色':4,'手抓一':4,'小三元':4,'大三元':8,
-  '七对':4,'龙七对':8,'双龙七对':16,'超超豪华七对':128,
-  '三元七对':32,'龙三元七对':256,'双龙三元七对':512,
-  '清七对':16,'清碰碰胡':8,'清龙七对':32,'清双龙七对':64,'清超超豪华七对':512};
-const BASE_BET = 10;
-
-function detect(h,winTile,melds){
-  const p=[],c=cnts(h);
-  const pc=melds.filter(m=>m.t==='peng'||m.t==='gang').length;
-  let ct=0;
-  for(const id in c){if(c[id]>=3){const parts=id.split('_');const tile={suit:parts[0],val:isNaN(parts[1])?parts[1]:parseInt(parts[1])};if(!melds.some(m=>teq(m.ts[0],tile)))ct++;}}
-  const totalP=pc+ct;
-  const allTiles=[...h];for(const m of melds)for(const t of m.ts)allTiles.push(t);
-  const tn2=allTiles.filter(t=>t.suit==='tong').length,ta2=allTiles.filter(t=>t.suit==='tiao').length;
-  const qys=(tn2===allTiles.length)||(ta2===allTiles.length);
-  const ac=cnts(allTiles);
-  const zc=ac['hon_zhong']||0,fc=ac['hon_fa']||0,bc=ac['hon_bai']||0;
-  const ht=[zc,fc,bc].filter(x=>x>=3).length,hp=[zc,fc,bc].filter(x=>x>=2).length;
-
-  if(winTile&&winTile.val===5&&(winTile.suit==='tong'||winTile.suit==='tiao'))p.push('卡五星');
-  if(winTile&&melds.some(m=>m.t==='peng'&&teq(m.ts[0],winTile)))p.push('明四归');
-  // 暗四归: 七对家族中的四同已由龙七对等倍率涵盖，不可重复计算
-  const is7pHand=is7p(h);
-  if(winTile&&!is7pHand){const inc=h.filter(t=>teq(t,winTile)).length;if(inc===4)p.push('暗四归');}
-  if(totalP===4&&!p.includes('暗四归'))p.push('碰碰胡');
-  if(is7pHand){
-    const hasSY=(zc>=2&&fc>=2&&bc>=2);
-    const fours=Object.values(c).filter(x=>x===4).length;
-    if(hasSY&&fours>=2)p.push('双龙三元七对');
-    else if(hasSY&&fours>=1)p.push('龙三元七对');
-    else if(hasSY)p.push('三元七对');
-    else if(fours>=3)p.push('超超豪华七对');
-    else if(fours>=2)p.push('双龙七对');
-    else if(fours>=1)p.push('龙七对');
-    else p.push('七对');
-  }
-  if(qys)p.push('清一色');
-  if(melds.length===4){const hc=h.filter(t=>!winTile||!teq(t,winTile)).length;if(hc<=1)p.push('手抓一')}
-  if(ht>=2&&(hp>=3||(ht===2&&hp>=2)))p.push('小三元');
-  if(ht>=3)p.push('大三元');
-  return p;
-}
-function calc(patterns,isSelf,isKongDraw,isLast){
-  let m=1;for(const pt of patterns)if(PV[pt])m*=PV[pt];
-  if(m===1&&!isSelf)return null;if(isKongDraw)m*=2;if(isLast)m*=2;return m;
-}
-function calcLD(patterns,isSelf,isKongDraw,isLast,isLDWinner,isLDPayer){
-  let m=1;for(const pt of patterns)if(PV[pt])m*=PV[pt];
-  // 亮倒点炮屁胡: 弃牌者亮倒时, 屁胡也有效(用1番基础)
-  if(m===1&&!isSelf&&!isLDPayer)return null;
-  if(isKongDraw)m*=2;if(isLast)m*=2;
-  if(isLDWinner)m*=2;if(isLDPayer)m*=2;
-  return m;
-}
-
-// ═══════════════════════════════════════════════
-//  GAME STATE
-// ═══════════════════════════════════════════════
 const G={
-  players:[{h:[],m:[],d:[],s:10000,n:'你'},{h:[],m:[],d:[],s:10000,n:'AI-1'},{h:[],m:[],d:[],s:10000,n:'AI-2'}],
+  players:[{h:[],m:[],d:[],s:10000,n:'�ϡ���'},{h:[],m:[],d:[],s:10000,n:'����AI-1'},{h:[],m:[],d:[],s:10000,n:'����AI-2'}],
   cur:0,dealer:0,wall:[],last:null,lastP:-1,
   phase:'idle',pend:null,over:false,rnd:0,
   lastDrawn:null,waitingClaim:false,
-  passed:[false,false,false], // 过圈: 点炮没胡标记
+  passed:[false,false,false], // ��Ȧ: ����û�����
   ld:[null,null,null]
 };
 
-// ═══════════════════════════════════════════════
+// �T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T
 //  START HAND OPTIMIZATION
-// ═══════════════════════════════════════════════
+// �T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T
 function optimizeStartHands(){
   for(let i=0;i<3;i++){G.wall.push(...G.players[i].h);G.players[i].h=[]}
   G.players[0].h=genOpt(16,128);if(G.dealer!==0&&G.players[0].h.length===14){G.wall.push(G.players[0].h.pop())}
   G.players[1].h=genOpt(2,16);if(G.dealer!==1&&G.players[1].h.length===14){G.wall.push(G.players[1].h.pop())}
   G.players[2].h=genOpt(2,16);if(G.dealer!==2&&G.players[2].h.length===14){G.wall.push(G.players[2].h.pop())}
-  toast('💡 起手牌优化: 你→16~128番(替换4张) | AI→2~16番(替换4张)');
+  toast('?? �������Ż�: �ϡ�16~128�� | ������2~16��');
 }
 function genOpt(mn,mx){
   const tgt=genWin(mn,mx);
   if(!tgt)return takeN(13);
-  // 替换4张
+  // �滻4��
   for(let i=0;i<4;i++){
     const si=Math.floor(Math.random()*tgt.length);
     const inn=G.wall.pop();
@@ -687,15 +698,15 @@ function wTake(s,v,c){
 function wHas(s,v,c){let n=0;for(const t of G.wall)if(t.suit===s&&t.val===v)n++;return n>=c}
 function genWin(mn,mx){
   const cs=[];
-  // [quadCount, qing, sanyuan, type] type:0=七对 1=碰碰胡
-  if(mn<=4&&mx>=4)cs.push([0,0,0,0]);        // 七对 4番
-  if(mn<=8&&mx>=8)cs.push([1,0,0,0]);        // 龙七对 8番
-  if(mn<=16&&mx>=16){cs.push([2,0,0,0]);cs.push([0,1,0,0])} // 双龙七对16 / 清七对16
-  if(mn<=32&&mx>=32){cs.push([0,0,1,0]);cs.push([1,1,0,0])} // 三元七对32 / 清龙七对32
-  if(mn<=64&&mx>=64)cs.push([2,1,0,0]);      // 清双龙七对 64
-  if(mn<=128&&mx>=128)cs.push([3,0,0,0]);    // 超超豪华七对 128
-  if(mn<=2&&mx>=2)cs.push([0,0,0,1]);        // 碰碰胡 2番
-  if(mn<=8&&mx>=8)cs.push([0,1,0,1]);        // 清碰碰胡 8番
+  // [quadCount, qing, sanyuan, type] type:0=�߶� 1=������
+  if(mn<=4&&mx>=4)cs.push([0,0,0,0]);        // �߶� 4��
+  if(mn<=8&&mx>=8)cs.push([1,0,0,0]);        // ���߶� 8��
+  if(mn<=16&&mx>=16){cs.push([2,0,0,0]);cs.push([0,1,0,0])} // ˫���߶�16 / ���߶�16
+  if(mn<=32&&mx>=32){cs.push([0,0,1,0]);cs.push([1,1,0,0])} // ��Ԫ�߶�32 / �����߶�32
+  if(mn<=64&&mx>=64)cs.push([2,1,0,0]);      // ��˫���߶� 64
+  if(mn<=128&&mx>=128)cs.push([3,0,0,0]);    // ���������߶� 128
+  if(mn<=2&&mx>=2)cs.push([0,0,0,1]);        // ������ 2��
+  if(mn<=8&&mx>=8)cs.push([0,1,0,1]);        // �������� 8��
   shf(cs);
   for(const c of cs){
     const hand=c[3]===0?tryQD(c[0],!!c[1],!!c[2]):tryPP(!!c[1]);
@@ -792,15 +803,14 @@ function execSpec(spec){
   return hand.length===14?hand:null;
 }
 
-
 const COLORS=['#ffd700','#ff8a65','#aed581'];
 const RIVER_IDS=['p0r','a1r','a2r'];
 const HAND_IDS=['p0t','a1t','a2t'];
 const MELD_IDS=['p0m','a1m','a2m'];
 
-// ════════════════════════════════════════════════
+// �T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T
 //  DEAL ANIMATION
-// ════════════════════════════════════════════════
+// �T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T
 function dealAnimation(onComplete){
   var finalHands = G.players.map(function(p){return p.h.slice()});
   for(var i=0;i<3;i++) G.players[i].h = [];
@@ -820,7 +830,7 @@ function dealAnimation(onComplete){
   var savedWallCount = G.wall.length; // real wall count (final)
   var indicator = document.createElement('div');
   indicator.className = 'dealing-indicator';
-  indicator.textContent = '发牌中...';
+  indicator.textContent = '������...';
   document.getElementById('main').appendChild(indicator);
   setTimeout(function(){indicator.classList.add('show')},50);
   var HAND_EL_IDS = ['p0t','a1t','a2t'];
@@ -843,7 +853,7 @@ function dealAnimation(onComplete){
     // Simulate wall decreasing for visual effect
     var totalDealt = cardIdx[0]+cardIdx[1]+cardIdx[2];
     var wallDisplay = savedWallCount + (finalHands[0].length+finalHands[1].length+finalHands[2].length) - totalDealt;
-    document.getElementById('wc').textContent = '牌墙: '+wallDisplay+'张';
+    document.getElementById('wc').textContent = '��ǽ: '+wallDisplay+'��';
     seqIdx++;
     var nextDelay = (cardIdx[pi] % 4 === 0) ? GROUP_DELAY : DEAL_DELAY;
     setTimeout(dealNext, nextDelay);
@@ -863,9 +873,9 @@ function dealAnimation(onComplete){
   setTimeout(dealNext, 150);
 }
 
-// ═══════════════════════════════════════════════
+// �T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T
 //  GAME FLOW
-// ═══════════════════════════════════════════════
+// �T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T
 function newGame(){
   const ol=document.getElementById('ol');if(ol)ol.classList.remove('on');
   G.over=false;G.waitingClaim=false;G.ld=[null,null,null];G.passed=[false,false,false];
@@ -875,15 +885,15 @@ function newGame(){
   G.rnd++;
   G.dealer=G.rnd===1?Math.floor(Math.random()*3):(G.dealer+1)%3;
   G.cur=G.dealer;
-  // 发13张基础牌 + 优化
+  // ��13�Ż����� + �Ż�
   for(let i=0;i<3;i++)for(let j=0;j<13;j++)G.players[i].h.push(G.wall.pop());
   optimizeStartHands();
-  // 使用发牌动画: 先渲染底板(不渲染手牌), 再逐张发牌
-  document.getElementById('wc').textContent='牌墙: '+G.wall.length+'张';
+  // ʹ�÷��ƶ���: ����Ⱦ�װ�(����Ⱦ����), �����ŷ���
+  document.getElementById('wc').textContent='��ǽ: '+G.wall.length+'��';
   for(let i=0;i<3;i++){rScore(i);rRiver(i);document.getElementById(HAND_IDS[i]).innerHTML='';rMelds(i)}
   updSt();
   dealAnimation(function(){
-    // 发牌完成后开始游戏
+    // ������ɺ�ʼ��Ϸ
     G.dealer===0?(setPhase('discard',0),render()):(setPhase('draw',G.dealer),render(),setTimeout(()=>aiTurn(G.dealer),500));
   });
 }
@@ -892,56 +902,425 @@ function setPhase(ph,pi){
   G.cur=pi;G.phase=ph;
   const ti=document.getElementById('ti');const pn=G.players[pi].n;
   ti.className='ti';
-  if(ph==='draw'){ti.textContent='⏳ '+pn+' 摸牌';ti.classList.add('on')}
-  else if(ph==='discard'){ti.textContent=pi===0?'✋ 请你出牌':'💭 '+pn+' 思考...';ti.classList.add('on')}
-  else if(ph==='action'){ti.textContent='⚡ 请操作';ti.classList.add('on')}
+  if(ph==='draw'){ti.textContent='? '+pn+' ����';ti.classList.add('on')}
+  else if(ph==='discard'){ti.textContent=pi===0?'? �������':'?? '+pn+' ˼��...';ti.classList.add('on')}
+  else if(ph==='action'){ti.textContent='? �����';ti.classList.add('on')}
   updSt();
 }
 function updSt(){
   for(let i=0;i<3;i++){
     const el=document.getElementById((i===0?'p0':i===1?'a1':'a2')+'s');
-    if(G.over)el.textContent='✓ 结束';
-    else if(G.phase==='discard'&&G.cur===i)el.textContent=i===0?'请出牌':'思考中';
+    if(G.over)el.textContent='? ����';
+    else if(G.phase==='discard'&&G.cur===i)el.textContent=i===0?'�����':'˼����';
     else el.textContent='';
   }
 }
 
 function render(){
-  document.getElementById('wc').textContent='牌墙: '+G.wall.length+'张';
+  document.getElementById('wc').textContent='��ǽ: '+G.wall.length+'��';
   for(let i=0;i<3;i++){rScore(i);rRiver(i);rHand(i);rMelds(i)}
   updSt();
 }
-function rScore(i){document.getElementById('s'+i).textContent='¥'+G.players[i].s}
+function rScore(i){document.getElementById('s'+i).textContent='��'+G.players[i].s}
 
 function mkTile(t,opts){
   if(!opts)opts={};
-  const size=opts.size||'n',clk=!!opts.clk,idx=opts.idx!==void 0?opts.idx:-1,back=!!opts.back,extra=opts.extra||'';
-  const sz=size==='s'?'s':size==='xs'?'xs':size==='rv'?'rv':'';
-  const el=document.createElement('span');
-  const suitCls=t.suit==='hon'?t.val:t.suit;
-  let cls='t '+suitCls+(sz?' '+sz:'')+(back?' bk':'')+(clk?' clk':'')+(extra?' '+extra:'');
+  var size=opts.size||'n',clk=!!opts.clk,idx=opts.idx!==void 0?opts.idx:-1,back=!!opts.back,extra=opts.extra||'';
+  var sz=size==='s'?'s':size==='xs'?'xs':size==='rv'?'rv':'';
+  var el=document.createElement('span');
+  var cls='t '+(t.suit==='hon'?t.val:t.suit)+(sz?' '+sz:'')+(back?' bk':'')+(clk?' clk':'')+(extra?' '+extra:'');
   el.className=cls;
   if(!back){
-    if(t.suit==='tong'){
-      el.dataset.n=t.val;
-      let dots='';for(let i=0;i<t.val;i++)dots+='<span class="dot"></span>';
-      el.innerHTML='<span class="fv"><span class="nm">'+dots+'</span><span class="sm"></span></span>';
-    }else if(t.suit==='tiao'){
-      const h=t.val<=3?t.val*14:t.val<=6?Math.ceil(t.val/2)*14:t.val<=9?Math.ceil(t.val/3)*12:14;
-      const count=t.val;
-      let sticks='';for(let i=0;i<count;i++)sticks+='<span class="stk" style="height:'+h+'px"></span>';
-      el.innerHTML='<span class="fv"><span class="nm">'+sticks+'</span><span class="sm"></span></span>';
-    }else if(t.suit==='hon'){
-      const labels={zhong:'中',fa:'發',bai:''};
-      if(t.val==='bai'){
-        el.innerHTML='<span class="fv"><span class="nm"></span><span class="sm"></span></span>';
-      }else{
-        el.innerHTML='<span class="fv"><span class="nm">'+labels[t.val]+'</span><span class="sm"></span></span>';
-      }
-    }
+    var fv=document.createElement('span');fv.className='fv';
+    var canvas=document.createElement('canvas');
+    var W=sz==='s'?26:sz==='xs'?20:sz==='rv'?24:42;
+    var H=sz==='s'?36:sz==='xs'?28:sz==='rv'?32:56;
+    canvas.width=W*2;canvas.height=H*2;
+    canvas.style.width=W+'px';canvas.style.height=H+'px';
+    var ctx=canvas.getContext('2d');
+    ctx.scale(2,2);
+    drawTileFace(ctx,t,W,H,sz);
+    fv.appendChild(canvas);
+    el.appendChild(fv);
   }
   if(clk&&idx>=0)el.dataset.idx=idx;
   return el;
+}
+function drawTileFace(ctx,t,W,H,sz){
+  ctx.clearRect(0,0,W,H);
+  if(t.suit==='tong')drawTong(ctx,t.val,W,H,sz);
+  else if(t.suit==='tiao')drawTiao(ctx,t.val,W,H,sz);
+  else if(t.suit==='hon')drawHon(ctx,t.val,W,H,sz);
+}
+
+// �T�T�T TONG (Ͳ��) �� Classic Chinese mahjong circles �T�T�T
+// Spec: ��ɫ/����ɫ/����ɫ ԲȦ, ���䲼��
+function drawTong(ctx,n,W,H,sz){
+  var baseR=sz==='xs'?4.0:sz==='s'?5.0:sz==='rv'?5.4:7.2;
+  var R=n===1?baseR*1.6:n<=4?baseR:n<=6?baseR*0.9:baseR*0.82;
+  // Classic colors per spec: red, cyan-green, dark blue
+  var CR='#d42020';   // ��ɫ
+  var CG='#1a8a4a';   // ����ɫ
+  var CB='#1a3a8a';   // ����ɫ
+  // Layout positions
+  var layouts={
+    1:[[.5,.5]],
+    2:[[.5,.28],[.5,.72]],
+    3:[[.32,.22],[.5,.5],[.68,.78]],
+    4:[[.33,.28],[.67,.28],[.33,.72],[.67,.72]],
+    5:[[.33,.25],[.67,.25],[.5,.5],[.33,.75],[.67,.75]],
+    6:[[.33,.2],[.67,.2],[.33,.5],[.67,.5],[.33,.8],[.67,.8]],
+    7:[[.33,.17],[.5,.17],[.67,.17],[.28,.52],[.72,.52],[.28,.83],[.72,.83]],
+    8:[[.22,.26],[.42,.26],[.58,.26],[.78,.26],[.22,.74],[.42,.74],[.58,.74],[.78,.74]],
+    9:[[.28,.17],[.5,.17],[.72,.17],[.28,.5],[.5,.5],[.72,.5],[.28,.83],[.5,.83],[.72,.83]]
+  };
+  // Color assignments per spec:
+  // 1Ͳ: ��Ȧ�� ��Ȧ���� ��������
+  // 2Ͳ: �Ϻ� ������
+  // 3Ͳ: ������ �к� ������
+  // 4Ͳ: �������� �������� �������� ��������
+  // 5Ͳ: �Ľ������������� ���ĺ� (�������)
+  // 6Ͳ: �������� ���к�
+  // 7Ͳ: �����Ǻ� �·��������������
+  // 8Ͳ: ������������
+  // 9Ͳ: ��һ������ �ڶ��ź� ����������
+  var colorMaps={
+    1:[CR], // special: handled below
+    2:[CR,CG],
+    3:[CG,CR,CB],
+    4:[CG,CB,CB,CG],
+    5:[CG,CB,CR,CG,CB],
+    6:[CG,CG,CG,CR,CR,CR],
+    7:[CR,CR,CR,CG,CB,CB,CG],
+    8:[CG,CB,CG,CB,CG,CB,CG,CB],
+    9:[CB,CB,CB,CR,CR,CR,CG,CG,CG]
+  };
+  var pos=layouts[n]||layouts[1];
+  var colors=colorMaps[n]||[CR];
+  for(var i=0;i<pos.length;i++){
+    var px=pos[i][0]*W, py=pos[i][1]*H;
+    var c=colors[i]||CR;
+    if(n===1){
+      // 1Ͳ: ���� - ���Բ ��Ȧ����Ȧ���� ��������
+      var R1=R;
+      // Outer dark border
+      ctx.beginPath();ctx.arc(px,py,R1,0,Math.PI*2);
+      ctx.fillStyle='#2a2a2a';ctx.fill();
+      // Outer red ring
+      ctx.beginPath();ctx.arc(px,py,R1-0.8,0,Math.PI*2);
+      ctx.fillStyle=CR;ctx.fill();
+      // Inner cyan-green ring
+      ctx.beginPath();ctx.arc(px,py,R1*0.72,0,Math.PI*2);
+      ctx.fillStyle=CG;ctx.fill();
+      // Inner white circle
+      ctx.beginPath();ctx.arc(px,py,R1*0.48,0,Math.PI*2);
+      ctx.fillStyle='#faf8f0';ctx.fill();
+      // Petal pattern at center
+      ctx.fillStyle=CR;
+      for(var a=0;a<6;a++){
+        var angle=a*Math.PI/3;
+        var dx=px+Math.cos(angle)*R1*0.22;
+        var dy=py+Math.sin(angle)*R1*0.22;
+        ctx.beginPath();ctx.arc(dx,dy,R1*0.1,0,Math.PI*2);ctx.fill();
+      }
+      // Center dot
+      ctx.beginPath();ctx.arc(px,py,R1*0.06,0,Math.PI*2);
+      ctx.fillStyle='#faf8f0';ctx.fill();
+      // Highlight
+      ctx.beginPath();ctx.arc(px-R1*0.2,py-R1*0.25,R1*0.1,0,Math.PI*2);
+      ctx.fillStyle='rgba(255,255,255,.25)';ctx.fill();
+    }else{
+      // Standard circle: dark border, colored ring, white center, petal dots
+      ctx.beginPath();ctx.arc(px,py,R,0,Math.PI*2);
+      ctx.fillStyle='#2a2a2a';ctx.fill();
+      ctx.beginPath();ctx.arc(px,py,R-0.8,0,Math.PI*2);
+      ctx.fillStyle=c;ctx.fill();
+      ctx.beginPath();ctx.arc(px,py,R*0.55,0,Math.PI*2);
+      ctx.fillStyle='#faf8f0';ctx.fill();
+      ctx.beginPath();ctx.arc(px,py,R*0.55,0,Math.PI*2);
+      ctx.strokeStyle='rgba(0,0,0,.12)';ctx.lineWidth=0.4;ctx.stroke();
+      // Center petal dots
+      if(R>2.8){
+        ctx.fillStyle=c;
+        for(var a=0;a<4;a++){
+          var angle=a*Math.PI/2+Math.PI/4;
+          var dx=px+Math.cos(angle)*R*0.2;
+          var dy=py+Math.sin(angle)*R*0.2;
+          ctx.beginPath();ctx.arc(dx,dy,R*0.11,0,Math.PI*2);ctx.fill();
+        }
+        ctx.beginPath();ctx.arc(px,py,R*0.06,0,Math.PI*2);
+        ctx.fillStyle='#faf8f0';ctx.fill();
+      }
+      ctx.beginPath();ctx.arc(px-R*0.18,py-R*0.22,R*0.1,0,Math.PI*2);
+      ctx.fillStyle='rgba(255,255,255,.22)';ctx.fill();
+    }
+  }
+}
+// �T�T�T TIAO (����/����) �� Classic bamboo sticks �T�T�T
+// Spec: ��������, �ض�λ�ú�ɫ����, ����ԳƲ���
+function drawTiao(ctx,n,W,H,sz){
+  if(n===1){drawSparrow(ctx,W,H,sz);return;}
+  var pad=sz==='xs'?2:sz==='s'?2.5:sz==='rv'?2.5:3.5;
+  var aw=W-pad*2, ah=H-pad*2;
+  // Standard layout positions (same for all sizes, consistent with tong)
+  var positions;
+  switch(n){
+    case 2: positions=[[.5,.28],[.5,.72]];break;
+    case 3: positions=[[.5,.2],[.5,.5],[.5,.8]];break;
+    case 4: positions=[[.33,.28],[.67,.28],[.33,.72],[.67,.72]];break;
+    case 5: positions=[[.25,.25],[.75,.25],[.5,.5],[.25,.75],[.75,.75]];break;
+    case 6: positions=[[.33,.18],[.67,.18],[.33,.5],[.67,.5],[.33,.82],[.67,.82]];break;
+    case 7: positions=[[.5,.16],[.3,.48],[.5,.48],[.7,.48],[.3,.8],[.5,.8],[.7,.8]];break;
+    case 8: positions=[[.3,.2],[.5,.2],[.7,.2],[.4,.5],[.6,.5],[.3,.8],[.5,.8],[.7,.8]];break;
+    case 9: positions=[[.28,.17],[.5,.17],[.72,.17],[.28,.5],[.5,.5],[.72,.5],[.28,.83],[.5,.83],[.72,.83]];break;
+    default: positions=[[.5,.5]];
+  }
+  // Bamboo stick dimensions �� uniform across all numbers for consistency
+  var sw=sz==='xs'?2.6:sz==='s'?3.0:sz==='rv'?3.2:3.6;
+  var sh=sz==='xs'?7.5:sz==='s'?9.0:sz==='rv'?9.5:11.5;
+  // Red bamboo indices per spec:
+  // 3��: �м��(1), 5��: �м��(2), 7��: �Ϸ����к�(0)
+  // 9��: �м�һ�к�(3,4,5)
+  var redMap={2:[],3:[1],4:[],5:[2],6:[],7:[0],8:[],9:[3,4,5]};
+  var redArr=redMap[n]||[];
+  var redSet={};
+  for(var r=0;r<redArr.length;r++) redSet[redArr[r]]=true;
+  for(var i=0;i<positions.length;i++){
+    var cx=pad+positions[i][0]*aw;
+    var cy=pad+positions[i][1]*ah;
+    var sx=cx-sw/2, sy=cy-sh/2;
+    var isRed=!!redSet[i];
+    // Rich green or red gradient
+    var g=ctx.createLinearGradient(sx,sy,sx,sy+sh);
+    if(isRed){
+      g.addColorStop(0,'#e84040');g.addColorStop(0.5,'#d42828');g.addColorStop(1,'#b01818');
+    }else{
+      g.addColorStop(0,'#2aaa4a');g.addColorStop(0.5,'#1a8a3a');g.addColorStop(1,'#0d6a28');
+    }
+    ctx.fillStyle=g;
+    // Rounded bamboo stick
+    ctx.beginPath();
+    ctx.moveTo(sx+1.5,sy);ctx.lineTo(sx+sw-1.5,sy);
+    ctx.quadraticCurveTo(sx+sw,sy,sx+sw,sy+1.5);
+    ctx.lineTo(sx+sw,sy+sh-1.5);
+    ctx.quadraticCurveTo(sx+sw,sy+sh,sx+sw-1.5,sy+sh);
+    ctx.lineTo(sx+1.5,sy+sh);
+    ctx.quadraticCurveTo(sx,sy+sh,sx,sy+sh-1.5);
+    ctx.lineTo(sx,sy+1.5);
+    ctx.quadraticCurveTo(sx,sy,sx+1.5,sy);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle=isRed?'#8a1010':'#084a1e';ctx.lineWidth=0.5;ctx.stroke();
+    // Inner highlight stripe
+    var hg=ctx.createLinearGradient(sx,sy,sx+sw*0.4,sy);
+    hg.addColorStop(0,'rgba(255,255,255,.2)');hg.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.fillStyle=hg;
+    ctx.fillRect(sx+0.8,sy+0.8,sw*0.35,sh-1.6);
+    // Bamboo joint lines
+    ctx.strokeStyle='rgba(0,0,0,.18)';ctx.lineWidth=0.3;
+    var segments=n<=3?3:2;
+    for(var s=1;s<segments;s++){
+      var jy=sy+sh*s/segments;
+      ctx.beginPath();ctx.moveTo(sx+0.5,jy);ctx.lineTo(sx+sw-0.5,jy);ctx.stroke();
+    }
+    // Top leaf tip
+    ctx.fillStyle=isRed?'#e05050':'#30c050';
+    ctx.beginPath();
+    ctx.moveTo(cx,sy-1.2);ctx.lineTo(cx-sw*.35,sy+1.2);ctx.lineTo(cx+sw*.35,sy+1.2);
+    ctx.closePath();ctx.fill();
+    ctx.strokeStyle=isRed?'#8a1010':'#084a1e';ctx.lineWidth=0.3;ctx.stroke();
+  }
+}
+// 1��(�ۼ�) �� Classic bird on branch
+function drawSparrow(ctx,W,H,sz){
+  var s=sz==='xs'?0.45:sz==='s'?0.55:sz==='rv'?0.55:0.75;
+  var cx=W/2,cy=H/2;
+  ctx.save();
+  ctx.translate(cx,cy);
+  ctx.scale(s,s);
+  // Branch (��֦)
+  ctx.fillStyle='#1a7a3a';
+  ctx.strokeStyle='#0a5a28';
+  ctx.lineWidth=0.8;
+  roundRect(ctx,-15,11,30,3,1.5);
+  ctx.fill();ctx.stroke();
+  // Small leaf on branch right
+  ctx.fillStyle='#28b050';
+  ctx.beginPath();
+  ctx.moveTo(12,12);
+  ctx.quadraticCurveTo(18,6,22,9);
+  ctx.quadraticCurveTo(18,13,12,12);
+  ctx.fill();
+  // Small leaf on branch left
+  ctx.fillStyle='#20a048';
+  ctx.beginPath();
+  ctx.moveTo(-10,12);
+  ctx.quadraticCurveTo(-16,5,-19,8);
+  ctx.quadraticCurveTo(-15,12,-10,12);
+  ctx.fill();
+  // Body �� classic mahjong green bird shape
+  ctx.fillStyle='#1a8a4a';
+  ctx.beginPath();
+  ctx.ellipse(0,3,9,13,0,0,Math.PI*2);
+  ctx.fill();
+  ctx.strokeStyle='#0a6a30';
+  ctx.lineWidth=0.7;
+  ctx.stroke();
+  // Wing (left - darker green)
+  ctx.fillStyle='#148040';
+  ctx.beginPath();
+  ctx.ellipse(-5,2,6,9,-0.25,0,Math.PI*2);
+  ctx.fill();
+  // Wing highlight
+  ctx.fillStyle='#20a858';
+  ctx.beginPath();
+  ctx.ellipse(5,1,5.5,8.5,0.2,0,Math.PI*2);
+  ctx.fill();
+  // Wing feather lines
+  ctx.strokeStyle='rgba(0,0,0,.12)';
+  ctx.lineWidth=0.3;
+  for(var f=0;f<3;f++){
+    var fy=-3+f*4;
+    ctx.beginPath();
+    ctx.moveTo(-4,fy);ctx.lineTo(-8,fy+3);ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(4,fy);ctx.lineTo(8,fy+3);ctx.stroke();
+  }
+  // Head
+  ctx.fillStyle='#1a8a4a';
+  ctx.beginPath();
+  ctx.arc(0,-7,5.5,0,Math.PI*2);
+  ctx.fill();
+  // Crown/crest (��ɫС���)
+  ctx.fillStyle='#10a040';
+  ctx.beginPath();
+  ctx.moveTo(0,-12.5);
+  ctx.lineTo(-2.5,-17);
+  ctx.lineTo(0,-14);
+  ctx.lineTo(2.5,-17);
+  ctx.closePath();
+  ctx.fill();
+  // Eye whites
+  ctx.fillStyle='#f8f6e8';
+  ctx.beginPath();ctx.arc(-2.5,-8,2,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(2.5,-8,2,0,Math.PI*2);ctx.fill();
+  // Pupils
+  ctx.fillStyle='#1a1a1a';
+  ctx.beginPath();ctx.arc(-2.3,-8,1,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(2.7,-8,1,0,Math.PI*2);ctx.fill();
+  // Eye shine
+  ctx.fillStyle='rgba(255,255,255,.6)';
+  ctx.beginPath();ctx.arc(-2.8,-8.5,0.5,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(2.2,-8.5,0.5,0,Math.PI*2);ctx.fill();
+  // Beak �� orange/red
+  ctx.fillStyle='#d48020';
+  ctx.beginPath();
+  ctx.moveTo(-1.5,-5.5);
+  ctx.lineTo(0,-3.5);
+  ctx.lineTo(1.5,-5.5);
+  ctx.closePath();
+  ctx.fill();
+  // Tail feathers �� layered
+  // Left tail
+  ctx.fillStyle='#0d6a28';
+  ctx.beginPath();
+  ctx.moveTo(-3,13);
+  ctx.quadraticCurveTo(-10,18,-6,23);
+  ctx.lineTo(-1,15);
+  ctx.closePath();
+  ctx.fill();
+  // Right tail
+  ctx.fillStyle='#0d6a28';
+  ctx.beginPath();
+  ctx.moveTo(3,13);
+  ctx.quadraticCurveTo(10,18,6,23);
+  ctx.lineTo(1,15);
+  ctx.closePath();
+  ctx.fill();
+  // Center tail �� darker
+  ctx.fillStyle='#084a18';
+  ctx.beginPath();
+  ctx.moveTo(-1,13);
+  ctx.quadraticCurveTo(-1,20,0,24);
+  ctx.quadraticCurveTo(1,20,1,13);
+  ctx.closePath();
+  ctx.fill();
+  // Feet
+  ctx.strokeStyle='#b07020';
+  ctx.lineWidth=0.6;
+  ctx.beginPath();ctx.moveTo(-2,14);ctx.lineTo(-3,17);ctx.lineTo(-5,18);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(-2,14);ctx.lineTo(-2,18);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(-2,14);ctx.lineTo(0,18);ctx.lineTo(2,19);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(2,14);ctx.lineTo(3,17);ctx.lineTo(5,18);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(2,14);ctx.lineTo(2,18);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(2,14);ctx.lineTo(4,18);ctx.lineTo(6,19);ctx.stroke();
+  ctx.restore();
+}function drawHon(ctx,val,W,H,sz){
+  if(val==='zhong'){
+    // ����: red background frame + large red �� character
+    var pad=sz==='xs'?3:sz==='s'?4:sz==='rv'?4.5:7;
+    // Inner colored rectangle
+    ctx.fillStyle='#d42020';
+    roundRect(ctx,pad,pad,W-pad*2,H-pad*2,2);
+    ctx.fill();
+    // Inner dark border
+    ctx.strokeStyle='#a01010';
+    ctx.lineWidth=0.8;
+    roundRect(ctx,pad+1.5,pad+1.5,W-pad*2-3,H-pad*2-3,1.5);
+    ctx.stroke();
+    // Center �� character
+    var fs=sz==='xs'?10:sz==='s'?12:sz==='rv'?12:18;
+    ctx.font='900 '+fs+'px "Noto Serif SC","SimSun","STSong","Microsoft YaHei",serif';
+    ctx.fillStyle='#fffff0';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('��',W/2,H/2+1);
+    // Subtle highlight
+    ctx.fillStyle='rgba(255,255,255,.08)';
+    ctx.fillRect(pad+2,pad+2,W-pad*2-4,(H-pad*2)*0.3);
+  }else if(val==='fa'){
+    // ����: green background frame + large green �l character
+    var pad=sz==='xs'?3:sz==='s'?4:sz==='rv'?4.5:7;
+    ctx.fillStyle='#1a8a3a';
+    roundRect(ctx,pad,pad,W-pad*2,H-pad*2,2);
+    ctx.fill();
+    ctx.strokeStyle='#0d6a28';
+    ctx.lineWidth=0.8;
+    roundRect(ctx,pad+1.5,pad+1.5,W-pad*2-3,H-pad*2-3,1.5);
+    ctx.stroke();
+    var fs=sz==='xs'?10:sz==='s'?12:sz==='rv'?12:18;
+    ctx.font='900 '+fs+'px "Noto Serif SC","SimSun","STSong","Microsoft YaHei",serif';
+    ctx.fillStyle='#fffff0';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('�l',W/2,H/2+1);
+    ctx.fillStyle='rgba(255,255,255,.08)';
+    ctx.fillRect(pad+2,pad+2,W-pad*2-4,(H-pad*2)*0.3);
+  }else if(val==='bai'){
+    // �װ�: ivory white with thin border, optional subtle inner frame
+    var pad=sz==='xs'?3:sz==='s'?4:sz==='rv'?4.5:7;
+    // Subtle gradient background for white tile
+    var g=ctx.createLinearGradient(0,pad,0,H-pad);
+    g.addColorStop(0,'#fffff5');g.addColorStop(1,'#f8f4e8');
+    ctx.fillStyle=g;
+    roundRect(ctx,pad,pad,W-pad*2,H-pad*2,2);
+    ctx.fill();
+    // Thin dark border
+    ctx.strokeStyle='#b0a890';
+    ctx.lineWidth=0.8;
+    roundRect(ctx,pad,pad,W-pad*2,H-pad*2,2);
+    ctx.stroke();
+    // Inner decorative line
+    ctx.strokeStyle='rgba(160,150,130,.3)';
+    ctx.lineWidth=0.4;
+    roundRect(ctx,pad+2.5,pad+2.5,W-pad*2-5,H-pad*2-5,1);
+    ctx.stroke();
+  }
+}function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
 }
 function mkMeld(ts){
   const g=document.createElement('span');g.className='mg';
@@ -955,13 +1334,18 @@ function rHand(pi){
   const canSel=isMe&&G.phase==='discard'&&G.cur===0&&!G.over;
   const ld=G.ld[pi];
   for(let i=0;i<h.length;i++){
-    const t=h[i],isR=ld&&ld.revealed.some(r=>teq(r,t));
-    const el=mkTile(t,isMe?{clk:canSel,idx:i}:{back:!isR,size:'s',extra:isR?' ld-r':''});
+    const t=h[i];
+    const isRevealed=ld&&ld.revealed.some(r=>teq(r,t));
+    const isWait=ld&&ld.waits.some(r=>teq(r,t));
+    let extra='';
+    if(isRevealed) extra=' ld-r';
+    else if(isWait) extra=' ld-w';
+    const el=mkTile(t,isMe?{clk:canSel,idx:i}:{back:!isRevealed&&!isWait,size:isMe?'n':'s',extra:extra});
     if(isMe&&i===h.length-1&&G.phase==='discard')el.classList.add('drn');
     a.appendChild(el);
   }
-  if(!isMe&&h.length>0){const c=document.createElement('span');c.style.cssText='font-size:8px;color:#666;margin-left:2px;display:flex;align-items:center';c.textContent=h.length+'张';a.appendChild(c)}
-  if(ld){const tag=document.createElement('span');tag.style.cssText='font-size:9px;color:#ffd700;margin-left:4px;font-weight:700';tag.textContent='💡亮倒';a.appendChild(tag)}
+  if(!isMe&&h.length>0){const c=document.createElement('span');c.style.cssText='font-size:8px;color:#666;margin-left:2px;display:flex;align-items:center';c.textContent=h.length+'��';a.appendChild(c)}
+  if(ld){const tag=document.createElement('span');tag.style.cssText='font-size:9px;color:#ffd700;margin-left:4px;font-weight:700';tag.textContent='??����';a.appendChild(tag)}
 }
 function rMelds(pi){const a=document.getElementById(MELD_IDS[pi]);a.innerHTML='';for(const m of G.players[pi].m)a.appendChild(mkMeld(m.ts))}
 function rRiver(pi){
@@ -970,9 +1354,9 @@ function rRiver(pi){
   for(let i=0;i<d.length;i++){const el=mkTile(d[i],{size:'rv'});el.classList.add('rt');if(i===d.length-1)el.classList.add('lst');a.appendChild(el)}
 }
 
-// ═══════════════════════════════════════════════
+// �T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T
 //  DRAW / DISCARD / CLAIMS
-// ═══════════════════════════════════════════════
+// �T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T
 function draw(pi){
   if(G.wall.length===0){endGame(null);return null}
   const t=G.wall.pop();G.players[pi].h.push(t);return t;
@@ -992,12 +1376,12 @@ function checkClaims(dp,tile){
     const h=G.players[i].h;
     const iIsLD=G.ld[i]!==null;
     if(canWin([...h,tile])){
-      if(G.passed[i])continue; // 过圈: 点炮没胡不能再胡
+      if(G.passed[i])continue; // ��Ȧ: ����û�������ٺ�
       if(dpIsLD)claims.push({pi:i,type:'hu',pri:3});
       else{const sc=calc(detect([...h,tile],tile,G.players[i].m),false,false,G.wall.length===0);if(sc!==null)claims.push({pi:i,type:'hu',pri:3})}
       continue;
     }
-    // 亮倒玩家不能碰/明杠，只能胡/暗杠/补杠
+    // ������Ҳ�����/���ܣ�ֻ�ܺ�/����/����
     if(iIsLD)continue;
     const n=cnts(h)[tid(tile)]||0;
     if(n===3)claims.push({pi:i,type:'gang',pri:1});
@@ -1010,7 +1394,7 @@ function checkClaims(dp,tile){
   if(byP[0]){
     G.phase='action';G.pend={tile,from:dp};G.waitingClaim=true;
     const hu=byP[0].some(c=>c.type==='hu'),peng=byP[0].some(c=>c.type==='peng'),gang=byP[0].some(c=>c.type==='gang');
-    showBtns(hu,peng&&!hu,gang&&!hu);
+    showBtns(hu,peng,gang);
     setPhase('action',0);render();
     if(hu&&!G.ld[dp]){const sc=calc(detect([...G.players[0].h,tile],tile,G.players[0].m),false,false,G.wall.length===0);if(sc===null)setTimeout(()=>{if(G.pend&&G.waitingClaim)doPass()},1200)}
   }else{handleAI(claims,tile,dp)}
@@ -1032,15 +1416,15 @@ function shouldPeng(pi,tile){
   return iso<5;
 }
 
-// ═══════════════════════════════════════════════
+// �T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T
 //  EXECUTE
-// ═══════════════════════════════════════════════
+// �T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T
 function execPeng(pi,tile,from){
   const p=G.players[pi];let k=0;
   for(let i=p.h.length-1;i>=0&&k<2;i--)if(teq(p.h[i],tile)){p.h.splice(i,1);k++}
   p.m.push({t:'peng',ts:[tile,tile,tile],from});
   G.waitingClaim=false;G.last=null;G.pend=null;
-  toast(p.n+' 碰！');
+  toast(p.n+' ����');
   setPhase('discard',pi);render();
   if(pi!==0)setTimeout(()=>aiTurn(pi),400);
 }
@@ -1050,7 +1434,7 @@ function execGang(pi,tile,from){
   p.m.push({t:'gang',ts:[tile,tile,tile,tile],from});
   G.waitingClaim=false;G.pend=null;
   if(from>=0){G.players[from].s-=BASE_BET*2;p.s+=BASE_BET*2}
-  toast(p.n+' 杠！');render();
+  toast(p.n+' �ܣ�');render();
   setTimeout(()=>{if(G.over)return;const rep=draw(pi);if(!rep)return;if(canWin(p.h)){execWin(pi,rep,-2,true);return}setPhase('discard',pi);render();if(pi!==0)setTimeout(()=>aiTurn(pi),400)},300);
 }
 function execWin(pi,winTile,from,self){
@@ -1058,7 +1442,7 @@ function execWin(pi,winTile,from,self){
   G.over=true;G.waitingClaim=false;G.pend=null;
   const p=G.players[pi];
   let h=srt([...p.h]);
-  if(h.length===13)h.push(winTile); // 点炮/抢杠时手牌13张需补入winTile
+  if(h.length===13)h.push(winTile); // ����/����ʱ����13���貹��winTile
   h=srt(h);
   const pat=detect(h,winTile,p.m);
   const isLDWinner=G.ld[pi]!==null;
@@ -1068,9 +1452,9 @@ function execWin(pi,winTile,from,self){
   const payout = BASE_BET * sc;
   let extraInfo='';
   if(isLDWinner&&!self){
-    // 包胡: 点炮者包赔(等同自摸两家金额)
+    // ����: �����߰���(��ͬ�������ҽ��)
     G.players[from].s-=payout*2;p.s+=payout*2;
-    extraInfo='<br>【包胡】点炮者包赔';
+    extraInfo='<br>�������������߰���';
   }else if(self){
     for(let i=0;i<3;i++){if(i!==pi){const px=G.ld[i]!==null?2:1;G.players[i].s-=payout*px;p.s+=payout*px}}
   }else if(from>=0){
@@ -1079,31 +1463,23 @@ function execWin(pi,winTile,from,self){
     const px=G.ld[G.lastP]!==null?2:1;G.players[G.lastP].s-=payout*px;p.s+=payout*px;
   }
   render();
-  showResult(pi===0?'🎉 你胡牌了！':p.n+' 胡牌！',pi===0?'w':'l',
-    '牌型: <span class="p">'+(pat.join(' + ')||'屁胡')+'</span><br>番数: <span class="s">×'+sc+'</span>'+(self?'<br>自摸！':'<br>'+(G.players[from>=0?from:G.lastP]?.n||'对手')+'放炮')+
-    extraInfo+'<br>收入: <span style="color:#ffd700;font-weight:700">¥'+(isLDWinner&&!self?payout*2:payout)+'</span>');
+  showResult(pi===0?'?? ������ˣ�':p.n.replace('�ϡ�','').replace('����','').replace('����','')+' ���ƣ�',pi===0?'w':'l',
+    '����: <span class="p">'+(pat.join(' + ')||'ƨ��')+'</span><br>����: <span class="s">��'+sc+'</span>'+(self?'<br>������':'<br>'+(G.players[from>=0?from:G.lastP]?.n||'����')+'����')+
+    extraInfo+'<br>����: <span style="color:#ffd700;font-weight:700">��'+(isLDWinner&&!self?payout*2:payout)+'</span>');
 }
 
-// ═══════════════════════════════════════════════
+// �T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T
 //  TURN / AI
-// ═══════════════════════════════════════════════
+// �T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T
 function startTurn(pi){
   if(G.over)return;
-  G.passed[pi]=false; // 过圈: 轮到自己时清除标记
+  G.passed[pi]=false; // ��Ȧ: �ֵ��Լ�ʱ������
   const t=draw(pi);if(!t)return;
   setPhase('draw',pi);G.lastDrawn=t;
   G.players[pi].h=srt(G.players[pi].h);render();
   if(pi===0){
     if(G.ld[0]){
-      // 亮倒后可以杠/暗杠/补杠，不能碰
-      const anGang=findAnGang(0),buGang=findBuGang(0);
-      let canAn=anGang,canBu=buGang;
-      if(anGang){
-        const test=[...G.players[0].h];let k=0;
-        for(let i=test.length-1;i>=0&&k<4;i--)if(teq(test[i],anGang)){test.splice(i,1);k++}
-        if(waits(test).length===0)canAn=null; // 杠后不听牌则不能暗杠
-      }
-      if(canAn||canBu){showAnGangBtns(canAn,canBu);G.phase='action';setPhase('action',0);return}
+      // ������: ֻ�����ƴ��(���Ǻ�), ���ı�����, ��ֹ����
       setPhase('discard',0);render();return
     }
     if(canWin(G.players[0].h)){G.phase='action';hideBtns();document.getElementById('bSelf').style.display='inline-block';document.getElementById('bSelf').classList.add('on');document.getElementById('bPass').classList.add('on');return}
@@ -1115,14 +1491,7 @@ function startTurn(pi){
     setPhase('discard',0);render();
   }else{
     if(G.ld[pi]){
-      // 亮倒后可以杠/暗杠/补杠
-      const anGang=findAnGang(pi),buGang=findBuGang(pi);
-      if(anGang){
-        const test=[...G.players[pi].h];let k=0;
-        for(let i=test.length-1;i>=0&&k<4;i--)if(teq(test[i],anGang)){test.splice(i,1);k++}
-        if(waits(test).length>0){setTimeout(()=>{if(!G.over)execConcealedGang(pi,anGang)},600);return}
-      }
-      if(buGang){setTimeout(()=>{if(!G.over)execAddToPung(pi,buGang)},600);return}
+      // ������: ֻ�����ƴ��(���Ǻ�), ���ı�����
       setTimeout(()=>aiTurn(pi),400);return
     }
     if(canWin(G.players[pi].h)){execWin(pi,G.lastDrawn,-2,true);return}
@@ -1145,7 +1514,7 @@ function execConcealedGang(pi,tile){
   for(let i=p.h.length-1;i>=0&&k<4;i--)if(teq(p.h[i],tile)){p.h.splice(i,1);k++}
   p.m.push({t:'gang',ts:[tile,tile,tile,tile],from:-1});
   for(let i=0;i<3;i++)if(i!==pi){G.players[i].s-=BASE_BET*2;p.s+=BASE_BET*2}
-  toast(p.n+' 暗杠！¥20×2');hideBtns();render();
+  toast(p.n+' ���ܣ���20��2');hideBtns();render();
   setTimeout(()=>{if(G.over)return;const rep=draw(pi);if(!rep)return;if(canWin(p.h)){execWin(pi,rep,-2,true);return}setPhase('discard',pi);render();if(pi!==0)setTimeout(()=>aiTurn(pi),400)},300);
 }
 function execAddToPung(pi,tile){
@@ -1153,13 +1522,13 @@ function execAddToPung(pi,tile){
   for(let i=p.h.length-1;i>=0&&k<1;i--)if(teq(p.h[i],tile)){p.h.splice(i,1);k++}
   for(let i=0;i<p.m.length;i++){if(p.m[i].t==='peng'&&teq(p.m[i].ts[0],tile)){p.m[i].t='gang';p.m[i].ts=[tile,tile,tile,tile];break}}
   for(let i=0;i<3;i++)if(i!==pi){G.players[i].s-=BASE_BET;p.s+=BASE_BET}
-  toast(p.n+' 补杠！¥10×2');hideBtns();render();
+  toast(p.n+' ���ܣ���10��2');hideBtns();render();
   setTimeout(()=>{if(G.over)return;const rep=draw(pi);if(!rep)return;if(canWin(p.h)){execWin(pi,rep,-2,true);return}setPhase('discard',pi);render();if(pi!==0)setTimeout(()=>aiTurn(pi),400)},300);
 }
 
-// ═══════════════════════════════════════════════
-//  亮倒
-// ═══════════════════════════════════════════════
+// �T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T
+//  ����
+// �T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T
 function execLiang(pi){
   if(G.ld[pi])return;
   const hand=[...G.players[pi].h],di=hand.findIndex(t=>teq(t,G.lastDrawn));if(di!==-1)hand.splice(di,1);
@@ -1170,7 +1539,7 @@ function execLiang(pi){
     if(cnt[tid(wt)]>0&&!revealed.some(t=>teq(t,wt)))revealed.push(wt);
   }
   G.ld[pi]={waits:w,revealed:revealed};hideBtns();
-  toast(G.players[pi].n+' 亮倒！等: '+w.map(t=>tdisp(t)+tdispSuit(t)).join(','));
+  toast(G.players[pi].n+' ��������: '+w.map(t=>tdisp(t)+tdispSuit(t)).join(','));
   setPhase('discard',pi);render();
   if(pi!==0)setTimeout(()=>aiTurn(pi),500);
 }
@@ -1179,7 +1548,14 @@ function isLDSelfWin(pi,winTile){if(!G.ld[pi])return true;return G.ld[pi].waits.
 
 function aiTurn(pi){
   if(G.over||G.waitingClaim||pi!==G.cur)return;
-  const h=G.players[pi].h,idx=aiPick(pi);
+  const h=G.players[pi].h;
+  if(G.ld[pi]){
+    // ������: ��������������, ���ܸı�����
+    const di=h.findIndex(t=>teq(t,G.lastDrawn));
+    if(di>=0){discard(pi,h[di]);render()}
+    return;
+  }
+  const idx=aiPick(pi);
   if(idx===-1)return;
   const tile=h[idx];
   if(isProtectedTile(pi,tile)){for(let i=0;i<h.length;i++)if(i!==idx&&!isProtectedTile(pi,h[i])){discard(pi,h[i]);render();return}return}
@@ -1193,9 +1569,9 @@ function aiPick(pi){
   return sc[0].i;
 }
 
-// ═══════════════════════════════════════════════
+// �T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T
 //  PLAYER ACTIONS
-// ═══════════════════════════════════════════════
+// �T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T�T
 function showBtns(hu,peng,gang){
   document.getElementById('bHu').classList.toggle('on',hu);
   document.getElementById('bPeng').classList.toggle('on',peng);
@@ -1205,9 +1581,9 @@ function showBtns(hu,peng,gang){
 function hideBtns(){['bHu','bPeng','bGang','bAnGang','bBuGang','bLiang','bPass','bSelf'].forEach(id=>{const e=document.getElementById(id);e.classList.remove('on');e.style.display=''})}
 function doPass(){
   hideBtns();
-  // 场景1: 跳过碰/杠/胡(Claim)
+  // ����1: ������/��/��(Claim)
   if(G.waitingClaim&&G.pend){
-    G.passed[0]=true; // 过圈: 点炮没胡标记
+    G.passed[0]=true; // ��Ȧ: ����û�����
     G.pend=null;G.waitingClaim=false;
     const dp=G.lastP,tile=G.last;if(dp<0)return;
     const claims=[];
@@ -1216,7 +1592,7 @@ function doPass(){
     else setTimeout(()=>{if(!G.over)startTurn((dp+1)%3)},300);
     return;
   }
-  // 场景2: 跳过亮倒/自摸/暗杠/补杠 → 进入出牌阶段
+  // ����2: ��������/����/����/���� �� ������ƽ׶�
   if(G.cur===0&&G.phase==='action'){
     G.waitingClaim=false;G.pend=null;
     setPhase('discard',0);render();
@@ -1231,7 +1607,12 @@ document.addEventListener('click',function(e){
       const h=G.players[0].h;
       if(idx>=0&&idx<h.length){
         const tile=h[idx];
-        if(isProtectedTile(0,tile)){toast('这张牌被亮倒保护，不能打出');return}
+        if(G.ld[0]){
+          // ������: ֻ�ܴ����������
+          if(!teq(tile,G.lastDrawn)){toast('������ֻ�ܴ����������');return}
+        }else{
+          if(isProtectedTile(0,tile)){toast('�����Ʊ��������������ܴ��');return}
+        }
         discard(0,tile);hideBtns()
       }
     }
@@ -1246,7 +1627,7 @@ window.doAnGang=function(){hideBtns();const tile=findAnGang(0);if(tile)execConce
 window.doBuGang=function(){
   hideBtns();const tile=findBuGang(0);if(!tile)return;
   const claims=[];for(let i=1;i<3;i++){if(canWin([...G.players[i].h,tile])){claims.push({pi:i,type:'hu',pri:3})}}
-  if(claims.length>0){G.waitingClaim=false;G.pend=null;handleAI(claims,tile,0);toast('抢杠胡！');return}
+  if(claims.length>0){G.waitingClaim=false;G.pend=null;handleAI(claims,tile,0);toast('���ܺ���');return}
   execAddToPung(0,tile);
 };
 window.doPass=doPass;
@@ -1262,6 +1643,50 @@ function showResult(title,cls,detail){
   document.getElementById('rdetail').innerHTML=detail;o.classList.add('on');
 }
 
+
+// �������������ʾ
+// Mobile orientation handling
+function getOrientationState() {
+  const width = window.innerWidth || document.documentElement.clientWidth || 0;
+  const height = window.innerHeight || document.documentElement.clientHeight || 0;
+  const isTouchDevice = (navigator.maxTouchPoints || 0) > 0 || 'ontouchstart' in window;
+  const isNarrowViewport = Math.min(width, height) <= 600;
+  const isWeChat = /MicroMessenger/i.test(navigator.userAgent || '');
+  const isPortrait = height > width;
+  return { width, height, isTouchDevice, isNarrowViewport, isWeChat, isPortrait, shouldPrompt: isPortrait && (isTouchDevice || isNarrowViewport || isWeChat) };
+}
+
+function ensureOrientationHint() {
+  let hint = document.getElementById('orientationHint');
+  if (!hint) {
+    hint = document.createElement('div');
+    hint.id = 'orientationHint';
+    hint.className = 'orientation-hint';
+    hint.innerHTML = '<div class="orientation-card"><div class="orientation-icon">????</div><div class="orientation-title">??????</div><div class="orientation-subtitle">???????????????????????</div></div>';
+    document.body.appendChild(hint);
+  }
+  return hint;
+}
+
+function requestLandscapeLock() {
+  if (!screen.orientation || typeof screen.orientation.lock !== 'function') return;
+  screen.orientation.lock('landscape').catch(() => {});
+}
+
+function checkOrientation() {
+  const state = getOrientationState();
+  const hint = ensureOrientationHint();
+  hint.classList.toggle('on', state.shouldPrompt);
+  document.body.classList.toggle('portrait-locked', state.shouldPrompt);
+  if (state.shouldPrompt) requestLandscapeLock();
+  return state;
+}
+
+window.getOrientationState = getOrientationState;
+window.checkOrientation = checkOrientation;
+window.addEventListener('resize', checkOrientation);
+window.addEventListener('orientationchange', () => setTimeout(checkOrientation, 100));
+checkOrientation();
 
 newGame();
 </script>

@@ -244,25 +244,30 @@ body{
 
 /* ═══════ EAST/WEST: horizontal tiles, stacked vertically ═══════ */
 .ps.east .ht,.ps.west .ht{
-  flex-direction:column;gap:2px;
+  flex-direction:column;gap:1px;align-items:center;justify-content:flex-start;flex-wrap:nowrap;
+  max-height:150px;overflow-y:auto;overflow-x:hidden;width:100%;
+}
+.ps.east .rv,.ps.west .rv{
+  flex-direction:column;gap:1px;align-items:center;justify-content:flex-start;flex-wrap:nowrap;
+  max-height:150px;overflow-y:auto;overflow-x:hidden;
 }
 .ps.east .t,.ps.west .t{
   display:flex;
-  width:56px;height:40px;
-  border-radius:4px;
-  transform:rotate(-90deg);
+  width:42px;height:30px;
+  border-radius:3px;
+  flex-shrink:0;
 }
 .ps.east .t.s,.ps.west .t.s{
-  width:40px;height:30px;
+  width:30px;height:22px;font-size:8px;
 }
 .ps.east .t.rv,.ps.west .t.rv{
-  width:46px;height:34px;
+  width:30px;height:22px;font-size:8px;
 }
 .ps.east .t.bk,.ps.west .t.bk{
-  width:56px;height:40px;
+  width:42px;height:30px;
 }
 .ps.east .t.s.bk,.ps.west .t.s.bk{
-  width:40px;height:30px;
+  width:30px;height:22px;
 }`
 `
 /* Tile back — classic green mahjong tile back */
@@ -497,10 +502,16 @@ body{
   .t.xs{width:18px;height:26px;font-size:7px}
   .t.rv{width:22px;height:30px;font-size:8px}
 
-  .ps.east .t,.ps.west .t{width:48px;height:34px}
-  .ps.east .t.s,.ps.west .t.s{width:34px;height:26px}
-  .ps.east .t.rv,.ps.west .t.rv{width:38px;height:28px}
-  .ps.east .t.bk,.ps.west .t.bk{width:48px;height:34px}
+  .ps.east,.ps.west{justify-content:flex-start;padding:4px 3px;gap:2px}
+  .ps.east .t,.ps.west .t{width:44px;height:32px}
+  .ps.east .t.s,.ps.west .t.s{width:32px;height:24px}
+  .ps.east .t.rv,.ps.west .t.rv{width:30px;height:22px;font-size:8px}
+  .ps.east .t.bk,.ps.west .t.bk{width:44px;height:32px}
+  .ps.east .t.s.bk,.ps.west .t.s.bk{width:32px;height:24px}
+  .ps.east .md,.ps.west .md{max-height:18px}
+  .ps.east .ht,.ps.west .ht{flex-direction:column;flex-wrap:nowrap;max-height:120px;overflow-y:auto;align-items:center}
+  .ps.east .rv,.ps.west .rv{flex-direction:column;flex-wrap:nowrap;max-height:120px;overflow-y:auto;align-items:center}
+  .ps.east .pnm,.ps.west .pnm{font-size:8px;margin-bottom:1px}
 
   .act{padding:3px 8px 4px;gap:4px}
   .ab{padding:4px 14px;font-size:11px}
