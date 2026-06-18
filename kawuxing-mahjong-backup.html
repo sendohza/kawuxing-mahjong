@@ -867,9 +867,9 @@ const G={
 function optimizeStartHands(){
   for(let i=0;i<3;i++){G.wall.push(...G.players[i].h);G.players[i].h=[]}
   G.players[0].h=genOpt(16,128);if(G.dealer!==0&&G.players[0].h.length===14){G.wall.push(G.players[0].h.pop())}
-  G.players[1].h=genOpt(2,16);if(G.dealer!==1&&G.players[1].h.length===14){G.wall.push(G.players[1].h.pop())}
-  G.players[2].h=genOpt(2,16);if(G.dealer!==2&&G.players[2].h.length===14){G.wall.push(G.players[2].h.pop())}
-  toast('💡 起手牌优化: 南→16~128番 | 东西→2~16番');
+  G.players[1].h=takeN(13);if(G.dealer!==1&&G.players[1].h.length===14){G.wall.push(G.players[1].h.pop())}
+  G.players[2].h=takeN(13);if(G.dealer!==2&&G.players[2].h.length===14){G.wall.push(G.players[2].h.pop())}
+  toast('💡 起手牌: 南→高番牌 | 东西→随机');
 }
 function genOpt(mn,mx){
   const tgt=genWin(mn,mx);
