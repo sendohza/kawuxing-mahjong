@@ -866,7 +866,7 @@ const G={
 // ═══════════════════════════════════════════════
 function optimizeStartHands(){
   for(let i=0;i<3;i++){G.wall.push(...G.players[i].h);G.players[i].h=[]}
-  G.players[0].h=genOpt(16,128);if(G.dealer!==0&&G.players[0].h.length===14){G.wall.push(G.players[0].h.pop())}
+  G.players[0].h=genOpt(4,32);if(G.dealer!==0&&G.players[0].h.length===14){G.wall.push(G.players[0].h.pop())}
   G.players[1].h=takeN(13);if(G.dealer!==1&&G.players[1].h.length===14){G.wall.push(G.players[1].h.pop())}
   G.players[2].h=takeN(13);if(G.dealer!==2&&G.players[2].h.length===14){G.wall.push(G.players[2].h.pop())}
   toast('💡 起手牌: 南→高番牌 | 东西→随机');
@@ -1086,7 +1086,15 @@ function newGame(){
   for(let i=0;i<3;i++){rScore(i);rRiver(i);document.getElementById(HAND_IDS[i]).innerHTML='';rMelds(i)}
   updSt();
   dealAnimation(function(){
-    // 发牌完成后开始游戏
+    // 发牌完成后检测天湖地湖
+    if(canWin(G.players[G.dealer].h)){
+      // 庄家起手胡牌 = 天湖
+      const pat=detect(G.players[G.dealer].h,null,[]);
+      if(!pat.includes('天湖'))pat.push('天湖');
+      execWin(G.dealer,null,-2,true,pat);
+      return;
+    }
+    // 非庄家检测地湖（需要摸牌后检测）
     G.dealer===0?(setPhase('discard',0),render()):(setPhase('draw',G.dealer),render(),setTimeout(()=>aiTurn(G.dealer),500));
   });
 }
@@ -1631,14 +1639,14 @@ function execGang(pi,tile,from){
   toast(p.n+' 杠！');render();
   setTimeout(()=>{if(G.over)return;const rep=draw(pi);if(!rep)return;if(canWin(p.h)){execWin(pi,rep,-2,true);return}setPhase('discard',pi);render();if(pi!==0)setTimeout(()=>aiTurn(pi),400)},300);
 }
-function execWin(pi,winTile,from,self){
+function execWin(pi,winTile,from,self,customPat){
   if(G.over)return;
   G.over=true;G.waitingClaim=false;G.pend=null;
   const p=G.players[pi];
   let h=srt([...p.h]);
-  if(h.length===13)h.push(winTile); // 点炮/抢杠时手牌13张需补入winTile
+  if(h.length===13&&winTile)h.push(winTile);
   h=srt(h);
-  const pat=detect(h,winTile,p.m);
+  const pat=customPat||detect(h,winTile,p.m);
   const isLDWinner=G.ld[pi]!==null;
   const isLDPayer=from>=0&&G.ld[from]!==null;
   const sc=calcLD(pat,self,from===-2,G.wall.length===0,isLDWinner,isLDPayer);
@@ -1688,7 +1696,12 @@ function startTurn(pi){
       // 亮倒后: 只能摸牌打出(除非胡), 不改变牌型
       setTimeout(()=>aiTurn(pi),400);return
     }
-    if(canWin(G.players[pi].h)){execWin(pi,G.lastDrawn,-2,true);return}
+    if(canWin(G.players[pi].h)){
+      // 检测地湖: 闲家第一轮摸牌胡牌
+      const pat=detect(G.players[pi].h,G.lastDrawn,G.players[pi].m);
+      if(!pat.includes('地湖')&&!pat.includes('天湖')&&G.rnd===1&&pi!==G.dealer)pat.push('地湖');
+      execWin(pi,G.lastDrawn,-2,true,pat);return
+    }
     const h13=[...G.players[pi].h],di=h13.findIndex(t=>teq(t,G.lastDrawn));if(di!==-1)h13.splice(di,1);
     const w=waits(h13);
     if(w.length>0&&Math.random()<0.35){setTimeout(()=>execLiang(pi),500);return}
