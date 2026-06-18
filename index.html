@@ -245,11 +245,11 @@ body{
 /* ═══════ EAST/WEST: horizontal tiles, stacked vertically ═══════ */
 .ps.east .ht,.ps.west .ht{
   flex-direction:column;gap:1px;align-items:center;justify-content:flex-start;flex-wrap:nowrap;
-  max-height:150px;overflow-y:auto;overflow-x:hidden;width:100%;
+  overflow:visible;width:100%;
 }
 .ps.east .rv,.ps.west .rv{
   flex-direction:column;gap:1px;align-items:center;justify-content:flex-start;flex-wrap:nowrap;
-  max-height:150px;overflow-y:auto;overflow-x:hidden;
+  overflow:visible;
 }
 .ps.east .t,.ps.west .t{
   display:flex;
@@ -531,8 +531,8 @@ body{
   .ps.east .t.bk,.ps.west .t.bk{width:44px;height:32px}
   .ps.east .t.s.bk,.ps.west .t.s.bk{width:32px;height:24px}
   .ps.east .md,.ps.west .md{max-height:18px}
-  .ps.east .ht,.ps.west .ht{flex-direction:column;flex-wrap:nowrap;max-height:120px;overflow-y:auto;align-items:center}
-  .ps.east .rv,.ps.west .rv{flex-direction:column;flex-wrap:nowrap;max-height:120px;overflow-y:auto;align-items:center}
+  .ps.east .ht,.ps.west .ht{flex-direction:column;flex-wrap:nowrap;overflow:visible;align-items:center}
+  .ps.east .rv,.ps.west .rv{flex-direction:column;flex-wrap:nowrap;overflow:visible;align-items:center}
   .ps.east .pnm,.ps.west .pnm{font-size:8px;margin-bottom:1px}
 
   .act{padding:3px 8px 4px;gap:4px}
