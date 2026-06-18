@@ -197,7 +197,7 @@
     if (winTile && winTile.val === 5 && (winTile.suit === "tong" || winTile.suit === "tiao")) patterns.push("卡五星");
     if (winTile && melds.some(meld => meld.t === "peng" && teq(meld.ts[0], winTile))) patterns.push("明四归");
     if (winTile && !sevenPairs && hand.filter(tile => teq(tile, winTile)).length === 4) patterns.push("暗四归");
-    if (pungLikeMelds + concealedTriplets === 4 && !patterns.includes("暗四归")) patterns.push("碰碰胡");
+    if (pungLikeMelds + concealedTriplets === 4) patterns.push("碰碰胡");
 
     if (sevenPairs) {
       const hasThreeDragonPairs = zhongCount >= 2 && faCount >= 2 && baiCount >= 2;
