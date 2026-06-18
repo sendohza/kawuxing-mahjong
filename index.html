@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>卡五星麻将</title>
+<title>卡五星天胡版</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&family=Noto+Serif+SC:wght@700;900&display=swap');
 
@@ -339,6 +339,53 @@ body{
 }
 .ab:hover{filter:brightness(1.1);box-shadow:0 4px 16px rgba(0,0,0,.3)}
 
+/* ═══════ RULES PANEL ═══════ */
+.rules-btn{
+  background:linear-gradient(180deg,rgba(245,214,128,.15),rgba(200,145,58,.1));
+  border:1px solid rgba(245,214,128,.2);border-radius:4px;
+  color:#f5d680;font-size:8px;padding:1px 5px;cursor:pointer;
+  font-family:inherit;white-space:nowrap;flex-shrink:0;
+  transition:all .2s
+}
+.rules-btn:hover{background:rgba(245,214,128,.25)}
+.rules-overlay{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.85);
+  display:none;align-items:center;justify-content:center;
+  animation:fadeIn .2s ease
+}
+.rules-overlay.on{display:flex}
+.rules-panel{
+  position:relative;width:100vw;height:100vh;
+  background:linear-gradient(180deg,#1a0e08,#0e0804);
+  display:flex;flex-direction:column
+}
+.rules-close{
+  position:absolute;top:6px;right:10px;z-index:10;
+  background:none;border:none;color:#f5d680;font-size:24px;
+  cursor:pointer;padding:4px 8px;line-height:1
+}
+.rules-close:hover{color:#fff}
+.rules-title{
+  text-align:center;padding:10px;font-size:14px;font-weight:900;
+  color:#f5d680;letter-spacing:2px;
+  border-bottom:1px solid rgba(245,214,128,.1);
+  flex-shrink:0
+}
+.rules-list{
+  flex:1;overflow-y:auto;padding:10px 16px;display:flex;flex-direction:column;gap:3px;
+  align-items:center;scrollbar-width:none;-ms-overflow-style:none
+}
+.rules-list::-webkit-scrollbar{display:none}
+.rules-item{
+  display:flex;align-items:center;justify-content:space-between;
+  width:100%;max-width:320px;padding:5px 10px;
+  background:rgba(255,255,255,.04);border-radius:4px;
+  border:1px solid rgba(255,255,255,.04)
+}
+.rules-item .rname{color:#e8dcc8;font-size:11px;font-weight:700}
+.rules-item .rfan{color:#40c8e8;font-size:12px;font-weight:900}
+
 /*听牌提示跑马灯*/
 .ting-hint{
   width:100%;padding:4px 0;overflow:hidden;white-space:nowrap;
@@ -509,7 +556,7 @@ body{
   .hdr .hl{flex-direction:column;gap:4px}
   .hdr .hl h1{writing-mode:horizontal-tb}
 
-  .ps.south .ht{flex-wrap:nowrap;overflow-x:auto;justify-content:center}
+  .ps.south .ht{flex-wrap:nowrap;overflow:visible;justify-content:center}
   .ps.north{min-height:24px;font-size:11px}
 
   .t{width:38px;height:52px;font-size:14px}
@@ -602,13 +649,23 @@ body{
 
 <div class="hdr">
   <div class="hl">
-    <h1>🀄 卡五星</h1>
+    <button class="rules-btn" onclick="toggleRules()">👆 番数</button>
+    <h1>🀄 卡五星天胡版</h1>
     <span class="wall" id="wc">牌墙: 52张</span>
+    <span style="font-size:8px;color:rgba(255,255,255,.4);margin-top:2px">作者:胡老板</span>
   </div>
   <div class="scr">
-    <div class="si"><span class="d" style="background:#f5d680"></span><span class="lb">南</span><span class="v hl" id="s0">¥10000</span></div>
-    <div class="si"><span class="d" style="background:#e87040"></span><span class="lb">东</span><span class="v" id="s1">¥10000</span></div>
-    <div class="si"><span class="d" style="background:#60c878"></span><span class="lb">西</span><span class="v" id="s2">¥10000</span></div>
+    <div class="si"><span class="d" style="background:#f5d680"></span><span class="lb">南(雀神)</span><span class="v hl" id="s0">¥10000</span></div>
+    <div class="si"><span class="d" style="background:#e87040"></span><span class="lb">东(小美)</span><span class="v" id="s1">¥10000</span></div>
+    <div class="si"><span class="d" style="background:#60c878"></span><span class="lb">西(小帅)</span><span class="v" id="s2">¥10000</span></div>
+  </div>
+</div>
+
+<div class="rules-overlay" id="rulesOverlay" onclick="if(event.target===this)toggleRules()">
+  <div class="rules-panel">
+    <button class="rules-close" onclick="toggleRules()">✕</button>
+    <div class="rules-title">📖 番数规则</div>
+    <div class="rules-list" id="rulesList"></div>
   </div>
 </div>
 
@@ -624,7 +681,7 @@ body{
 
   <!-- 西(左): AI-2 -->
   <div class="ps west" id="ps2">
-    <div class="pnm"><span class="d" style="background:#60c878"></span>西·AI-2 <span class="st" id="a2s"></span></div>
+    <div class="pnm"><span class="d" style="background:#60c878"></span>小帅 <span class="st" id="a2s"></span></div>
     <div class="md" id="a2m"></div>
     <div class="ht" id="a2t"></div>
     <div class="rv" id="a2r"></div>
@@ -642,7 +699,7 @@ body{
 
   <!-- 东(右): AI-1 -->
   <div class="ps east" id="ps1">
-    <div class="pnm"><span class="d" style="background:#e87040"></span>东·AI-1 <span class="st" id="a1s"></span></div>
+    <div class="pnm"><span class="d" style="background:#e87040"></span>小美 <span class="st" id="a1s"></span></div>
     <div class="md" id="a1m"></div>
     <div class="ht" id="a1t"></div>
     <div class="rv" id="a1r"></div>
@@ -653,7 +710,7 @@ body{
     <div class="rv" id="p0r"></div>
     <div class="md" id="p0m"></div>
     <div class="ht" id="p0t"></div>
-    <div class="pnm" style="margin-top:3px"><span class="d" style="background:#f5d680"></span>南·你 <span class="st" id="p0s"></span></div>
+    <div class="pnm" style="margin-top:3px"><span class="d" style="background:#f5d680"></span>雀神 <span class="st" id="p0s"></span></div>
   </div>
 
   <div class="act act-wrap">
@@ -853,7 +910,7 @@ function calcLD(patterns,isSelf,isKongDraw,isLast,isLDWinner,isLDPayer){
 //  GAME STATE
 // ═══════════════════════════════════════════════
 const G={
-  players:[{h:[],m:[],d:[],s:10000,n:'南·你'},{h:[],m:[],d:[],s:10000,n:'东·AI-1'},{h:[],m:[],d:[],s:10000,n:'西·AI-2'}],
+  players:[{h:[],m:[],d:[],s:10000,n:'雀神'},{h:[],m:[],d:[],s:10000,n:'小美'},{h:[],m:[],d:[],s:10000,n:'小帅'}],
   cur:0,dealer:0,wall:[],last:null,lastP:-1,
   phase:'idle',pend:null,over:false,rnd:0,
   lastDrawn:null,waitingClaim:false,
@@ -1069,6 +1126,24 @@ function dealAnimation(onComplete){
 // ═══════════════════════════════════════════════
 //  GAME FLOW
 // ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+//  RULES PANEL
+// ═══════════════════════════════════════════════
+function toggleRules(){
+  var el=document.getElementById('rulesOverlay');
+  if(el.classList.contains('on')){el.classList.remove('on');return}
+  var list=document.getElementById('rulesList');
+  list.innerHTML='';
+  var sorted=Object.entries(PV).sort(function(a,b){return a[1]-b[1]});
+  for(var i=0;i<sorted.length;i++){
+    var item=document.createElement('div');
+    item.className='rules-item';
+    item.innerHTML='<span class="rname">'+sorted[i][0]+'</span><span class="rfan">×'+sorted[i][1]+'番</span>';
+    list.appendChild(item);
+  }
+  el.classList.add('on');
+}
+
 function newGame(){
   const ol=document.getElementById('ol');if(ol)ol.classList.remove('on');
   G.over=false;G.waitingClaim=false;G.ld=[null,null,null];G.passed=[false,false,false];
@@ -1094,8 +1169,22 @@ function newGame(){
       execWin(G.dealer,null,-2,true,pat);
       return;
     }
-    // 非庄家检测地湖（需要摸牌后检测）
-    G.dealer===0?(setPhase('discard',0),render()):(setPhase('draw',G.dealer),render(),setTimeout(()=>aiTurn(G.dealer),500));
+    if(G.dealer===0){
+      // 庄家是玩家: 检查胡牌/杠牌选项
+      G.lastDrawn=G.players[0].h[G.players[0].h.length-1];
+      G.players[0].h=srt(G.players[0].h);
+      if(canWin(G.players[0].h)){
+        G.phase='action';hideBtns();
+        document.getElementById('bHu').classList.add('on');
+        document.getElementById('bPass').classList.add('on');
+        setPhase('action',0);render();return;
+      }
+      const anGang=findAnGang(0),buGang=findBuGang(0);
+      if(anGang||buGang){showAnGangBtns(anGang,buGang);G.phase='action';setPhase('action',0);render();return}
+      setPhase('discard',0);render();
+    }else{
+      setPhase('draw',G.dealer);render();setTimeout(()=>aiTurn(G.dealer),500);
+    }
   });
 }
 
@@ -1665,9 +1754,7 @@ function execWin(pi,winTile,from,self,customPat){
     const px=G.ld[G.lastP]!==null?2:1;G.players[G.lastP].s-=payout*px;p.s+=payout*px;
   }
   render();
-  showResult(pi===0?'🎉 你胡牌了！':p.n.replace('南·','').replace('东·','').replace('西·','')+' 胡牌！',pi===0?'w':'l',
-    '牌型: <span class="p">'+(pat.join(' + ')||'屁胡')+'</span><br>番数: <span class="s">×'+sc+'</span>'+(self?'<br>自摸！':'<br>'+(G.players[from>=0?from:G.lastP]?.n||'对手')+'放炮')+
-    extraInfo+'<br>收入: <span style="color:#ffd700;font-weight:700">¥'+(isLDWinner&&!self?payout*2:payout)+'</span>');
+  showResultAnimate(pi, pat, self, from, payout, isLDWinner, extraInfo);
 }
 
 // ═══════════════════════════════════════════════
@@ -1831,7 +1918,13 @@ document.addEventListener('click',function(e){
 });
 
 window.doLiang=function(){hideBtns();execLiang(0)};
-window.doHu=function(){if(!G.pend||!G.waitingClaim)return;const{tile,from}=G.pend;G.pend=null;G.waitingClaim=false;hideBtns();execWin(0,tile,from,false)};
+window.doHu=function(){
+  if(G.pend&&G.waitingClaim){
+    const{tile,from}=G.pend;G.pend=null;G.waitingClaim=false;hideBtns();execWin(0,tile,from,false);
+  } else if(G.lastDrawn){
+    hideBtns();execWin(0,G.lastDrawn,-2,true);
+  }
+};
 window.doPeng=function(){if(!G.pend||!G.waitingClaim)return;const{tile,from}=G.pend;G.pend=null;G.waitingClaim=false;hideBtns();execPeng(0,tile,from)};
 window.doGang=function(){if(!G.pend||!G.waitingClaim)return;const{tile,from}=G.pend;G.pend=null;G.waitingClaim=false;hideBtns();execGang(0,tile,from)};
 window.doAnGang=function(){hideBtns();const tile=findAnGang(0);if(tile)execConcealedGang(0,tile)};
@@ -1856,6 +1949,93 @@ function showResult(title,cls,detail){
   const rt=document.getElementById('rtitle');
   rt.className='rt '+cls;rt.textContent=title.replace(/<[^>]*>/g,'');
   document.getElementById('rdetail').innerHTML=detail;o.classList.add('on');
+}
+
+// ═══════════════════════════════════════════════
+//  结算动画
+// ═══════════════════════════════════════════════
+function showResultAnimate(pi, pat, self, from, payout, isLDWinner, extraInfo){
+  var p = G.players[pi];
+  var titleEl = document.getElementById('rtitle');
+  var detailEl = document.getElementById('rdetail');
+  var ol = document.getElementById('ol');
+  
+  titleEl.className = 'rt ' + (pi===0?'w':'l');
+  titleEl.textContent = pi===0?'🎉 你胡牌了！':p.n+' 胡牌！';
+  detailEl.innerHTML = '';
+  ol.classList.add('on');
+  
+  var lines = [];
+  if(pat.length > 0){
+    for(var i=0; i<pat.length; i++){
+      var fanVal = PV[pat[i]] || 1;
+      lines.push({text: '★ ' + pat[i], fan: '×' + fanVal + '番', color: '#40c8e8'});
+    }
+  } else {
+    lines.push({text: '★ 屁胡', fan: '×1番', color: '#a89070'});
+  }
+  
+  var totalFan = 1;
+  for(var i=0; i<lines.length; i++){
+    var fanVal = parseInt(lines[i].fan.replace(/[^0-9]/g,''));
+    totalFan *= fanVal;
+  }
+  
+  var winName = pat.length > 0 ? pat.join('') : '屁胡';
+  
+  var idx = 0;
+  function showNext(){
+    if(idx < lines.length){
+      var div = document.createElement('div');
+      div.style.cssText = 'margin:4px 0;font-size:13px;opacity:0;transform:translateX(-20px);transition:all .3s ease';
+      div.innerHTML = '<span style="color:#f5d680">' + lines[idx].text + '</span> <span style="color:' + lines[idx].color + ';font-weight:bold">' + lines[idx].fan + '</span>';
+      detailEl.appendChild(div);
+      setTimeout(function(){div.style.opacity='1';div.style.transform='translateX(0)'},50);
+      idx++;
+      setTimeout(showNext, 600);
+    } else {
+      setTimeout(function(){
+        var hr = document.createElement('div');
+        hr.style.cssText = 'border-top:1px solid rgba(245,214,128,.3);margin:8px 0 6px';
+        detailEl.appendChild(hr);
+        
+        var total = document.createElement('div');
+        total.style.cssText = 'font-size:15px;color:#f5d680;font-weight:bold;opacity:0;transform:scale(0.8);transition:all .4s ease';
+        total.textContent = winName + ' 共计' + totalFan + '番';
+        detailEl.appendChild(total);
+        setTimeout(function(){total.style.opacity='1';total.style.transform='scale(1)'},50);
+        
+        setTimeout(function(){
+          var info = document.createElement('div');
+          info.style.cssText = 'margin-top:8px;font-size:11px;color:#c8b898;opacity:0;transition:opacity .3s';
+          info.innerHTML = (self ? '🀄 自摸！' : (G.players[from>=0?from:G.lastP]?.n||'对手') + ' 放炮') + (extraInfo||'');
+          detailEl.appendChild(info);
+          setTimeout(function(){info.style.opacity='1'},50);
+          
+          var income = document.createElement('div');
+          income.style.cssText = 'margin-top:6px;font-size:14px;color:#ffd700;font-weight:bold;opacity:0;transition:opacity .3s';
+          income.textContent = '收入: ¥' + (isLDWinner&&!self?payout*2:payout);
+          detailEl.appendChild(income);
+          setTimeout(function(){income.style.opacity='1'},100);
+
+          var msg = document.createElement('div');
+          msg.style.cssText = 'margin-top:8px;font-size:11px;color:#8a7a60;opacity:0;transition:opacity .3s';
+          msg.textContent = '恭喜胡牌，下一局继续加油！';
+          detailEl.appendChild(msg);
+          setTimeout(function(){msg.style.opacity='1'},200);
+
+          var btn = document.createElement('button');
+          btn.className = 'ng';
+          btn.textContent = '↻ 再来一局';
+          btn.onclick = function(){newGame()};
+          btn.style.cssText = 'margin-top:10px;opacity:0;transition:opacity .3s';
+          detailEl.appendChild(btn);
+          setTimeout(function(){btn.style.opacity='1'},300);
+        }, 400);
+      }, 300);
+    }
+  }
+  showNext();
 }
 
 // 听牌提示
@@ -1907,6 +2087,8 @@ function updateTingHint(pi){
     el.innerHTML='';
   }
 }
+
+function cloneTile(t){return{suit:t.suit,val:t.val}}
 
 newGame();
 
