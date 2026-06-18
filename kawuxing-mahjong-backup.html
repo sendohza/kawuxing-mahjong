@@ -1846,6 +1846,10 @@ window.doSelf=function(){hideBtns();execWin(0,G.lastDrawn,-2,true)};
 window.newGame=newGame;
 
 function toast(msg){const o=document.querySelector('.ts');if(o)o.remove();const el=document.createElement('div');el.className='ts';el.textContent=msg;document.getElementById('main').appendChild(el);setTimeout(()=>el.remove(),2000)}
+function endGame(reason){
+  G.over=true;G.waitingClaim=false;G.pend=null;
+  showResult('流局','t','牌墙摸完，无人胡牌<br>本局结束');
+}
 function showResult(title,cls,detail){
   if(cls==='w')playWinEffect();
   const o=document.getElementById('ol');
