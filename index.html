@@ -10,7 +10,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{
   font-family:'Noto Sans SC','Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
-  background:#1a0e0a;color:#e8dcc8;height:100vh;width:100vw;overflow:hidden;
+  background:#1a0e0a;color:#e8dcc8;height:100vh;width:100vw;
   display:flex;flex-direction:row;user-select:none
 }
 
@@ -472,14 +472,36 @@ body{
 
 /* ═══════ RESPONSIVE ═══════ */
 @media(max-width:640px){
-  .t{width:34px;height:46px;font-size:13px}
-  .t .fv .nm{font-size:14px}.t .fv .sm{font-size:6px}
-  .t.s{width:22px;height:30px;font-size:8px}
-  .t.s .fv .nm{font-size:10px}.t.xs{width:18px;height:24px;font-size:7px}
-  .t.xs .fv .nm{font-size:8px}.t.rv{width:20px;height:28px;font-size:7px}
-  .t.rv .fv .nm{font-size:8px}
-  .mg .t:not(:first-child){margin-left:-4px}
-  .hdr{padding:3px 8px}.scr{font-size:8px;gap:4px}
+  body{flex-direction:column;height:auto;overflow:auto}
+  .hdr{
+    width:100%;flex-direction:row;writing-mode:horizontal-tb;
+    padding:4px 8px;border-right:none;border-bottom:1px solid #3d2815;
+    box-shadow:0 2px 12px rgba(0,0,0,.5)
+  }
+  .hdr .hl{flex-direction:row;gap:8px}
+  .hdr .hl h1{writing-mode:horizontal-tb;font-size:14px}
+  .hdr .hl .wall{writing-mode:horizontal-tb}
+  .scr{flex-direction:row;gap:8px}
+  .main{
+    flex:1;display:grid;
+    grid-template-columns:1fr;
+    grid-template-rows:auto 1fr auto auto;
+    padding:4px;min-height:calc(100vh - 60px)
+  }
+  .ps.north{grid-column:1;grid-row:1;display:none}
+  .ci{grid-column:1;grid-row:2}
+  .ps.east,.ps.west{display:none}
+  .ps.south{grid-column:1;grid-row:3}
+  .act-wrap{grid-column:1;grid-row:4}
+  .t{width:30px;height:42px;font-size:12px}
+  .t .fv .nm{font-size:13px}.t .fv .sm{font-size:5px}
+  .t.s{width:20px;height:28px;font-size:7px}
+  .t.s .fv .nm{font-size:9px}
+  .t.xs{width:16px;height:22px;font-size:6px}
+  .t.xs .fv .nm{font-size:7px}
+  .t.rv{width:18px;height:25px;font-size:6px}
+  .t.rv .fv .nm{font-size:7px}
+  .mg .t:not(:first-child){margin-left:-3px}
   .ol{min-width:220px;padding:16px 20px}.ol .rt{font-size:16px}
   .win-text{font-size:40px;letter-spacing:4px}
   .ab{padding:5px 14px;font-size:12px}
@@ -521,64 +543,60 @@ body{
 
   .ci .ng button{padding:2px 8px;font-size:9px}
 }
-/* Portrait fallback: rotate body to landscape */
-@media(max-aspect-ratio:1/1){
-  body{
-    transform:rotate(90deg);
-    transform-origin:top left;
-    width:100vh;
-    height:100vw;
-    position:fixed;
-    top:0;
-    left:100vh;
-    overflow:hidden;
-  }
-}
-/* Desktop: no rotation */
+/* Desktop: standard layout */
 @media(min-width:1024px){
   body{
-    transform:none!important;
-    width:100vw!important;
-    height:100vh!important;
-    position:relative!important;
-    top:auto!important;
-    left:auto!important;
+    overflow:hidden!important;
+  }
+}
+  .hdr{
+    width:100%;
+    flex-direction:row;
+    writing-mode:horizontal-tb;
+    padding:4px 8px;
+    border-right:none;
+    border-bottom:1px solid #3d2815;
+    box-shadow:0 2px 12px rgba(0,0,0,.5);
+  }
+  .hdr .hl{flex-direction:row;gap:8px}
+  .hdr .hl h1{writing-mode:horizontal-tb;font-size:14px}
+  .hdr .hl .wall{writing-mode:horizontal-tb}
+  .scr{flex-direction:row;gap:8px}
+  .main{
+    flex:1;
+    display:grid;
+    grid-template-columns:1fr;
+    grid-template-rows:auto 1fr auto auto;
+    padding:4px;
+  }
+  .ps.north{grid-column:1;grid-row:1;display:none}
+  .ci{grid-column:1;grid-row:2}
+  .ps.east{grid-column:1;grid-row:3;display:none}
+  .ps.west{grid-column:1;grid-row:3;display:none}
+  .ps.south{grid-column:1;grid-row:3}
+  .act-wrap{grid-column:1;grid-row:4}
+  .t{width:30px;height:42px;font-size:12px}
+  .t .fv .nm{font-size:13px}
+  .t.s{width:20px;height:28px;font-size:7px}
+  .t.xs{width:16px;height:22px;font-size:6px}
+  .t.rv{width:18px;height:25px;font-size:6px}
+}
+/* Desktop: standard layout */
+@media(min-width:1024px){
+  body{
     overflow:hidden!important;
   }
 }
 </style>
 
 <script>
-// Cross-platform orientation detection
+// Mobile optimization - no forced rotation
 (function(){
-  function applyOrientation(){
-    var isMobile = ('ontouchstart' in window || navigator.maxTouchPoints > 0) && window.innerWidth < 1024;
-    var isPortrait = (screen.orientation && screen.orientation.type && screen.orientation.type.indexOf('portrait') !== -1) || (window.innerWidth < window.innerHeight);
-    var rotate = isMobile && isPortrait;
-    var body = document.body;
-    var css = body.style;
-    if(rotate){
-      css.transform = 'rotate(90deg)';
-      css.transformOrigin = 'top left';
-      css.width = '100vh';
-      css.height = '100vw';
-      css.position = 'fixed';
-      css.top = '0';
-      css.left = '100vh';
-    } else {
-      css.transform = css.transformOrigin = css.width = css.height = css.position = css.top = css.left = '';
-    }
+  var isMobile = ('ontouchstart' in window || navigator.maxTouchPoints > 0) && window.innerWidth < 1024;
+  if(isMobile){
+    document.body.style.height = 'auto';
+    document.body.style.overflow = 'auto';
   }
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded', applyOrientation);
-  } else {
-    applyOrientation();
-  }
-  window.addEventListener('resize', applyOrientation);
-  if(screen.orientation && screen.orientation.addEventListener){
-    screen.orientation.addEventListener('change', applyOrientation);
-  }
-  window.addEventListener('orientationchange', applyOrientation);
 })();
 </script>
 </head>
