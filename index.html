@@ -1344,6 +1344,8 @@ function drawTileFace(ctx,t,W,H,sz){
 
 ﻿// ═══ TONG (筒子) — Classic Chinese mahjong circles ═══
 // Spec: 红色/青绿色/深蓝色 圆圈, 经典布局
+function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath()}
+
 function drawTong(ctx,n,W,H,sz){
   var baseR=sz==='xs'?4.0:sz==='s'?5.0:sz==='rv'?5.4:7.0;
   var R=n===1?baseR*1.6:n<=4?baseR:n<=6?baseR*0.9:baseR*0.82;
