@@ -550,39 +550,94 @@ body{
 
 /* ═══════ LANDSCAPE LAYOUT ═══════ */
 @media(orientation:landscape){
-  .hdr .hl h1{font-size:12px;writing-mode:vertical-rl;letter-spacing:1px}
-  .hdr .hl .wall{font-size:8px;writing-mode:vertical-rl}
-  .scr{flex-direction:column;gap:4px;font-size:8px;writing-mode:horizontal-tb}
-  .hdr .hl{flex-direction:column;gap:4px}
-  .hdr .hl h1{writing-mode:horizontal-tb}
+  body{flex-direction:column;height:100vh;overflow:hidden}
+  .hdr{
+    width:100%;height:24px;flex-direction:row;
+    padding:1px 6px;gap:4px;
+    border-right:none;border-bottom:1px solid #3d2815;
+    box-shadow:0 2px 8px rgba(0,0,0,.4);
+    writing-mode:horizontal-tb
+  }
+  .hdr .hl{flex-direction:row;gap:4px;align-items:center}
+  .hdr .hl h1{writing-mode:horizontal-tb;font-size:10px;letter-spacing:0}
+  .hdr .hl .wall{writing-mode:horizontal-tb;font-size:7px}
+  .hdr .hl span:last-child{writing-mode:horizontal-tb;font-size:6px!important}
+  .scr{flex-direction:row;gap:4px;font-size:7px;writing-mode:horizontal-tb}
 
-  .ps.south .ht{flex-wrap:nowrap;overflow:visible;justify-content:center}
-  .ps.north{min-height:24px;font-size:11px}
+  .main{
+    flex:1;display:grid;
+    grid-template-columns:auto 1fr auto;
+    grid-template-rows:auto 1fr auto auto;
+    padding:4px 8px;gap:1px;
+    min-height:0;overflow:hidden
+  }
 
-  .t{width:38px;height:52px;font-size:14px}
-  .t .fv .nm{font-size:15px}.t .fv .sm{font-size:6px}
-  .t.s{width:24px;height:34px;font-size:9px}
-  .t.xs{width:18px;height:26px;font-size:7px}
-  .t.rv{width:22px;height:30px;font-size:8px}
+  .ps.north{grid-column:2;grid-row:1;min-height:14px;font-size:9px}
+  .ps.west{grid-column:1;grid-row:2;min-height:0}
+  .ci{grid-column:2;grid-row:2;min-height:0;overflow:hidden}
+  .ps.east{grid-column:3;grid-row:2;min-height:0}
+  .ps.south{grid-column:2;grid-row:3;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;gap:1px;min-height:40px}
+  .ps.south .pnm{display:flex;align-items:center;gap:2px;flex-shrink:0}
+  .ps.south .rv{display:flex;flex-wrap:wrap;gap:1px;padding:1px 0;border-bottom:1px solid rgba(255,215,0,.06);width:100%}
+  .ps.south .md{display:flex;flex-shrink:0}
+  .ps.south .ht{flex-wrap:nowrap;overflow:visible;justify-content:flex-start;min-height:32px}
+  .act-wrap{grid-column:1/4;grid-row:4}
 
-  .ps.east,.ps.west{justify-content:flex-start;padding:4px 3px;gap:2px}
-  .ps.east .t,.ps.west .t{width:44px;height:32px}
-  .ps.east .t.s,.ps.west .t.s{width:32px;height:24px}
-  .ps.east .t.rv,.ps.west .t.rv{width:30px;height:22px;font-size:8px}
-  .ps.east .t.bk,.ps.west .t.bk{width:44px;height:32px}
-  .ps.east .t.s.bk,.ps.west .t.s.bk{width:32px;height:24px}
-  .ps.east .md,.ps.west .md{max-height:18px}
-  .ps.east .ht,.ps.west .ht{flex-direction:column;flex-wrap:nowrap;align-items:center}
-  .ps.east .rv,.ps.west .rv{flex-direction:column;flex-wrap:nowrap;align-items:center}
-  .ps.east .pnm,.ps.west .pnm{font-size:8px;margin-bottom:1px}
+  .t{width:20px;height:28px;font-size:8px}
+  .t .fv .nm{font-size:9px}.t .fv .sm{font-size:3px}
+  .t.s{width:20px;height:28px;font-size:8px}
+  .t.s .fv .nm{font-size:9px}.t.s .fv .sm{font-size:3px}
+  .t.xs{width:20px;height:28px;font-size:8px}
+  .t.xs .fv .nm{font-size:9px}.t.xs .fv .sm{font-size:3px}
+  .t.rv{width:20px;height:28px;font-size:8px}
+  .t.rv .fv .nm{font-size:9px}.t.rv .fv .sm{font-size:3px}
 
-  .act{padding:3px 8px 4px;gap:4px}
-  .ab{padding:4px 14px;font-size:11px}
+  .ps.east,.ps.west{justify-content:flex-start;padding:2px 4px;gap:0;flex-direction:row}
+  .ps.east .pnm,.ps.west .pnm{font-size:8px;display:flex;align-items:center;gap:2px;writing-mode:vertical-rl;flex-shrink:0}
+  .ps.east{flex-direction:row-reverse}
+  .ps.east .rv,.ps.west .rv{display:flex;flex-wrap:wrap;flex-direction:column;gap:1px;padding:2px;border-left:1px solid rgba(255,215,0,.06);margin-left:2px}
+  .ps.east .rv{border-left:none;border-right:1px solid rgba(255,215,0,.06);margin-left:0;margin-right:2px}
+  .ps.east .md,.ps.west .md{display:flex;flex-direction:column;gap:1px;min-height:0}
+  .ps.east .ht,.ps.west .ht{flex-direction:column;flex-wrap:nowrap;overflow:visible;align-items:center}
+  .ps.east .mg,.ps.west .mg{display:flex;flex-direction:column;align-items:center}
+  .ps.east .mg .t,.ps.west .mg .t{margin-left:0;margin:-3px 0}
+  .ps.east .mg .t:first-child,.ps.west .mg .t:first-child{margin-top:0}
+  .ps.east .mg .t:last-child,.ps.west .mg .t:last-child{margin-bottom:0}
+  .ps.east .mg .t{transform:rotate(-90deg)}
+  .ps.west .mg .t{transform:rotate(90deg)}
+  .ps.east .ht .t,.ps.west .ht .t{margin:-4px 0}
+  .ps.east .ht .t{transform:rotate(-90deg)}
+  .ps.west .ht .t{transform:rotate(90deg)}
+  .ps.east .ht .t.bk{transform:rotate(-90deg)}
+  .ps.west .ht .t.bk{transform:rotate(90deg)}
+  .ps.east .rv .t,.ps.west .rv .t{transform:rotate(0deg);margin:0}
 
-  .ol{min-width:200px;padding:14px 20px}.ol .rt{font-size:16px}
-  .win-text{font-size:36px;letter-spacing:4px}
+  .act{padding:4px 8px 6px;gap:4px}
+  .ab{padding:4px 12px;font-size:11px}
+
+  .ol{min-width:240px;padding:16px 24px}.ol .rt{font-size:16px}
+  .win-text{font-size:32px;letter-spacing:3px}
 
   .ci .ng button{padding:2px 8px;font-size:9px}
+}
+/* Portrait fallback: rotate body to landscape */
+@media(max-aspect-ratio:1/1){
+  body{
+    transform:rotate(90deg);
+    transform-origin:top left;
+    width:100vh;
+    height:100vw;
+    position:fixed;
+    top:0;
+    left:100vh;
+    overflow:hidden;
+  }
+}
+/* Desktop: no rotation */
+@media(min-width:1024px){
+  body{
+    overflow:hidden!important;
+  }
 }
 /* Portrait fallback: rotate body to landscape */
 @media(max-aspect-ratio:1/1){
@@ -671,10 +726,6 @@ body{
 
 <div class="main" id="main">
   <div class="table-edge"></div>
-  <span class="dir-badge dir-n">北</span>
-  <span class="dir-badge dir-s">南</span>
-  <span class="dir-badge dir-e">东</span>
-  <span class="dir-badge dir-w">西</span>
 
   <!-- 北(上): 无人, 仅方位标记 -->
   <div class="ps north" id="ps-north">北</div>
@@ -689,7 +740,6 @@ body{
 
   <div class="ci">
     <div class="ti" id="ti"></div>
-    <div class="ng"><button onclick="newGame()">↻</button></div>
     <div class="ol" id="ol">
       <div class="rt" id="rtitle"></div>
       <div class="rd" id="rdetail"></div>
