@@ -141,8 +141,8 @@ body{
 }
 .ps .rv .rt{animation:dIn .2s ease-out;flex-shrink:0}
 .ps.south .rv{order:0;border-top:none;border-bottom:1px solid rgba(255,215,0,.06)}
-.ps.south .md{order:1}.ps.south .ht{order:2}`
-`
+.ps.south .md{order:1}.ps.south .ht{order:2}
+
 .ti{
   font-size:11px;color:#f5d680;
   background:linear-gradient(180deg,rgba(30,20,10,.9),rgba(20,12,6,.95));
@@ -686,31 +686,6 @@ body{
 /* Desktop: no rotation */
 @media(min-width:1024px){
   body{
-    overflow:hidden!important;
-  }
-}
-/* Portrait fallback: rotate body to landscape */
-@media(max-aspect-ratio:1/1){
-  body{
-    transform:rotate(90deg);
-    transform-origin:top left;
-    width:100vh;
-    height:100vw;
-    position:fixed;
-    top:0;
-    left:100vh;
-    overflow:hidden;
-  }
-}
-/* Desktop: no rotation */
-@media(min-width:1024px){
-  body{
-    transform:none!important;
-    width:100vw!important;
-    height:100vh!important;
-    position:relative!important;
-    top:auto!important;
-    left:auto!important;
     overflow:hidden!important;
   }
 }
