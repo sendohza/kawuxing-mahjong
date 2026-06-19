@@ -66,20 +66,19 @@ body{
   padding:6px;z-index:2;position:relative;
 }
 .ps.east .pnm,.ps.west .pnm{
-  font-size:9px;color:#a89070;font-weight:700;letter-spacing:.5px;
+  font-size:10px;color:#a89070;font-weight:700;letter-spacing:.5px;
   white-space:nowrap;text-align:center;margin-bottom:2px
 }
 .ps.east .pnm .d,.ps.west .pnm .d{width:5px;height:5px}
 .ps.east .md,.ps.west .md{
-  display:flex;flex-direction:row;gap:1px;align-items:center;justify-content:center;flex-wrap:wrap
+  display:flex;flex-direction:column;gap:1px;align-items:center;justify-content:center;flex-wrap:nowrap
 }
 .ps.east .ht,.ps.west .ht{
-  display:flex;flex-direction:row;gap:1px;align-items:center;justify-content:center;flex-wrap:wrap
+  display:flex;flex-direction:column;gap:1px;align-items:center;justify-content:flex-start;flex-wrap:nowrap;overflow:visible
 }
 .ps.east .rv,.ps.west .rv{
-  display:flex;flex-direction:row;gap:1px;align-items:center;flex-wrap:wrap;
-  padding:2px 0;min-height:18px;
-  border-top:1px solid rgba(255,215,0,.06);margin:2px 0
+  display:flex;flex-direction:column;gap:1px;align-items:center;flex-wrap:nowrap;
+  padding:2px 0;min-height:18px;overflow:visible;
 }
 .ps.east .rv .rt,.ps.west .rv .rt{animation:dIn .2s ease-out}
 /* Direction indicator */
@@ -267,8 +266,8 @@ body{
 }
 .ps.east .t.s.bk,.ps.west .t.s.bk{
   width:30px;height:22px;
-}`
-`
+}
+
 /* Tile back — classic green mahjong tile back */
 .t.bk{
   background:
