@@ -373,18 +373,18 @@ body{
   flex-shrink:0
 }
 .rules-list{
-  flex:1;overflow-y:auto;padding:10px 16px;display:flex;flex-direction:column;gap:3px;
-  align-items:center;scrollbar-width:none;-ms-overflow-style:none
+  flex:1;padding:10px 12px;display:grid;grid-template-columns:1fr 1fr;gap:4px;
+  align-content:start;scrollbar-width:none;-ms-overflow-style:none
 }
 .rules-list::-webkit-scrollbar{display:none}
 .rules-item{
   display:flex;align-items:center;justify-content:space-between;
-  width:100%;max-width:320px;padding:5px 10px;
+  padding:4px 8px;
   background:rgba(255,255,255,.04);border-radius:4px;
   border:1px solid rgba(255,255,255,.04)
 }
-.rules-item .rname{color:#e8dcc8;font-size:11px;font-weight:700}
-.rules-item .rfan{color:#40c8e8;font-size:12px;font-weight:900}
+.rules-item .rname{color:#e8dcc8;font-size:10px;font-weight:700}
+.rules-item .rfan{color:#40c8e8;font-size:11px;font-weight:900}
 
 /*听牌提示跑马灯*/
 .ting-hint{
@@ -2141,22 +2141,6 @@ function updateTingHint(pi){
 function cloneTile(t){return{suit:t.suit,val:t.val}}
 
 newGame();
-
-/* author credit */
-(function(){
-  var el=document.createElement('div');
-  el.textContent='作者 胡老板';
-  el.style.cssText='position:fixed;bottom:36px;right:8px;font-size:10px;color:rgba(255,255,255,0.35);z-index:9999;pointer-events:none;';
-  document.body.appendChild(el);
-})();
-
-/* author credit */
-(function(){
-  var el=document.createElement('div');
-  el.textContent='作者 胡老板';
-  el.style.cssText='position:fixed;bottom:36px;right:8px;font-size:10px;color:rgba(255,255,255,0.35);z-index:9999;pointer-events:none;';
-  document.body.appendChild(el);
-})();
 </script>
 </body>
 </html>
