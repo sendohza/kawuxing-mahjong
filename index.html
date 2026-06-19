@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>卡五星麻将</title>
+<title>卡五星天胡版</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&family=Noto+Serif+SC:wght@700;900&display=swap');
 
@@ -66,20 +66,19 @@ body{
   padding:6px;z-index:2;position:relative;
 }
 .ps.east .pnm,.ps.west .pnm{
-  font-size:9px;color:#a89070;font-weight:700;letter-spacing:.5px;
+  font-size:10px;color:#a89070;font-weight:700;letter-spacing:.5px;
   white-space:nowrap;text-align:center;margin-bottom:2px
 }
 .ps.east .pnm .d,.ps.west .pnm .d{width:5px;height:5px}
 .ps.east .md,.ps.west .md{
-  display:flex;flex-direction:row;gap:1px;align-items:center;justify-content:center;flex-wrap:wrap
+  display:flex;flex-direction:column;gap:1px;align-items:center;justify-content:center;flex-wrap:nowrap
 }
 .ps.east .ht,.ps.west .ht{
-  display:flex;flex-direction:row;gap:1px;align-items:center;justify-content:center;flex-wrap:wrap
+  display:flex;flex-direction:column;gap:1px;align-items:center;justify-content:flex-start;flex-wrap:nowrap;overflow:visible
 }
 .ps.east .rv,.ps.west .rv{
-  display:flex;flex-direction:row;gap:1px;align-items:center;flex-wrap:wrap;
-  padding:2px 0;min-height:18px;
-  border-top:1px solid rgba(255,215,0,.06);margin:2px 0
+  display:flex;flex-direction:column;gap:1px;align-items:center;flex-wrap:nowrap;
+  padding:2px 0;min-height:18px;overflow:visible;
 }
 .ps.east .rv .rt,.ps.west .rv .rt{animation:dIn .2s ease-out}
 /* Direction indicator */
@@ -142,8 +141,8 @@ body{
 }
 .ps .rv .rt{animation:dIn .2s ease-out;flex-shrink:0}
 .ps.south .rv{order:0;border-top:none;border-bottom:1px solid rgba(255,215,0,.06)}
-.ps.south .md{order:1}.ps.south .ht{order:2}`
-`
+.ps.south .md{order:1}.ps.south .ht{order:2}
+
 .ti{
   font-size:11px;color:#f5d680;
   background:linear-gradient(180deg,rgba(30,20,10,.9),rgba(20,12,6,.95));
@@ -245,11 +244,10 @@ body{
 /* ═══════ EAST/WEST: horizontal tiles, stacked vertically ═══════ */
 .ps.east .ht,.ps.west .ht{
   flex-direction:column;gap:1px;align-items:center;justify-content:flex-start;flex-wrap:nowrap;
-  max-height:150px;overflow-y:auto;overflow-x:hidden;width:100%;
+  width:100%;
 }
 .ps.east .rv,.ps.west .rv{
   flex-direction:column;gap:1px;align-items:center;justify-content:flex-start;flex-wrap:nowrap;
-  max-height:150px;overflow-y:auto;overflow-x:hidden;
 }
 .ps.east .t,.ps.west .t{
   display:flex;
@@ -268,8 +266,8 @@ body{
 }
 .ps.east .t.s.bk,.ps.west .t.s.bk{
   width:30px;height:22px;
-}`
-`
+}
+
 /* Tile back — classic green mahjong tile back */
 .t.bk{
   background:
@@ -339,6 +337,72 @@ body{
   border:1px solid rgba(255,215,0,.1);box-shadow:0 2px 4px rgba(0,0,0,.3)
 }
 .ab:hover{filter:brightness(1.1);box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.hu-fan{display:none;align-self:center;margin:0 4px 0 0;padding:3px 8px;border-radius:6px;background:linear-gradient(180deg,#e8b840,#c8913a);color:#1a0e08;font-size:12px;font-weight:700;white-space:nowrap}
+.hu-fan.on{display:inline-block}
+
+/* ═══════ RULES PANEL ═══════ */
+.rules-btn{
+  background:linear-gradient(180deg,rgba(245,214,128,.15),rgba(200,145,58,.1));
+  border:1px solid rgba(245,214,128,.2);border-radius:4px;
+  color:#f5d680;font-size:8px;padding:1px 5px;cursor:pointer;
+  font-family:inherit;white-space:nowrap;flex-shrink:0;
+  transition:all .2s
+}
+.rules-btn:hover{background:rgba(245,214,128,.25)}
+.rules-overlay{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.85);
+  display:none;align-items:center;justify-content:center;
+  animation:fadeIn .2s ease
+}
+.rules-overlay.on{display:flex}
+.rules-panel{
+  position:relative;width:100vw;height:100vh;
+  background:linear-gradient(180deg,#1a0e08,#0e0804);
+  display:flex;flex-direction:column
+}
+.rules-close{
+  position:absolute;top:6px;right:10px;z-index:10;
+  background:none;border:none;color:#f5d680;font-size:24px;
+  cursor:pointer;padding:4px 8px;line-height:1
+}
+.rules-close:hover{color:#fff}
+.rules-title{
+  text-align:center;padding:10px;font-size:14px;font-weight:900;
+  color:#f5d680;letter-spacing:2px;
+  border-bottom:1px solid rgba(245,214,128,.1);
+  flex-shrink:0
+}
+.rules-list{
+  flex:1;padding:10px 12px;display:grid;grid-template-columns:1fr 1fr;gap:4px;
+  align-content:start;scrollbar-width:none;-ms-overflow-style:none
+}
+.rules-list::-webkit-scrollbar{display:none}
+.rules-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:4px 8px;
+  background:rgba(255,255,255,.04);border-radius:4px;
+  border:1px solid rgba(255,255,255,.04)
+}
+.rules-item .rname{color:#e8dcc8;font-size:10px;font-weight:700}
+.rules-item .rfan{color:#40c8e8;font-size:11px;font-weight:900}
+
+/*听牌提示跑马灯*/
+.ting-hint{
+  width:100%;padding:4px 0;overflow:hidden;white-space:nowrap;
+  display:flex;justify-content:center;align-items:center;min-height:22px;
+}
+.ting-hint-inner{
+  display:inline-block;
+  animation:tingScroll 8s linear infinite;
+  font-size:11px;font-weight:700;letter-spacing:.5px;
+  background:linear-gradient(90deg,#f5d680,#ffd700,#f5d680);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+@keyframes tingScroll{
+  0%{transform:translateX(100%)}
+  100%{transform:translateX(-100%)}
+}
 
 /* ═══════ OVERLAY / RESULT ═══════ */
 .ol{
@@ -472,52 +536,142 @@ body{
 
 /* ═══════ RESPONSIVE ═══════ */
 @media(max-width:640px){
-  .t{width:34px;height:46px;font-size:13px}
-  .t .fv .nm{font-size:14px}.t .fv .sm{font-size:6px}
-  .t.s{width:22px;height:30px;font-size:8px}
-  .t.s .fv .nm{font-size:10px}.t.xs{width:18px;height:24px;font-size:7px}
-  .t.xs .fv .nm{font-size:8px}.t.rv{width:20px;height:28px;font-size:7px}
-  .t.rv .fv .nm{font-size:8px}
-  .mg .t:not(:first-child){margin-left:-4px}
-  .hdr{padding:3px 8px}.scr{font-size:8px;gap:4px}
+  body{flex-direction:column;height:auto;overflow:hidden}
+  .hdr{
+    width:100%;flex-direction:row;writing-mode:horizontal-tb;
+    padding:4px 8px;gap:8px;
+    border-right:none;border-bottom:1px solid #3d2815;
+    box-shadow:0 2px 12px rgba(0,0,0,.5)
+  }
+  .hdr .hl{flex-direction:row;gap:8px;align-items:center}
+  .hdr .hl h1{writing-mode:horizontal-tb;font-size:14px}
+  .hdr .hl .wall{writing-mode:horizontal-tb;font-size:9px}
+  .scr{flex-direction:row;gap:8px;font-size:9px;writing-mode:horizontal-tb}
+
+  .main{
+    flex:1;display:grid;
+    grid-template-columns:auto 1fr auto;
+    grid-template-rows:auto 1fr auto auto;
+    padding:4px;min-height:calc(100vh - 60px);overflow:hidden
+  }
+
+  .ps.north{grid-column:2;grid-row:1;min-height:18px;font-size:9px}
+  .ps.west{grid-column:1;grid-row:2;min-height:0}
+  .ci{grid-column:2;grid-row:2;min-height:0;overflow:hidden}
+  .ps.east{grid-column:3;grid-row:2;min-height:0}
+  .ps.south{grid-column:2;grid-row:3;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;gap:1px}
+  .ps.south .pnm{display:flex;align-items:center;gap:2px;flex-shrink:0}
+  .ps.south .rv{display:flex;flex-wrap:wrap;gap:1px;padding:1px 0;border-bottom:1px solid rgba(255,215,0,.06)}
+  .ps.south .md{display:flex;flex-shrink:0}
+  .ps.south .ht{flex-wrap:nowrap;overflow:visible;justify-content:flex-start;min-height:28px}
+  .act-wrap{grid-column:1/4;grid-row:4}
+
+  .t{width:20px;height:28px;font-size:8px}
+  .t .fv .nm{font-size:9px}.t .fv .sm{font-size:3px}
+  .t.s{width:20px;height:28px;font-size:8px}
+  .t.s .fv .nm{font-size:9px}.t.s .fv .sm{font-size:3px}
+  .t.xs{width:20px;height:28px;font-size:8px}
+  .t.xs .fv .nm{font-size:9px}.t.xs .fv .sm{font-size:3px}
+  .t.rv{width:20px;height:28px;font-size:8px}
+  .t.rv .fv .nm{font-size:9px}.t.rv .fv .sm{font-size:3px}
+
+  .ps.east,.ps.west{justify-content:flex-start;padding:2px 4px;gap:0;flex-direction:row}
+  .ps.east .pnm,.ps.west .pnm{font-size:8px;display:flex;align-items:center;gap:2px;writing-mode:vertical-rl;flex-shrink:0}
+  .ps.east{flex-direction:row-reverse}
+  .ps.east .rv,.ps.west .rv{display:flex;flex-wrap:wrap;flex-direction:column;gap:1px;padding:2px;border-left:1px solid rgba(255,215,0,.06);margin-left:2px}
+  .ps.east .rv{border-left:none;border-right:1px solid rgba(255,215,0,.06);margin-left:0;margin-right:2px}
+  .ps.east .md,.ps.west .md{display:flex;flex-direction:column;gap:1px;min-height:0}
+  .ps.east .ht,.ps.west .ht{flex-direction:column;flex-wrap:nowrap;overflow:visible;align-items:center}
+  .ps.east .mg,.ps.west .mg{display:flex;flex-direction:column;align-items:center}
+  .ps.east .mg .t,.ps.west .mg .t{margin-left:0;margin:-3px 0}
+  .ps.east .mg .t:first-child,.ps.west .mg .t:first-child{margin-top:0}
+  .ps.east .mg .t:last-child,.ps.west .mg .t:last-child{margin-bottom:0}
+  .ps.east .mg .t{transform:rotate(-90deg)}
+  .ps.west .mg .t{transform:rotate(90deg)}
+  .ps.east .ht .t,.ps.west .ht .t{margin:-4px 0}
+  .ps.east .ht .t{transform:rotate(-90deg)}
+  .ps.west .ht .t{transform:rotate(90deg)}
+  .ps.east .rv .t{transform:rotate(-90deg);margin:-4px 0}
+  .ps.west .rv .t{transform:rotate(90deg);margin:-4px 0}
+
+  .act{padding:4px 8px 6px;gap:4px}
+  .ab{padding:4px 12px;font-size:11px}
+
   .ol{min-width:220px;padding:16px 20px}.ol .rt{font-size:16px}
-  .win-text{font-size:40px;letter-spacing:4px}
-  .ab{padding:5px 14px;font-size:12px}
+  .win-text{font-size:36px;letter-spacing:3px}
 }
 
 /* ═══════ LANDSCAPE LAYOUT ═══════ */
 @media(orientation:landscape){
-  .hdr .hl h1{font-size:12px;writing-mode:vertical-rl;letter-spacing:1px}
-  .hdr .hl .wall{font-size:8px;writing-mode:vertical-rl}
-  .scr{flex-direction:column;gap:4px;font-size:8px;writing-mode:horizontal-tb}
-  .hdr .hl{flex-direction:column;gap:4px}
-  .hdr .hl h1{writing-mode:horizontal-tb}
+  body{flex-direction:column;height:100vh;overflow:hidden}
+  .hdr{
+    width:100%;height:24px;flex-direction:row;
+    padding:1px 6px;gap:4px;
+    border-right:none;border-bottom:1px solid #3d2815;
+    box-shadow:0 2px 8px rgba(0,0,0,.4);
+    writing-mode:horizontal-tb
+  }
+  .hdr .hl{flex-direction:row;gap:4px;align-items:center}
+  .hdr .hl h1{writing-mode:horizontal-tb;font-size:10px;letter-spacing:0}
+  .hdr .hl .wall{writing-mode:horizontal-tb;font-size:7px}
+  .hdr .hl span:last-child{writing-mode:horizontal-tb;font-size:6px!important}
+  .scr{flex-direction:row;gap:4px;font-size:7px;writing-mode:horizontal-tb}
 
-  .ps.south .ht{flex-wrap:nowrap;overflow-x:auto;justify-content:center}
-  .ps.north{min-height:24px;font-size:11px}
+  .main{
+    flex:1;display:grid;
+    grid-template-columns:auto 1fr auto;
+    grid-template-rows:auto 1fr auto auto;
+    padding:4px 8px;gap:1px;
+    min-height:0;overflow:hidden
+  }
 
-  .t{width:38px;height:52px;font-size:14px}
-  .t .fv .nm{font-size:15px}.t .fv .sm{font-size:6px}
-  .t.s{width:24px;height:34px;font-size:9px}
-  .t.xs{width:18px;height:26px;font-size:7px}
-  .t.rv{width:22px;height:30px;font-size:8px}
+  .ps.north{grid-column:2;grid-row:1;min-height:14px;font-size:9px}
+  .ps.west{grid-column:1;grid-row:2;min-height:0}
+  .ci{grid-column:2;grid-row:2;min-height:0;overflow:hidden}
+  .ps.east{grid-column:3;grid-row:2;min-height:0}
+  .ps.south{grid-column:2;grid-row:3;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;gap:1px;min-height:40px}
+  .ps.south .pnm{display:flex;align-items:center;gap:2px;flex-shrink:0}
+  .ps.south .rv{display:flex;flex-wrap:wrap;gap:1px;padding:1px 0;border-bottom:1px solid rgba(255,215,0,.06)}
+  .ps.south .md{display:flex;flex-shrink:0}
+  .ps.south .ht{flex-wrap:nowrap;overflow:visible;justify-content:flex-start;min-height:32px}
+  .act-wrap{grid-column:1/4;grid-row:4}
 
-  .ps.east,.ps.west{justify-content:flex-start;padding:4px 3px;gap:2px}
-  .ps.east .t,.ps.west .t{width:44px;height:32px}
-  .ps.east .t.s,.ps.west .t.s{width:32px;height:24px}
-  .ps.east .t.rv,.ps.west .t.rv{width:30px;height:22px;font-size:8px}
-  .ps.east .t.bk,.ps.west .t.bk{width:44px;height:32px}
-  .ps.east .t.s.bk,.ps.west .t.s.bk{width:32px;height:24px}
-  .ps.east .md,.ps.west .md{max-height:18px}
-  .ps.east .ht,.ps.west .ht{flex-direction:column;flex-wrap:nowrap;max-height:120px;overflow-y:auto;align-items:center}
-  .ps.east .rv,.ps.west .rv{flex-direction:column;flex-wrap:nowrap;max-height:120px;overflow-y:auto;align-items:center}
-  .ps.east .pnm,.ps.west .pnm{font-size:8px;margin-bottom:1px}
+  .t{width:20px;height:28px;font-size:8px}
+  .t .fv .nm{font-size:9px}.t .fv .sm{font-size:3px}
+  .t.s{width:20px;height:28px;font-size:8px}
+  .t.s .fv .nm{font-size:9px}.t.s .fv .sm{font-size:3px}
+  .t.xs{width:20px;height:28px;font-size:8px}
+  .t.xs .fv .nm{font-size:9px}.t.xs .fv .sm{font-size:3px}
+  .t.rv{width:20px;height:28px;font-size:8px}
+  .t.rv .fv .nm{font-size:9px}.t.rv .fv .sm{font-size:3px}
 
-  .act{padding:3px 8px 4px;gap:4px}
-  .ab{padding:4px 14px;font-size:11px}
+  .ps.east .t,.ps.west .t,.ps.east .t.s,.ps.west .t.s,.ps.east .t.xs,.ps.west .t.xs,.ps.east .t.rv,.ps.west .t.rv,.ps.east .t.bk,.ps.west .t.bk,.ps.east .t.s.bk,.ps.west .t.s.bk{width:20px;height:28px}
+  .ps.east,.ps.west{justify-content:flex-start;padding:2px 4px;gap:0;flex-direction:row}
+  .ps.east .pnm,.ps.west .pnm{font-size:8px;display:flex;align-items:center;gap:2px;writing-mode:vertical-rl;flex-shrink:0}
+  .ps.east{flex-direction:row-reverse}
+  .ps.east .rv,.ps.west .rv{display:flex;flex-wrap:wrap;flex-direction:column;gap:1px;padding:2px;border-left:1px solid rgba(255,215,0,.06);margin-left:2px}
+  .ps.east .rv{border-left:none;border-right:1px solid rgba(255,215,0,.06);margin-left:0;margin-right:2px}
+  .ps.east .md,.ps.west .md{display:flex;flex-direction:column;gap:1px;min-height:0}
+  .ps.east .ht,.ps.west .ht{flex-direction:column;flex-wrap:nowrap;overflow:visible;align-items:center}
+  .ps.east .mg,.ps.west .mg{display:flex;flex-direction:column;align-items:center}
+  .ps.east .mg .t,.ps.west .mg .t{margin-left:0;margin:-3px 0}
+  .ps.east .mg .t:first-child,.ps.west .mg .t:first-child{margin-top:0}
+  .ps.east .mg .t:last-child,.ps.west .mg .t:last-child{margin-bottom:0}
+  .ps.east .mg .t{transform:rotate(-90deg)}
+  .ps.west .mg .t{transform:rotate(90deg)}
+  .ps.east .ht .t,.ps.west .ht .t{margin:-4px 0}
+  .ps.east .ht .t{transform:rotate(-90deg)}
+  .ps.west .ht .t{transform:rotate(90deg)}
+  .ps.east .ht .t.bk{transform:rotate(-90deg)}
+  .ps.west .ht .t.bk{transform:rotate(90deg)}
+  .ps.east .rv .t{transform:rotate(-90deg);margin:-4px 0}
+  .ps.west .rv .t{transform:rotate(90deg);margin:-4px 0}
 
-  .ol{min-width:200px;padding:14px 20px}.ol .rt{font-size:16px}
-  .win-text{font-size:36px;letter-spacing:4px}
+  .act{padding:4px 8px 6px;gap:4px}
+  .ab{padding:4px 12px;font-size:11px}
+
+  .ol{min-width:240px;padding:16px 24px}.ol .rt{font-size:16px}
+  .win-text{font-size:32px;letter-spacing:3px}
 
   .ci .ng button{padding:2px 8px;font-size:9px}
 }
@@ -537,12 +691,6 @@ body{
 /* Desktop: no rotation */
 @media(min-width:1024px){
   body{
-    transform:none!important;
-    width:100vw!important;
-    height:100vh!important;
-    position:relative!important;
-    top:auto!important;
-    left:auto!important;
     overflow:hidden!important;
   }
 }
@@ -586,29 +734,35 @@ body{
 
 <div class="hdr">
   <div class="hl">
-    <h1>🀄 卡五星</h1>
+    <button class="rules-btn" onclick="toggleRules()">👆 番数</button>
+    <h1>🀄 卡五星天胡版</h1>
     <span class="wall" id="wc">牌墙: 52张</span>
+    <span style="font-size:8px;color:rgba(255,255,255,.4);margin-top:2px">作者:胡老板</span>
   </div>
   <div class="scr">
-    <div class="si"><span class="d" style="background:#f5d680"></span><span class="lb">南</span><span class="v hl" id="s0">¥10000</span></div>
-    <div class="si"><span class="d" style="background:#e87040"></span><span class="lb">东</span><span class="v" id="s1">¥10000</span></div>
-    <div class="si"><span class="d" style="background:#60c878"></span><span class="lb">西</span><span class="v" id="s2">¥10000</span></div>
+    <div class="si"><span class="d" style="background:#f5d680"></span><span class="lb">南(雀神)</span><span class="v hl" id="s0">¥10000</span></div>
+    <div class="si"><span class="d" style="background:#e87040"></span><span class="lb">东(胡子哥)</span><span class="v" id="s1">¥10000</span></div>
+    <div class="si"><span class="d" style="background:#60c878"></span><span class="lb">西(悦子哥)</span><span class="v" id="s2">¥10000</span></div>
+  </div>
+</div>
+
+<div class="rules-overlay" id="rulesOverlay" onclick="if(event.target===this)toggleRules()">
+  <div class="rules-panel">
+    <button class="rules-close" onclick="toggleRules()">✕</button>
+    <div class="rules-title">📖 番数规则</div>
+    <div class="rules-list" id="rulesList"></div>
   </div>
 </div>
 
 <div class="main" id="main">
   <div class="table-edge"></div>
-  <span class="dir-badge dir-n">北</span>
-  <span class="dir-badge dir-s">南</span>
-  <span class="dir-badge dir-e">东</span>
-  <span class="dir-badge dir-w">西</span>
 
   <!-- 北(上): 无人, 仅方位标记 -->
   <div class="ps north" id="ps-north">北</div>
 
   <!-- 西(左): AI-2 -->
   <div class="ps west" id="ps2">
-    <div class="pnm"><span class="d" style="background:#60c878"></span>西·AI-2 <span class="st" id="a2s"></span></div>
+    <div class="pnm"><span class="d" style="background:#60c878"></span>悦子哥 <span class="st" id="a2s"></span></div>
     <div class="md" id="a2m"></div>
     <div class="ht" id="a2t"></div>
     <div class="rv" id="a2r"></div>
@@ -616,17 +770,15 @@ body{
 
   <div class="ci">
     <div class="ti" id="ti"></div>
-    <div class="ng"><button onclick="newGame()">↻</button></div>
     <div class="ol" id="ol">
       <div class="rt" id="rtitle"></div>
       <div class="rd" id="rdetail"></div>
-      <button class="ng" onclick="newGame()">↻ 再来一局</button>
     </div>
   </div>
 
   <!-- 东(右): AI-1 -->
   <div class="ps east" id="ps1">
-    <div class="pnm"><span class="d" style="background:#e87040"></span>东·AI-1 <span class="st" id="a1s"></span></div>
+    <div class="pnm"><span class="d" style="background:#e87040"></span>胡子哥 <span class="st" id="a1s"></span></div>
     <div class="md" id="a1m"></div>
     <div class="ht" id="a1t"></div>
     <div class="rv" id="a1r"></div>
@@ -637,10 +789,12 @@ body{
     <div class="rv" id="p0r"></div>
     <div class="md" id="p0m"></div>
     <div class="ht" id="p0t"></div>
-    <div class="pnm" style="margin-top:3px"><span class="d" style="background:#f5d680"></span>南·你 <span class="st" id="p0s"></span></div>
+    <div class="pnm" style="margin-top:3px"><span class="d" style="background:#f5d680"></span>雀神 <span class="st" id="p0s"></span></div>
   </div>
 
   <div class="act act-wrap">
+    <div class="ting-hint" id="tingHint"></div>
+    <span id="huFan" class="hu-fan"></span>
     <button class="ab dgr" id="bHu" onclick="doHu()">🏆 胡</button>
     <button class="ab sec" id="bPeng" onclick="doPeng()">碰</button>
     <button class="ab inf" id="bGang" onclick="doGang()">杠</button>
@@ -652,7 +806,6 @@ body{
   </div>
 </div>
 
-<script src="tiles/tile_img.js"></script>
 <script>
 // ════════════════════════════════════════════════
 //  WIN EFFECT SYSTEM
@@ -777,7 +930,7 @@ function waits(h){
 // ═══════════════════════════════════════════════
 //  SCORING
 // ═══════════════════════════════════════════════
-const PV={'碰碰胡':2,'明四归':2,'卡五星':2,'暗四归':4,'清一色':4,'手抓一':4,'小三元':4,'大三元':8,
+const PV={'碰碰胡':2,'明四归':2,'卡五星':2,'暗四归':4,'清一色':4,'手抓一':4,'单吊五':2,'亮倒':2,'杠上开花':4,'小三元':4,'大三元':8,
   '七对':4,'龙七对':8,'双龙七对':16,'超超豪华七对':128,
   '三元七对':32,'龙三元七对':256,'双龙三元七对':512,
   '清七对':16,'清碰碰胡':8,'清龙七对':32,'清双龙七对':64,'清超超豪华七对':512};
@@ -836,7 +989,7 @@ function calcLD(patterns,isSelf,isKongDraw,isLast,isLDWinner,isLDPayer){
 //  GAME STATE
 // ═══════════════════════════════════════════════
 const G={
-  players:[{h:[],m:[],d:[],s:10000,n:'南·你'},{h:[],m:[],d:[],s:10000,n:'东·AI-1'},{h:[],m:[],d:[],s:10000,n:'西·AI-2'}],
+  players:[{h:[],m:[],d:[],s:10000,n:'雀神'},{h:[],m:[],d:[],s:10000,n:'胡子哥'},{h:[],m:[],d:[],s:10000,n:'悦子哥'}],
   cur:0,dealer:0,wall:[],last:null,lastP:-1,
   phase:'idle',pend:null,over:false,rnd:0,
   lastDrawn:null,waitingClaim:false,
@@ -849,10 +1002,12 @@ const G={
 // ═══════════════════════════════════════════════
 function optimizeStartHands(){
   for(let i=0;i<3;i++){G.wall.push(...G.players[i].h);G.players[i].h=[]}
-  G.players[0].h=genOpt(16,128);if(G.dealer!==0&&G.players[0].h.length===14){G.wall.push(G.players[0].h.pop())}
-  G.players[1].h=genOpt(2,16);if(G.dealer!==1&&G.players[1].h.length===14){G.wall.push(G.players[1].h.pop())}
-  G.players[2].h=genOpt(2,16);if(G.dealer!==2&&G.players[2].h.length===14){G.wall.push(G.players[2].h.pop())}
-  toast('💡 起手牌优化: 南→16~128番 | 东西→2~16番');
+  G.players[0].h=genOpt(4,32);if(G.dealer!==0&&G.players[0].h.length===14){G.wall.push(G.players[0].h.pop())}
+  G.players[1].h=takeN(13);if(G.dealer!==1&&G.players[1].h.length===14){G.wall.push(G.players[1].h.pop())}
+  G.players[2].h=takeN(13);if(G.dealer!==2&&G.players[2].h.length===14){G.wall.push(G.players[2].h.pop())}
+  // 庄家起手14张(多一张), 其余13张, 与发牌动画张数对齐, 防止越界
+  for(let i=0;i<3;i++){var want=i===G.dealer?14:13;while(G.players[i].h.length<want&&G.wall.length>0)G.players[i].h.push(G.wall.pop());while(G.players[i].h.length>want)G.wall.push(G.players[i].h.pop())}
+  toast('💡 起手牌: 南→高番牌 | 东西→随机');
 }
 function genOpt(mn,mx){
   const tgt=genWin(mn,mx);
@@ -1052,6 +1207,24 @@ function dealAnimation(onComplete){
 // ═══════════════════════════════════════════════
 //  GAME FLOW
 // ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+//  RULES PANEL
+// ═══════════════════════════════════════════════
+function toggleRules(){
+  var el=document.getElementById('rulesOverlay');
+  if(el.classList.contains('on')){el.classList.remove('on');return}
+  var list=document.getElementById('rulesList');
+  list.innerHTML='';
+  var sorted=Object.entries(PV).sort(function(a,b){return a[1]-b[1]});
+  for(var i=0;i<sorted.length;i++){
+    var item=document.createElement('div');
+    item.className='rules-item';
+    item.innerHTML='<span class="rname">'+sorted[i][0]+'</span><span class="rfan">×'+sorted[i][1]+'番</span>';
+    list.appendChild(item);
+  }
+  el.classList.add('on');
+}
+
 function newGame(){
   const ol=document.getElementById('ol');if(ol)ol.classList.remove('on');
   G.over=false;G.waitingClaim=false;G.ld=[null,null,null];G.passed=[false,false,false];
@@ -1069,8 +1242,31 @@ function newGame(){
   for(let i=0;i<3;i++){rScore(i);rRiver(i);document.getElementById(HAND_IDS[i]).innerHTML='';rMelds(i)}
   updSt();
   dealAnimation(function(){
-    // 发牌完成后开始游戏
-    G.dealer===0?(setPhase('discard',0),render()):(setPhase('draw',G.dealer),render(),setTimeout(()=>aiTurn(G.dealer),500));
+    // 发牌完成后检测天湖地湖
+    if(canWin(G.players[G.dealer].h)){
+      // 庄家起手胡牌 = 天湖
+      const pat=detect(G.players[G.dealer].h,null,[]);
+      if(!pat.includes('天湖'))pat.push('天湖');
+      execWin(G.dealer,null,-2,true,pat);
+      return;
+    }
+    if(G.dealer===0){
+      // 庄家是玩家: 检查胡牌/杠牌选项
+      G.lastDrawn=G.players[0].h[G.players[0].h.length-1];
+      G.players[0].h=srt(G.players[0].h);
+      if(canWin(G.players[0].h)){
+        G.phase='action';hideBtns();
+        document.getElementById('bHu').classList.add('on');
+        setHuFan(G.players[0].h,G.lastDrawn,true);
+        document.getElementById('bPass').classList.add('on');
+        setPhase('action',0);render();return;
+      }
+      const anGang=findAnGang(0),buGang=findBuGang(0);
+      if(anGang||buGang){showAnGangBtns(anGang,buGang);G.phase='action';setPhase('action',0);render();return}
+      setPhase('discard',0);render();
+    }else{
+      setPhase('draw',G.dealer);render();setTimeout(()=>aiTurn(G.dealer),500);
+    }
   });
 }
 
@@ -1131,44 +1327,34 @@ function drawTileFace(ctx,t,W,H,sz){
 
 ﻿// ═══ TONG (筒子) — Classic Chinese mahjong circles ═══
 // Spec: 红色/青绿色/深蓝色 圆圈, 经典布局
+function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath()}
+
+// ═══ 筒子 ═══
+// 一筒: 中心红点，外蓝圈，再外绿圈
+// 三筒: 红绿蓝
+// 四筒: 上绿下蓝
+// 五筒: 四筒+中心红
+// 六筒: 上绿下红
+// 七筒: 上三绿斜排+下四红
 function drawTong(ctx,n,W,H,sz){
-  var baseR=sz==='xs'?4.0:sz==='s'?5.0:sz==='rv'?5.4:7.2;
+  var baseR=sz==='xs'?4.0:sz==='s'?5.0:sz==='rv'?5.4:7.0;
   var R=n===1?baseR*1.6:n<=4?baseR:n<=6?baseR*0.9:baseR*0.82;
-  // Classic colors per spec: red, cyan-green, dark blue
-  var CR='#d42020';   // 红色
-  var CG='#1a8a4a';   // 青绿色
-  var CB='#1a3a8a';   // 深蓝色
-  // Layout positions
+  var CR='#d42020',CG='#1a8a4a',CB='#1a3a8a';
   var layouts={
     1:[[.5,.5]],
     2:[[.5,.28],[.5,.72]],
-    3:[[.32,.22],[.5,.5],[.68,.78]],
+    3:[[.35,.25],[.5,.55],[.65,.8]],
     4:[[.33,.28],[.67,.28],[.33,.72],[.67,.72]],
     5:[[.33,.25],[.67,.25],[.5,.5],[.33,.75],[.67,.75]],
     6:[[.33,.2],[.67,.2],[.33,.5],[.67,.5],[.33,.8],[.67,.8]],
-    7:[[.33,.17],[.5,.17],[.67,.17],[.28,.52],[.72,.52],[.28,.83],[.72,.83]],
-    8:[[.22,.26],[.42,.26],[.58,.26],[.78,.26],[.22,.74],[.42,.74],[.58,.74],[.78,.74]],
+    7:[[.4048,.1429],[.4048,.3214],[.6667,.5000],[.4048,.6786],[.7381,.6786],[.4048,.8571],[.7381,.8571]],
+    8:[[.35,.18],[.35,.39],[.35,.61],[.35,.82],[.65,.18],[.65,.39],[.65,.61],[.65,.82]],
     9:[[.28,.17],[.5,.17],[.72,.17],[.28,.5],[.5,.5],[.72,.5],[.28,.83],[.5,.83],[.72,.83]]
   };
-  // Color assignments per spec:
-  // 1筒: 外圈红 内圈青绿 花瓣纹样
-  // 2筒: 上红 下青绿
-  // 3筒: 上青绿 中红 下深蓝
-  // 4筒: 左上青绿 右上深蓝 左下深蓝 右下青绿
-  // 5筒: 四角两青绿两深蓝 中心红 (骰子五点)
-  // 6筒: 左列青绿 右列红
-  // 7筒: 上三角红 下方阵青绿深蓝相间
-  // 8筒: 青绿深蓝交替
-  // 9筒: 第一排深蓝 第二排红 第三排青绿
   var colorMaps={
-    1:[CR], // special: handled below
-    2:[CR,CG],
-    3:[CG,CR,CB],
-    4:[CG,CB,CB,CG],
-    5:[CG,CB,CR,CG,CB],
-    6:[CG,CG,CG,CR,CR,CR],
-    7:[CR,CR,CR,CG,CB,CB,CG],
-    8:[CG,CB,CG,CB,CG,CB,CG,CB],
+    1:[CR],2:[CR,CG],3:[CR,CG,CB],4:[CG,CB,CB,CG],
+    5:[CG,CB,CR,CG,CB],6:[CG,CG,CR,CR,CR,CR],
+    7:[CB,CB,CB,CR,CR,CR,CR],8:[CB,CB,CB,CB,CB,CB,CB,CB],
     9:[CB,CB,CB,CR,CR,CR,CG,CG,CG]
   };
   var pos=layouts[n]||layouts[1];
@@ -1177,327 +1363,182 @@ function drawTong(ctx,n,W,H,sz){
     var px=pos[i][0]*W, py=pos[i][1]*H;
     var c=colors[i]||CR;
     if(n===1){
-      // 1筒: 特殊 - 大号圆 外圈红内圈青绿 花瓣纹样
+      // 一筒: 中心红点，外蓝圈，再外绿圈，蓝绿之间花瓣纹镂空连接
       var R1=R;
-      // Outer dark border
-      ctx.beginPath();ctx.arc(px,py,R1,0,Math.PI*2);
-      ctx.fillStyle='#2a2a2a';ctx.fill();
-      // Outer red ring
-      ctx.beginPath();ctx.arc(px,py,R1-0.8,0,Math.PI*2);
-      ctx.fillStyle=CR;ctx.fill();
-      // Inner cyan-green ring
-      ctx.beginPath();ctx.arc(px,py,R1*0.72,0,Math.PI*2);
-      ctx.fillStyle=CG;ctx.fill();
-      // Inner white circle
-      ctx.beginPath();ctx.arc(px,py,R1*0.48,0,Math.PI*2);
-      ctx.fillStyle='#faf8f0';ctx.fill();
-      // Petal pattern at center
-      ctx.fillStyle=CR;
-      for(var a=0;a<6;a++){
-        var angle=a*Math.PI/3;
-        var dx=px+Math.cos(angle)*R1*0.22;
-        var dy=py+Math.sin(angle)*R1*0.22;
-        ctx.beginPath();ctx.arc(dx,dy,R1*0.1,0,Math.PI*2);ctx.fill();
+      // 最外层绿色圈
+      ctx.beginPath();ctx.arc(px,py,R1,0,Math.PI*2);ctx.fillStyle=CG;ctx.fill();
+      // 花瓣纹镂空连接（蓝绿之间）
+      ctx.fillStyle='#fffff8';
+      for(var a=0;a<8;a++){
+        var angle=a*Math.PI/4;
+        var dx=px+Math.cos(angle)*R1*0.78;
+        var dy=py+Math.sin(angle)*R1*0.78;
+        ctx.beginPath();ctx.arc(dx,dy,R1*0.15,0,Math.PI*2);ctx.fill();
       }
-      // Center dot
-      ctx.beginPath();ctx.arc(px,py,R1*0.06,0,Math.PI*2);
-      ctx.fillStyle='#faf8f0';ctx.fill();
-      // Highlight
-      ctx.beginPath();ctx.arc(px-R1*0.2,py-R1*0.25,R1*0.1,0,Math.PI*2);
-      ctx.fillStyle='rgba(255,255,255,.25)';ctx.fill();
+      // 蓝色圈
+      ctx.beginPath();ctx.arc(px,py,R1*0.65,0,Math.PI*2);ctx.fillStyle=CB;ctx.fill();
+      // 中心红点
+      ctx.beginPath();ctx.arc(px,py,R1*0.22,0,Math.PI*2);ctx.fillStyle=CR;ctx.fill();
+      // 高光
+      ctx.beginPath();ctx.arc(px-R1*0.15,py-R1*0.15,R1*0.08,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,.3)';ctx.fill();
     }else{
-      // Standard circle: dark border, colored ring, white center, petal dots
-      ctx.beginPath();ctx.arc(px,py,R,0,Math.PI*2);
-      ctx.fillStyle='#2a2a2a';ctx.fill();
-      ctx.beginPath();ctx.arc(px,py,R-0.8,0,Math.PI*2);
-      ctx.fillStyle=c;ctx.fill();
-      ctx.beginPath();ctx.arc(px,py,R*0.55,0,Math.PI*2);
-      ctx.fillStyle='#faf8f0';ctx.fill();
-      ctx.beginPath();ctx.arc(px,py,R*0.55,0,Math.PI*2);
-      ctx.strokeStyle='rgba(0,0,0,.12)';ctx.lineWidth=0.4;ctx.stroke();
-      // Center petal dots
-      if(R>2.8){
-        ctx.fillStyle=c;
-        for(var a=0;a<4;a++){
-          var angle=a*Math.PI/2+Math.PI/4;
-          var dx=px+Math.cos(angle)*R*0.2;
-          var dy=py+Math.sin(angle)*R*0.2;
-          ctx.beginPath();ctx.arc(dx,dy,R*0.11,0,Math.PI*2);ctx.fill();
-        }
-        ctx.beginPath();ctx.arc(px,py,R*0.06,0,Math.PI*2);
-        ctx.fillStyle='#faf8f0';ctx.fill();
-      }
-      ctx.beginPath();ctx.arc(px-R*0.18,py-R*0.22,R*0.1,0,Math.PI*2);
-      ctx.fillStyle='rgba(255,255,255,.22)';ctx.fill();
+      ctx.beginPath();ctx.arc(px,py,R,0,Math.PI*2);ctx.fillStyle='#2a2a2a';ctx.fill();
+      ctx.beginPath();ctx.arc(px,py,R-0.8,0,Math.PI*2);ctx.fillStyle=c;ctx.fill();
+      ctx.beginPath();ctx.arc(px,py,R*0.55,0,Math.PI*2);ctx.fillStyle='#faf8f0';ctx.fill();
+      if(R>2.8){ctx.fillStyle=c;for(var a=0;a<4;a++){var angle=a*Math.PI/2+Math.PI/4;ctx.beginPath();ctx.arc(px+Math.cos(angle)*R*0.2,py+Math.sin(angle)*R*0.2,R*0.11,0,Math.PI*2);ctx.fill();}ctx.beginPath();ctx.arc(px,py,R*0.06,0,Math.PI*2);ctx.fillStyle='#faf8f0';ctx.fill();}
     }
   }
 }
-// ═══ TIAO (条子/索子) — Classic bamboo sticks ═══
-// Spec: 青绿竹条, 特定位置红色竹条, 经典对称布局
+
+// ═══ 条子 ═══
+// 镂空竹节样式
+function drawBambooStick(ctx,cx,cy,sw,sh,color){
+  var sx=cx-sw/2, sy=cy-sh/2;
+  // 竹节颜色
+  var colors={
+    green:{outer:'#2aaa4a',inner:'#1a8a3a',dark:'#0d6a28',tip:'#30c050',joint:'rgba(20,100,30,.4)'},
+    red:{outer:'#e84040',inner:'#d42828',dark:'#b01818',tip:'#e05050',joint:'rgba(200,40,40,.4)'},
+    blue:{outer:'#3070d0',inner:'#1a50a0',dark:'#104080',tip:'#3050a0',joint:'rgba(20,60,150,.4)'}
+  };
+  var c=colors[color]||colors.green;
+  // 外框
+  var g=ctx.createLinearGradient(sx,sy,sx,sy+sh);
+  g.addColorStop(0,c.outer);g.addColorStop(0.5,c.inner);g.addColorStop(1,c.dark);
+  ctx.strokeStyle=g;ctx.lineWidth=1.2;
+  roundRect(ctx,sx,sy,sw,sh,1.5);ctx.stroke();
+  // 内部镂空(白色)
+  ctx.fillStyle='#fffff8';
+  roundRect(ctx,sx+1,sy+2,sw-2,sh-4,1);ctx.fill();
+  // 竹节线
+  ctx.strokeStyle=c.joint;ctx.lineWidth=0.5;
+  for(var s=1;s<3;s++){
+    var jy=sy+sh*s/3;
+    ctx.beginPath();ctx.moveTo(sx+1,jy);ctx.lineTo(sx+sw-1,jy);ctx.stroke();
+  }
+  // 顶部叶尖
+  ctx.fillStyle=c.tip;
+  ctx.beginPath();ctx.moveTo(cx,sy-1.5);ctx.lineTo(cx-sw*.35,sy+1);ctx.lineTo(cx+sw*.35,sy+1);ctx.closePath();ctx.fill();
+}
+
 function drawTiao(ctx,n,W,H,sz){
   if(n===1){drawSparrow(ctx,W,H,sz);return;}
   var pad=sz==='xs'?2:sz==='s'?2.5:sz==='rv'?2.5:3.5;
   var aw=W-pad*2, ah=H-pad*2;
-  // Standard layout positions (same for all sizes, consistent with tong)
   var positions;
   switch(n){
-    case 2: positions=[[.5,.28],[.5,.72]];break;
-    case 3: positions=[[.5,.2],[.5,.5],[.5,.8]];break;
-    case 4: positions=[[.33,.28],[.67,.28],[.33,.72],[.67,.72]];break;
-    case 5: positions=[[.25,.25],[.75,.25],[.5,.5],[.25,.75],[.75,.75]];break;
-    case 6: positions=[[.33,.18],[.67,.18],[.33,.5],[.67,.5],[.33,.82],[.67,.82]];break;
-    case 7: positions=[[.5,.16],[.3,.48],[.5,.48],[.7,.48],[.3,.8],[.5,.8],[.7,.8]];break;
-    case 8: positions=[[.3,.2],[.5,.2],[.7,.2],[.4,.5],[.6,.5],[.3,.8],[.5,.8],[.7,.8]];break;
-    case 9: positions=[[.28,.17],[.5,.17],[.72,.17],[.28,.5],[.5,.5],[.72,.5],[.28,.83],[.5,.83],[.72,.83]];break;
+    case 2: positions=[[.5,.25],[.5,.75]];break;
+    case 3: positions=[[.5,.2],[.35,.72],[.65,.72]];break;
+    case 4: positions=[[.25,.25],[.75,.25],[.25,.75],[.75,.75]];break;
+    case 5: positions=[[.25,.22],[.75,.22],[.5,.5],[.25,.78],[.75,.78]];break;
+    case 6: positions=[[.25,.2],[.5,.2],[.75,.2],[.25,.8],[.5,.8],[.75,.8]];break;
+    case 7: positions=[[.5,.14],[.22,.5],[.5,.5],[.78,.5],[.22,.86],[.5,.86],[.78,.86]];break;
+    case 8: positions=[[.22,.14],[.5,.14],[.78,.14],[.36,.5],[.64,.5],[.22,.86],[.5,.86],[.78,.86]];break;
+    case 9: positions=[[.22,.14],[.5,.14],[.78,.14],[.22,.5],[.5,.5],[.78,.5],[.22,.86],[.5,.86],[.78,.86]];break;
     default: positions=[[.5,.5]];
   }
-  // Bamboo stick dimensions — uniform across all numbers for consistency
   var sw=sz==='xs'?2.6:sz==='s'?3.0:sz==='rv'?3.2:3.6;
-  var sh=sz==='xs'?7.5:sz==='s'?9.0:sz==='rv'?9.5:11.5;
-  // Red bamboo indices per spec:
-  // 3条: 中间红(1), 5条: 中间红(2), 7条: 上方居中红(0)
-  // 9条: 中间一列红(3,4,5)
-  var redMap={2:[],3:[1],4:[],5:[2],6:[],7:[0],8:[],9:[3,4,5]};
-  var redArr=redMap[n]||[];
-  var redSet={};
-  for(var r=0;r<redArr.length;r++) redSet[redArr[r]]=true;
+  var sh=sz==='xs'?11:sz==='s'?13:sz==='rv'?13:16;
+  // 5条中间红, 7条顶1红其余绿, 8条中间2红其余绿, 9条左绿中红右蓝
+  var colorMap={2:'green',3:'green',4:'green',5:'red5',6:'green',7:'t7',8:'t8',9:'rgb'};
+  var cm=colorMap[n]||'green';
   for(var i=0;i<positions.length;i++){
     var cx=pad+positions[i][0]*aw;
     var cy=pad+positions[i][1]*ah;
-    var sx=cx-sw/2, sy=cy-sh/2;
-    var isRed=!!redSet[i];
-    // Rich green or red gradient
-    var g=ctx.createLinearGradient(sx,sy,sx,sy+sh);
-    if(isRed){
-      g.addColorStop(0,'#e84040');g.addColorStop(0.5,'#d42828');g.addColorStop(1,'#b01818');
+    var isRed=false;
+    var isBlue=false;
+    if(cm==='red')isRed=true;
+    else if(cm==='red5'){
+      // 5条: 中间红(位置2)
+      isRed=(i===2);
+    }
+    else if(cm==='t7'){
+      // 7条: 顶1红, 中3绿, 底3绿
+      if(i===0)isRed=true;
+    }
+    else if(cm==='t8'){
+      // 8条: 中间2红(位置3,4), 上下各3绿
+      isRed=(i===3||i===4);
+    }
+    else if(cm==='rgb'){
+      // 9条: 左3绿(0,3,6), 中3红(1,4,7), 右3蓝(2,5,8)
+      if(i===1||i===4||i===7)isRed=true;
+      else if(i===2||i===5||i===8)isBlue=true;
+    }
+    if(isBlue){
+      drawBambooStick(ctx,cx,cy,sw,sh,'blue');
     }else{
-      g.addColorStop(0,'#2aaa4a');g.addColorStop(0.5,'#1a8a3a');g.addColorStop(1,'#0d6a28');
+      drawBambooStick(ctx,cx,cy,sw,sh,isRed?'red':'green');
     }
-    ctx.fillStyle=g;
-    // Rounded bamboo stick
-    ctx.beginPath();
-    ctx.moveTo(sx+1.5,sy);ctx.lineTo(sx+sw-1.5,sy);
-    ctx.quadraticCurveTo(sx+sw,sy,sx+sw,sy+1.5);
-    ctx.lineTo(sx+sw,sy+sh-1.5);
-    ctx.quadraticCurveTo(sx+sw,sy+sh,sx+sw-1.5,sy+sh);
-    ctx.lineTo(sx+1.5,sy+sh);
-    ctx.quadraticCurveTo(sx,sy+sh,sx,sy+sh-1.5);
-    ctx.lineTo(sx,sy+1.5);
-    ctx.quadraticCurveTo(sx,sy,sx+1.5,sy);
-    ctx.closePath();
-    ctx.fill();
-    ctx.strokeStyle=isRed?'#8a1010':'#084a1e';ctx.lineWidth=0.5;ctx.stroke();
-    // Inner highlight stripe
-    var hg=ctx.createLinearGradient(sx,sy,sx+sw*0.4,sy);
-    hg.addColorStop(0,'rgba(255,255,255,.2)');hg.addColorStop(1,'rgba(255,255,255,0)');
-    ctx.fillStyle=hg;
-    ctx.fillRect(sx+0.8,sy+0.8,sw*0.35,sh-1.6);
-    // Bamboo joint lines
-    ctx.strokeStyle='rgba(0,0,0,.18)';ctx.lineWidth=0.3;
-    var segments=n<=3?3:2;
-    for(var s=1;s<segments;s++){
-      var jy=sy+sh*s/segments;
-      ctx.beginPath();ctx.moveTo(sx+0.5,jy);ctx.lineTo(sx+sw-0.5,jy);ctx.stroke();
-    }
-    // Top leaf tip
-    ctx.fillStyle=isRed?'#e05050':'#30c050';
-    ctx.beginPath();
-    ctx.moveTo(cx,sy-1.2);ctx.lineTo(cx-sw*.35,sy+1.2);ctx.lineTo(cx+sw*.35,sy+1.2);
-    ctx.closePath();ctx.fill();
-    ctx.strokeStyle=isRed?'#8a1010':'#084a1e';ctx.lineWidth=0.3;ctx.stroke();
   }
 }
-// 1条(幺鸡) — Classic bird on branch
+
+// 1条 — 侧面视图蓝色麻雀(鸟头朝右，红色尾巴红色眼睛，拉高变瘦)
 function drawSparrow(ctx,W,H,sz){
-  var s=sz==='xs'?0.45:sz==='s'?0.55:sz==='rv'?0.55:0.75;
+  var s=sz==='xs'?0.7:sz==='s'?0.8:sz==='rv'?0.8:1.1;
   var cx=W/2,cy=H/2;
-  ctx.save();
-  ctx.translate(cx,cy);
-  ctx.scale(s,s);
-  // Branch (竹枝)
-  ctx.fillStyle='#1a7a3a';
-  ctx.strokeStyle='#0a5a28';
-  ctx.lineWidth=0.8;
-  roundRect(ctx,-15,11,30,3,1.5);
-  ctx.fill();ctx.stroke();
-  // Small leaf on branch right
-  ctx.fillStyle='#28b050';
-  ctx.beginPath();
-  ctx.moveTo(12,12);
-  ctx.quadraticCurveTo(18,6,22,9);
-  ctx.quadraticCurveTo(18,13,12,12);
-  ctx.fill();
-  // Small leaf on branch left
-  ctx.fillStyle='#20a048';
-  ctx.beginPath();
-  ctx.moveTo(-10,12);
-  ctx.quadraticCurveTo(-16,5,-19,8);
-  ctx.quadraticCurveTo(-15,12,-10,12);
-  ctx.fill();
-  // Body — classic mahjong green bird shape
-  ctx.fillStyle='#1a8a4a';
-  ctx.beginPath();
-  ctx.ellipse(0,3,9,13,0,0,Math.PI*2);
-  ctx.fill();
-  ctx.strokeStyle='#0a6a30';
-  ctx.lineWidth=0.7;
-  ctx.stroke();
-  // Wing (left - darker green)
-  ctx.fillStyle='#148040';
-  ctx.beginPath();
-  ctx.ellipse(-5,2,6,9,-0.25,0,Math.PI*2);
-  ctx.fill();
-  // Wing highlight
-  ctx.fillStyle='#20a858';
-  ctx.beginPath();
-  ctx.ellipse(5,1,5.5,8.5,0.2,0,Math.PI*2);
-  ctx.fill();
-  // Wing feather lines
-  ctx.strokeStyle='rgba(0,0,0,.12)';
-  ctx.lineWidth=0.3;
-  for(var f=0;f<3;f++){
-    var fy=-3+f*4;
-    ctx.beginPath();
-    ctx.moveTo(-4,fy);ctx.lineTo(-8,fy+3);ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(4,fy);ctx.lineTo(8,fy+3);ctx.stroke();
-  }
-  // Head
-  ctx.fillStyle='#1a8a4a';
-  ctx.beginPath();
-  ctx.arc(0,-7,5.5,0,Math.PI*2);
-  ctx.fill();
-  // Crown/crest (绿色小羽冠)
-  ctx.fillStyle='#10a040';
-  ctx.beginPath();
-  ctx.moveTo(0,-12.5);
-  ctx.lineTo(-2.5,-17);
-  ctx.lineTo(0,-14);
-  ctx.lineTo(2.5,-17);
-  ctx.closePath();
-  ctx.fill();
-  // Eye whites
-  ctx.fillStyle='#f8f6e8';
-  ctx.beginPath();ctx.arc(-2.5,-8,2,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.arc(2.5,-8,2,0,Math.PI*2);ctx.fill();
-  // Pupils
-  ctx.fillStyle='#1a1a1a';
-  ctx.beginPath();ctx.arc(-2.3,-8,1,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.arc(2.7,-8,1,0,Math.PI*2);ctx.fill();
-  // Eye shine
-  ctx.fillStyle='rgba(255,255,255,.6)';
-  ctx.beginPath();ctx.arc(-2.8,-8.5,0.5,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.arc(2.2,-8.5,0.5,0,Math.PI*2);ctx.fill();
-  // Beak — orange/red
-  ctx.fillStyle='#d48020';
-  ctx.beginPath();
-  ctx.moveTo(-1.5,-5.5);
-  ctx.lineTo(0,-3.5);
-  ctx.lineTo(1.5,-5.5);
-  ctx.closePath();
-  ctx.fill();
-  // Tail feathers — layered
-  // Left tail
-  ctx.fillStyle='#0d6a28';
-  ctx.beginPath();
-  ctx.moveTo(-3,13);
-  ctx.quadraticCurveTo(-10,18,-6,23);
-  ctx.lineTo(-1,15);
-  ctx.closePath();
-  ctx.fill();
-  // Right tail
-  ctx.fillStyle='#0d6a28';
-  ctx.beginPath();
-  ctx.moveTo(3,13);
-  ctx.quadraticCurveTo(10,18,6,23);
-  ctx.lineTo(1,15);
-  ctx.closePath();
-  ctx.fill();
-  // Center tail — darker
-  ctx.fillStyle='#084a18';
-  ctx.beginPath();
-  ctx.moveTo(-1,13);
-  ctx.quadraticCurveTo(-1,20,0,24);
-  ctx.quadraticCurveTo(1,20,1,13);
-  ctx.closePath();
-  ctx.fill();
-  // Feet
-  ctx.strokeStyle='#b07020';
-  ctx.lineWidth=0.6;
-  ctx.beginPath();ctx.moveTo(-2,14);ctx.lineTo(-3,17);ctx.lineTo(-5,18);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(-2,14);ctx.lineTo(-2,18);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(-2,14);ctx.lineTo(0,18);ctx.lineTo(2,19);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(2,14);ctx.lineTo(3,17);ctx.lineTo(5,18);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(2,14);ctx.lineTo(2,18);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(2,14);ctx.lineTo(4,18);ctx.lineTo(6,19);ctx.stroke();
+  ctx.save();ctx.translate(cx,cy);ctx.scale(s,s);
+  // 竹枝
+  ctx.fillStyle='#1a7a3a';ctx.strokeStyle='#0a5a28';ctx.lineWidth=0.8;
+  roundRect(ctx,-18,14,36,3,1.5);ctx.fill();ctx.stroke();
+  // 叶子
+  ctx.fillStyle='#28b050';ctx.beginPath();ctx.moveTo(14,15);ctx.quadraticCurveTo(22,8,26,11);ctx.quadraticCurveTo(22,16,14,15);ctx.fill();
+  ctx.fillStyle='#20a048';ctx.beginPath();ctx.moveTo(-12,15);ctx.quadraticCurveTo(-20,7,-23,10);ctx.quadraticCurveTo(-19,15,-12,15);ctx.fill();
+  // 身体(蓝色，瘦长)
+  var bodyG=ctx.createLinearGradient(-8,-10,8,12);
+  bodyG.addColorStop(0,'#2060c0');bodyG.addColorStop(0.5,'#1a50a0');bodyG.addColorStop(1,'#104080');
+  ctx.fillStyle=bodyG;ctx.beginPath();ctx.ellipse(0,2,7,13,0,0,Math.PI*2);ctx.fill();
+  // 翅膀(蓝色渐变)
+  var wingG=ctx.createLinearGradient(-6,-5,4,8);
+  wingG.addColorStop(0,'#3070d0');wingG.addColorStop(0.5,'#2060c0');wingG.addColorStop(1,'#1050a0');
+  ctx.fillStyle=wingG;ctx.beginPath();ctx.ellipse(-2,0,6,10,-0.15,0,Math.PI*2);ctx.fill();
+  // 翅膀纹理
+  ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=0.4;
+  for(var f=0;f<3;f++){var fy=-4+f*4;ctx.beginPath();ctx.moveTo(-4,fy);ctx.lineTo(3,fy+2.5);ctx.stroke();}
+  // 头(蓝色)
+  ctx.fillStyle='#2060c0';ctx.beginPath();ctx.arc(5,-8,5,0,Math.PI*2);ctx.fill();
+  // 嘴(红色)
+  ctx.fillStyle='#d03030';ctx.beginPath();ctx.moveTo(9,-9);ctx.lineTo(14,-7);ctx.lineTo(9,-5);ctx.closePath();ctx.fill();
+  // 眼睛(红色)
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(7,-9,1.8,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#d03030';ctx.beginPath();ctx.arc(8,-9,0.9,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(7.5,-9.5,0.4,0,Math.PI*2);ctx.fill();
+  // 羽冠(蓝色)
+  ctx.fillStyle='#1050a0';ctx.beginPath();ctx.moveTo(3,-12);ctx.lineTo(0,-16);ctx.lineTo(4,-13);ctx.lineTo(1,-15);ctx.lineTo(5,-12);ctx.closePath();ctx.fill();
+  // 尾羽(红色)
+  ctx.fillStyle='#d04040';ctx.beginPath();ctx.moveTo(-6,10);ctx.quadraticCurveTo(-12,14,-8,20);ctx.lineTo(-2,13);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#e06030';ctx.beginPath();ctx.moveTo(-4,11);ctx.quadraticCurveTo(-8,15,-5,18);ctx.lineTo(1,13);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#c03030';ctx.beginPath();ctx.moveTo(-1,10);ctx.quadraticCurveTo(-4,14,-2,16);ctx.lineTo(3,12);ctx.closePath();ctx.fill();
+  // 脚
+  ctx.strokeStyle='#b07020';ctx.lineWidth=0.6;
+  ctx.beginPath();ctx.moveTo(-2,15);ctx.lineTo(-3,18);ctx.lineTo(-5,19);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(-2,15);ctx.lineTo(-2,19);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(2,15);ctx.lineTo(3,18);ctx.lineTo(5,19);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(2,15);ctx.lineTo(2,19);ctx.stroke();
   ctx.restore();
-}function drawHon(ctx,val,W,H,sz){
+}
+
+// ═══ 字牌 ═══
+function drawHon(ctx,val,W,H,sz){
+  var pad=sz==='xs'?3:sz==='s'?4:sz==='rv'?4.5:7;
   if(val==='zhong'){
-    // 红中: red background frame + large red 中 character
-    var pad=sz==='xs'?3:sz==='s'?4:sz==='rv'?4.5:7;
-    // Inner colored rectangle
-    ctx.fillStyle='#d42020';
-    roundRect(ctx,pad,pad,W-pad*2,H-pad*2,2);
-    ctx.fill();
-    // Inner dark border
-    ctx.strokeStyle='#a01010';
-    ctx.lineWidth=0.8;
-    roundRect(ctx,pad+1.5,pad+1.5,W-pad*2-3,H-pad*2-3,1.5);
-    ctx.stroke();
-    // Center 中 character
-    var fs=sz==='xs'?10:sz==='s'?12:sz==='rv'?12:18;
-    ctx.font='900 '+fs+'px "Noto Serif SC","SimSun","STSong","Microsoft YaHei",serif';
-    ctx.fillStyle='#fffff0';
-    ctx.textAlign='center';ctx.textBaseline='middle';
+    var fs=sz==='xs'?22:sz==='s'?24:sz==='rv'?24:32;
+    ctx.font='900 '+fs+'px "SimSun","STSong","Microsoft YaHei",serif';
+    ctx.fillStyle='#d42020';ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.fillText('中',W/2,H/2+1);
-    // Subtle highlight
-    ctx.fillStyle='rgba(255,255,255,.08)';
-    ctx.fillRect(pad+2,pad+2,W-pad*2-4,(H-pad*2)*0.3);
   }else if(val==='fa'){
-    // 发财: green background frame + large green 發 character
-    var pad=sz==='xs'?3:sz==='s'?4:sz==='rv'?4.5:7;
-    ctx.fillStyle='#1a8a3a';
-    roundRect(ctx,pad,pad,W-pad*2,H-pad*2,2);
-    ctx.fill();
-    ctx.strokeStyle='#0d6a28';
-    ctx.lineWidth=0.8;
-    roundRect(ctx,pad+1.5,pad+1.5,W-pad*2-3,H-pad*2-3,1.5);
-    ctx.stroke();
-    var fs=sz==='xs'?10:sz==='s'?12:sz==='rv'?12:18;
-    ctx.font='900 '+fs+'px "Noto Serif SC","SimSun","STSong","Microsoft YaHei",serif';
-    ctx.fillStyle='#fffff0';
-    ctx.textAlign='center';ctx.textBaseline='middle';
+    var fs=sz==='xs'?22:sz==='s'?24:sz==='rv'?24:32;
+    ctx.font='900 '+fs+'px "SimSun","STSong","Microsoft YaHei",serif';
+    ctx.fillStyle='#1a8a3a';ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.fillText('發',W/2,H/2+1);
-    ctx.fillStyle='rgba(255,255,255,.08)';
-    ctx.fillRect(pad+2,pad+2,W-pad*2-4,(H-pad*2)*0.3);
   }else if(val==='bai'){
-    // 白板: ivory white with thin border, optional subtle inner frame
-    var pad=sz==='xs'?3:sz==='s'?4:sz==='rv'?4.5:7;
-    // Subtle gradient background for white tile
     var g=ctx.createLinearGradient(0,pad,0,H-pad);
     g.addColorStop(0,'#fffff5');g.addColorStop(1,'#f8f4e8');
-    ctx.fillStyle=g;
-    roundRect(ctx,pad,pad,W-pad*2,H-pad*2,2);
-    ctx.fill();
-    // Thin dark border
-    ctx.strokeStyle='#b0a890';
-    ctx.lineWidth=0.8;
-    roundRect(ctx,pad,pad,W-pad*2,H-pad*2,2);
-    ctx.stroke();
-    // Inner decorative line
-    ctx.strokeStyle='rgba(160,150,130,.3)';
-    ctx.lineWidth=0.4;
-    roundRect(ctx,pad+2.5,pad+2.5,W-pad*2-5,H-pad*2-5,1);
-    ctx.stroke();
+    ctx.fillStyle=g;roundRect(ctx,pad,pad,W-pad*2,H-pad*2,2);ctx.fill();
+    ctx.strokeStyle='#b0a890';ctx.lineWidth=0.8;roundRect(ctx,pad,pad,W-pad*2,H-pad*2,2);ctx.stroke();
+    ctx.strokeStyle='rgba(160,150,130,.3)';ctx.lineWidth=0.4;roundRect(ctx,pad+2.5,pad+2.5,W-pad*2-5,H-pad*2-5,1);ctx.stroke();
   }
-}function roundRect(ctx,x,y,w,h,r){
-  ctx.beginPath();
-  ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
-  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
-  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
-  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);
-  ctx.closePath();
 }
+
 function mkMeld(ts){
   const g=document.createElement('span');g.className='mg';
   for(const t of ts)g.appendChild(mkTile(t,{size:'xs'}));
@@ -1542,6 +1583,7 @@ function discard(pi,tile){
   if(idx===-1)return false;
   p.h.splice(idx,1);p.d.push(tile);
   G.last=tile;G.lastP=pi;
+  if(pi===0)updateTingHint(0);
   checkClaims(pi,tile);
   return true;
 }
@@ -1571,6 +1613,7 @@ function checkClaims(dp,tile){
     G.phase='action';G.pend={tile,from:dp};G.waitingClaim=true;
     const hu=byP[0].some(c=>c.type==='hu'),peng=byP[0].some(c=>c.type==='peng'),gang=byP[0].some(c=>c.type==='gang');
     showBtns(hu,peng&&!hu,gang&&!hu);
+    if(hu){setHuFan([...G.players[0].h,tile],tile,false);}else{clearHuFan();}
     setPhase('action',0);render();
     if(hu&&!G.ld[dp]){const sc=calc(detect([...G.players[0].h,tile],tile,G.players[0].m),false,false,G.wall.length===0);if(sc===null)setTimeout(()=>{if(G.pend&&G.waitingClaim)doPass()},1200)}
   }else{handleAI(claims,tile,dp)}
@@ -1613,14 +1656,14 @@ function execGang(pi,tile,from){
   toast(p.n+' 杠！');render();
   setTimeout(()=>{if(G.over)return;const rep=draw(pi);if(!rep)return;if(canWin(p.h)){execWin(pi,rep,-2,true);return}setPhase('discard',pi);render();if(pi!==0)setTimeout(()=>aiTurn(pi),400)},300);
 }
-function execWin(pi,winTile,from,self){
+function execWin(pi,winTile,from,self,customPat){
   if(G.over)return;
   G.over=true;G.waitingClaim=false;G.pend=null;
   const p=G.players[pi];
   let h=srt([...p.h]);
-  if(h.length===13)h.push(winTile); // 点炮/抢杠时手牌13张需补入winTile
+  if(h.length===13&&winTile)h.push(winTile);
   h=srt(h);
-  const pat=detect(h,winTile,p.m);
+  const pat=customPat||detect(h,winTile,p.m);
   const isLDWinner=G.ld[pi]!==null;
   const isLDPayer=from>=0&&G.ld[from]!==null;
   const sc=calcLD(pat,self,from===-2,G.wall.length===0,isLDWinner,isLDPayer);
@@ -1639,9 +1682,7 @@ function execWin(pi,winTile,from,self){
     const px=G.ld[G.lastP]!==null?2:1;G.players[G.lastP].s-=payout*px;p.s+=payout*px;
   }
   render();
-  showResult(pi===0?'🎉 你胡牌了！':p.n.replace('南·','').replace('东·','').replace('西·','')+' 胡牌！',pi===0?'w':'l',
-    '牌型: <span class="p">'+(pat.join(' + ')||'屁胡')+'</span><br>番数: <span class="s">×'+sc+'</span>'+(self?'<br>自摸！':'<br>'+(G.players[from>=0?from:G.lastP]?.n||'对手')+'放炮')+
-    extraInfo+'<br>收入: <span style="color:#ffd700;font-weight:700">¥'+(isLDWinner&&!self?payout*2:payout)+'</span>');
+  showResultAnimate(pi, pat, self, from, payout, isLDWinner, extraInfo);
 }
 
 // ═══════════════════════════════════════════════
@@ -1663,14 +1704,19 @@ function startTurn(pi){
     if(anGang||buGang){showAnGangBtns(anGang,buGang);G.phase='action';setPhase('action',0);return}
     const h13=[...G.players[0].h],di=h13.findIndex(t=>teq(t,G.lastDrawn));if(di!==-1)h13.splice(di,1);
     const w=waits(h13);
-    if(w.length>0){document.getElementById('bLiang').classList.add('on');document.getElementById('bPass').classList.add('on');setPhase('action',0);return}
+    if(w.length>0){document.getElementById('bLiang').classList.add('on');document.getElementById('bPass').classList.add('on');setPhase('action',0);updateTingHint(0);return}
     setPhase('discard',0);render();
   }else{
     if(G.ld[pi]){
       // 亮倒后: 只能摸牌打出(除非胡), 不改变牌型
       setTimeout(()=>aiTurn(pi),400);return
     }
-    if(canWin(G.players[pi].h)){execWin(pi,G.lastDrawn,-2,true);return}
+    if(canWin(G.players[pi].h)){
+      // 检测地湖: 闲家第一轮摸牌胡牌
+      const pat=detect(G.players[pi].h,G.lastDrawn,G.players[pi].m);
+      if(!pat.includes('地湖')&&!pat.includes('天湖')&&G.rnd===1&&pi!==G.dealer)pat.push('地湖');
+      execWin(pi,G.lastDrawn,-2,true,pat);return
+    }
     const h13=[...G.players[pi].h],di=h13.findIndex(t=>teq(t,G.lastDrawn));if(di!==-1)h13.splice(di,1);
     const w=waits(h13);
     if(w.length>0&&Math.random()<0.35){setTimeout(()=>execLiang(pi),500);return}
@@ -1717,6 +1763,7 @@ function execLiang(pi){
   G.ld[pi]={waits:w,revealed:revealed};hideBtns();
   toast(G.players[pi].n+' 亮倒！等: '+w.map(t=>tdisp(t)+tdispSuit(t)).join(','));
   setPhase('discard',pi);render();
+  updateTingHint(0);
   if(pi!==0)setTimeout(()=>aiTurn(pi),500);
 }
 function isProtectedTile(pi,tile){for(let i=0;i<3;i++){if(i===pi||!G.ld[i])continue;if(G.ld[i].waits.some(t=>teq(t,tile)))return true}return false}
@@ -1748,13 +1795,25 @@ function aiPick(pi){
 // ═══════════════════════════════════════════════
 //  PLAYER ACTIONS
 // ═══════════════════════════════════════════════
+function setHuFan(hand,winTile,isSelf){
+  var el=document.getElementById('huFan');if(!el)return;
+  var pat=detect(hand,winTile,G.players[0].m);
+  var fan=calc(pat,isSelf,false,G.wall.length===0);
+  if(fan===null){el.textContent='';el.classList.remove('on');return;}
+  el.textContent=fan+'番';el.classList.add('on');
+}
+function clearHuFan(){var el=document.getElementById('huFan');if(el){el.textContent='';el.classList.remove('on');}}
 function showBtns(hu,peng,gang){
   document.getElementById('bHu').classList.toggle('on',hu);
   document.getElementById('bPeng').classList.toggle('on',peng);
   document.getElementById('bGang').classList.toggle('on',gang);
   document.getElementById('bPass').classList.toggle('on',hu||peng||gang);
 }
-function hideBtns(){['bHu','bPeng','bGang','bAnGang','bBuGang','bLiang','bPass','bSelf'].forEach(id=>{const e=document.getElementById(id);e.classList.remove('on');e.style.display=''})}
+function hideBtns(){
+  clearHuFan();
+  ['bHu','bPeng','bGang','bAnGang','bBuGang','bLiang','bPass','bSelf'].forEach(id=>{const e=document.getElementById(id);e.classList.remove('on');e.style.display=''});
+  document.getElementById('tingHint').innerHTML='';
+}
 function doPass(){
   hideBtns();
   // 场景1: 跳过碰/杠/胡(Claim)
@@ -1796,7 +1855,13 @@ document.addEventListener('click',function(e){
 });
 
 window.doLiang=function(){hideBtns();execLiang(0)};
-window.doHu=function(){if(!G.pend||!G.waitingClaim)return;const{tile,from}=G.pend;G.pend=null;G.waitingClaim=false;hideBtns();execWin(0,tile,from,false)};
+window.doHu=function(){
+  if(G.pend&&G.waitingClaim){
+    const{tile,from}=G.pend;G.pend=null;G.waitingClaim=false;hideBtns();execWin(0,tile,from,false);
+  } else if(G.lastDrawn){
+    hideBtns();execWin(0,G.lastDrawn,-2,true);
+  }
+};
 window.doPeng=function(){if(!G.pend||!G.waitingClaim)return;const{tile,from}=G.pend;G.pend=null;G.waitingClaim=false;hideBtns();execPeng(0,tile,from)};
 window.doGang=function(){if(!G.pend||!G.waitingClaim)return;const{tile,from}=G.pend;G.pend=null;G.waitingClaim=false;hideBtns();execGang(0,tile,from)};
 window.doAnGang=function(){hideBtns();const tile=findAnGang(0);if(tile)execConcealedGang(0,tile)};
@@ -1811,31 +1876,152 @@ window.doSelf=function(){hideBtns();execWin(0,G.lastDrawn,-2,true)};
 window.newGame=newGame;
 
 function toast(msg){const o=document.querySelector('.ts');if(o)o.remove();const el=document.createElement('div');el.className='ts';el.textContent=msg;document.getElementById('main').appendChild(el);setTimeout(()=>el.remove(),2000)}
+function endGame(reason){
+  G.over=true;G.waitingClaim=false;G.pend=null;
+  showResult('流局','t','牌墙摸完，无人胡牌<br>本局结束');
+}
 function showResult(title,cls,detail){
   if(cls==='w')playWinEffect();
   const o=document.getElementById('ol');
   const rt=document.getElementById('rtitle');
   rt.className='rt '+cls;rt.textContent=title.replace(/<[^>]*>/g,'');
   document.getElementById('rdetail').innerHTML=detail;o.classList.add('on');
-}`
-`
+}
+
+// ═══════════════════════════════════════════════
+//  结算动画
+// ═══════════════════════════════════════════════
+function showResultAnimate(pi, pat, self, from, payout, isLDWinner, extraInfo){
+  var p = G.players[pi];
+  var titleEl = document.getElementById('rtitle');
+  var detailEl = document.getElementById('rdetail');
+  var ol = document.getElementById('ol');
+  
+  titleEl.className = 'rt ' + (pi===0?'w':'l');
+  titleEl.textContent = pi===0?'🎉 你胡牌了！':p.n+' 胡牌！';
+  detailEl.innerHTML = '';
+  ol.classList.add('on');
+  
+  var lines = [];
+  if(pat.length > 0){
+    for(var i=0; i<pat.length; i++){
+      var fanVal = PV[pat[i]] || 1;
+      lines.push({text: '★ ' + pat[i], fan: '×' + fanVal + '番', color: '#40c8e8'});
+    }
+  } else {
+    lines.push({text: '★ 屁胡', fan: '×1番', color: '#a89070'});
+  }
+  
+  var totalFan = 1;
+  for(var i=0; i<lines.length; i++){
+    var fanVal = parseInt(lines[i].fan.replace(/[^0-9]/g,''));
+    totalFan *= fanVal;
+  }
+  
+  var winName = pat.length > 0 ? pat.join('') : '屁胡';
+  
+  var idx = 0;
+  function showNext(){
+    if(idx < lines.length){
+      var div = document.createElement('div');
+      div.style.cssText = 'margin:4px 0;font-size:13px;opacity:0;transform:translateX(-20px);transition:all .3s ease';
+      div.innerHTML = '<span style="color:#f5d680">' + lines[idx].text + '</span> <span style="color:' + lines[idx].color + ';font-weight:bold">' + lines[idx].fan + '</span>';
+      detailEl.appendChild(div);
+      setTimeout(function(){div.style.opacity='1';div.style.transform='translateX(0)'},50);
+      idx++;
+      setTimeout(showNext, 600);
+    } else {
+      setTimeout(function(){
+        var hr = document.createElement('div');
+        hr.style.cssText = 'border-top:1px solid rgba(245,214,128,.3);margin:8px 0 6px';
+        detailEl.appendChild(hr);
+        
+        var total = document.createElement('div');
+        total.style.cssText = 'font-size:15px;color:#f5d680;font-weight:bold;opacity:0;transform:scale(0.8);transition:all .4s ease';
+        total.textContent = winName + ' 共计' + totalFan + '番';
+        detailEl.appendChild(total);
+        setTimeout(function(){total.style.opacity='1';total.style.transform='scale(1)'},50);
+        
+        setTimeout(function(){
+          var info = document.createElement('div');
+          info.style.cssText = 'margin-top:8px;font-size:11px;color:#c8b898;opacity:0;transition:opacity .3s';
+          info.innerHTML = (self ? '🀄 自摸！' : (G.players[from>=0?from:G.lastP]?.n||'对手') + ' 放炮') + (extraInfo||'');
+          detailEl.appendChild(info);
+          setTimeout(function(){info.style.opacity='1'},50);
+          
+          var income = document.createElement('div');
+          income.style.cssText = 'margin-top:6px;font-size:14px;color:#ffd700;font-weight:bold;opacity:0;transition:opacity .3s';
+          income.textContent = '收入: ¥' + (isLDWinner&&!self?payout*2:payout);
+          detailEl.appendChild(income);
+          setTimeout(function(){income.style.opacity='1'},100);
+
+          var btn = document.createElement('button');
+          btn.className = 'ng';
+          btn.textContent = '↻ 再来一局';
+          btn.onclick = function(){newGame()};
+          btn.style.cssText = 'margin-top:12px;opacity:0;transition:opacity .3s';
+          detailEl.appendChild(btn);
+          setTimeout(function(){btn.style.opacity='1'},200);
+        }, 400);
+      }, 300);
+    }
+  }
+  showNext();
+}
+
+// 听牌提示
+function getTingHint(pi){
+  const p=G.players[pi];
+  if(G.ld[pi]){
+    const waitsList=G.ld[pi].waits;
+    if(waitsList.length===0)return null;
+    const hints=[];
+    for(const wt of waitsList){
+      const testHand=srt([...p.h,cloneTile(wt)]);
+      const pat=detect(testHand,wt,p.m);
+      const sc=calcLD(pat,true,false,G.wall.length===0,G.ld[pi]!==null,false);
+      const fanText=sc>1?` (${sc}倍)`:'';
+      const wtDisp=tdisp(wt)+tdispSuit(wt);
+      hints.push(`${wtDisp}${pat.length>0?' '+pat.join('+'):''}${fanText}`);
+    }
+    return '听: '+hints.join(' | ');
+  }
+  const hand=[...p.h],di=hand.findIndex(t=>teq(t,G.lastDrawn));
+  if(di!==-1)hand.splice(di,1);
+  const waitsList=waits(hand);
+  if(waitsList.length===0)return null;
+  const hints=[];
+  for(const wt of waitsList){
+    const testHand=srt([...hand,cloneTile(wt)]);
+    const pat=detect(testHand,wt,p.m);
+    const sc=calc(pat,false,false,G.wall.length===0);
+    const fanText=sc>1?` (${sc}倍)`:'';
+    const wtDisp=tdisp(wt)+tdispSuit(wt);
+    hints.push(`${wtDisp}${pat.length>0?' '+pat.join('+'):''}${fanText}`);
+  }
+  return '听: '+hints.join(' | ');
+}
+function updateTingHint(pi){
+  const el=document.getElementById('tingHint');
+  if(!el)return;
+  if(G.over||pi!==0){
+    el.innerHTML='';return;
+  }
+  const showHint=(G.ld[0]&&G.phase==='discard')||G.phase==='action';
+  if(!showHint){
+    el.innerHTML='';return;
+  }
+  const hint=getTingHint(0);
+  if(hint){
+    el.innerHTML='<span class="ting-hint-inner">'+hint+'</span>';
+  }else{
+    el.innerHTML='';
+  }
+}
+
+function cloneTile(t){return{suit:t.suit,val:t.val}}
+
 newGame();
-
-/* author credit */
-(function(){
-  var el=document.createElement('div');
-  el.textContent='作者 胡老板';
-  el.style.cssText='position:fixed;bottom:36px;right:8px;font-size:10px;color:rgba(255,255,255,0.35);z-index:9999;pointer-events:none;';
-  document.body.appendChild(el);
-})();
-
-/* author credit */
-(function(){
-  var el=document.createElement('div');
-  el.textContent='作者 胡老板';
-  el.style.cssText='position:fixed;bottom:36px;right:8px;font-size:10px;color:rgba(255,255,255,0.35);z-index:9999;pointer-events:none;';
-  document.body.appendChild(el);
-})();
 </script>
 </body>
 </html>
