@@ -337,6 +337,8 @@ body{
   border:1px solid rgba(255,215,0,.1);box-shadow:0 2px 4px rgba(0,0,0,.3)
 }
 .ab:hover{filter:brightness(1.1);box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.hu-fan{display:none;align-self:center;margin:0 4px 0 0;padding:3px 8px;border-radius:6px;background:linear-gradient(180deg,#e8b840,#c8913a);color:#1a0e08;font-size:12px;font-weight:700;white-space:nowrap}
+.hu-fan.on{display:inline-block}
 
 /* ═══════ RULES PANEL ═══════ */
 .rules-btn{
@@ -559,7 +561,7 @@ body{
   .ps.east{grid-column:3;grid-row:2;min-height:0}
   .ps.south{grid-column:2;grid-row:3;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;gap:1px}
   .ps.south .pnm{display:flex;align-items:center;gap:2px;flex-shrink:0}
-  .ps.south .rv{display:flex;flex-wrap:wrap;gap:1px;padding:1px 0;border-bottom:1px solid rgba(255,215,0,.06);width:100%}
+  .ps.south .rv{display:flex;flex-wrap:wrap;gap:1px;padding:1px 0;border-bottom:1px solid rgba(255,215,0,.06)}
   .ps.south .md{display:flex;flex-shrink:0}
   .ps.south .ht{flex-wrap:nowrap;overflow:visible;justify-content:flex-start;min-height:28px}
   .act-wrap{grid-column:1/4;grid-row:4}
@@ -589,7 +591,8 @@ body{
   .ps.east .ht .t,.ps.west .ht .t{margin:-4px 0}
   .ps.east .ht .t{transform:rotate(-90deg)}
   .ps.west .ht .t{transform:rotate(90deg)}
-  .ps.east .rv .t,.ps.west .rv .t{transform:rotate(0deg);margin:0}
+  .ps.east .rv .t{transform:rotate(-90deg);margin:-4px 0}
+  .ps.west .rv .t{transform:rotate(90deg);margin:-4px 0}
 
   .act{padding:4px 8px 6px;gap:4px}
   .ab{padding:4px 12px;font-size:11px}
@@ -628,7 +631,7 @@ body{
   .ps.east{grid-column:3;grid-row:2;min-height:0}
   .ps.south{grid-column:2;grid-row:3;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;gap:1px;min-height:40px}
   .ps.south .pnm{display:flex;align-items:center;gap:2px;flex-shrink:0}
-  .ps.south .rv{display:flex;flex-wrap:wrap;gap:1px;padding:1px 0;border-bottom:1px solid rgba(255,215,0,.06);width:100%}
+  .ps.south .rv{display:flex;flex-wrap:wrap;gap:1px;padding:1px 0;border-bottom:1px solid rgba(255,215,0,.06)}
   .ps.south .md{display:flex;flex-shrink:0}
   .ps.south .ht{flex-wrap:nowrap;overflow:visible;justify-content:flex-start;min-height:32px}
   .act-wrap{grid-column:1/4;grid-row:4}
@@ -642,6 +645,7 @@ body{
   .t.rv{width:20px;height:28px;font-size:8px}
   .t.rv .fv .nm{font-size:9px}.t.rv .fv .sm{font-size:3px}
 
+  .ps.east .t,.ps.west .t,.ps.east .t.s,.ps.west .t.s,.ps.east .t.xs,.ps.west .t.xs,.ps.east .t.rv,.ps.west .t.rv,.ps.east .t.bk,.ps.west .t.bk,.ps.east .t.s.bk,.ps.west .t.s.bk{width:20px;height:28px}
   .ps.east,.ps.west{justify-content:flex-start;padding:2px 4px;gap:0;flex-direction:row}
   .ps.east .pnm,.ps.west .pnm{font-size:8px;display:flex;align-items:center;gap:2px;writing-mode:vertical-rl;flex-shrink:0}
   .ps.east{flex-direction:row-reverse}
@@ -660,7 +664,8 @@ body{
   .ps.west .ht .t{transform:rotate(90deg)}
   .ps.east .ht .t.bk{transform:rotate(-90deg)}
   .ps.west .ht .t.bk{transform:rotate(90deg)}
-  .ps.east .rv .t,.ps.west .rv .t{transform:rotate(0deg);margin:0}
+  .ps.east .rv .t{transform:rotate(-90deg);margin:-4px 0}
+  .ps.west .rv .t{transform:rotate(90deg);margin:-4px 0}
 
   .act{padding:4px 8px 6px;gap:4px}
   .ab{padding:4px 12px;font-size:11px}
@@ -679,7 +684,7 @@ body{
     height:100vw;
     position:fixed;
     top:0;
-    left:100vh;
+    left:100vw;
     overflow:hidden;
   }
 }
@@ -707,7 +712,7 @@ body{
       css.height = '100vw';
       css.position = 'fixed';
       css.top = '0';
-      css.left = '100vh';
+      css.left = '100vw';
     } else {
       css.transform = css.transformOrigin = css.width = css.height = css.position = css.top = css.left = '';
     }
@@ -768,7 +773,6 @@ body{
     <div class="ol" id="ol">
       <div class="rt" id="rtitle"></div>
       <div class="rd" id="rdetail"></div>
-      <button class="ng" onclick="newGame()">↻ 再来一局</button>
     </div>
   </div>
 
@@ -790,6 +794,7 @@ body{
 
   <div class="act act-wrap">
     <div class="ting-hint" id="tingHint"></div>
+    <span id="huFan" class="hu-fan"></span>
     <button class="ab dgr" id="bHu" onclick="doHu()">🏆 胡</button>
     <button class="ab sec" id="bPeng" onclick="doPeng()">碰</button>
     <button class="ab inf" id="bGang" onclick="doGang()">杠</button>
@@ -1000,6 +1005,8 @@ function optimizeStartHands(){
   G.players[0].h=genOpt(4,32);if(G.dealer!==0&&G.players[0].h.length===14){G.wall.push(G.players[0].h.pop())}
   G.players[1].h=takeN(13);if(G.dealer!==1&&G.players[1].h.length===14){G.wall.push(G.players[1].h.pop())}
   G.players[2].h=takeN(13);if(G.dealer!==2&&G.players[2].h.length===14){G.wall.push(G.players[2].h.pop())}
+  // 庄家起手14张(多一张), 其余13张, 与发牌动画张数对齐, 防止越界
+  for(let i=0;i<3;i++){var want=i===G.dealer?14:13;while(G.players[i].h.length<want&&G.wall.length>0)G.players[i].h.push(G.wall.pop());while(G.players[i].h.length>want)G.wall.push(G.players[i].h.pop())}
   toast('💡 起手牌: 南→高番牌 | 东西→随机');
 }
 function genOpt(mn,mx){
@@ -1250,6 +1257,7 @@ function newGame(){
       if(canWin(G.players[0].h)){
         G.phase='action';hideBtns();
         document.getElementById('bHu').classList.add('on');
+        setHuFan(G.players[0].h,G.lastDrawn,true);
         document.getElementById('bPass').classList.add('on');
         setPhase('action',0);render();return;
       }
@@ -1321,6 +1329,13 @@ function drawTileFace(ctx,t,W,H,sz){
 // Spec: 红色/青绿色/深蓝色 圆圈, 经典布局
 function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath()}
 
+// ═══ 筒子 ═══
+// 一筒: 中心红点，外蓝圈，再外绿圈
+// 三筒: 红绿蓝
+// 四筒: 上绿下蓝
+// 五筒: 四筒+中心红
+// 六筒: 上绿下红
+// 七筒: 上三绿斜排+下四红
 function drawTong(ctx,n,W,H,sz){
   var baseR=sz==='xs'?4.0:sz==='s'?5.0:sz==='rv'?5.4:7.0;
   var R=n===1?baseR*1.6:n<=4?baseR:n<=6?baseR*0.9:baseR*0.82;
@@ -1332,15 +1347,14 @@ function drawTong(ctx,n,W,H,sz){
     4:[[.33,.28],[.67,.28],[.33,.72],[.67,.72]],
     5:[[.33,.25],[.67,.25],[.5,.5],[.33,.75],[.67,.75]],
     6:[[.33,.2],[.67,.2],[.33,.5],[.67,.5],[.33,.8],[.67,.8]],
-    7:[[.35,.12],[.5,.32],[.65,.52],[.35,.65],[.65,.65],[.35,.85],[.65,.85]],
+    7:[[.4048,.1429],[.4048,.3214],[.6667,.5000],[.4048,.6786],[.7381,.6786],[.4048,.8571],[.7381,.8571]],
     8:[[.35,.18],[.35,.39],[.35,.61],[.35,.82],[.65,.18],[.65,.39],[.65,.61],[.65,.82]],
     9:[[.28,.17],[.5,.17],[.72,.17],[.28,.5],[.5,.5],[.72,.5],[.28,.83],[.5,.83],[.72,.83]]
   };
-  // 6筒全绿
   var colorMaps={
     1:[CR],2:[CR,CG],3:[CR,CG,CB],4:[CG,CB,CB,CG],
-    5:[CG,CB,CR,CG,CB],6:[CG,CG,CG,CG,CG,CG],
-    7:[CR,CR,CR,CG,CG,CG,CG],8:[CB,CB,CB,CB,CB,CB,CB,CB],
+    5:[CG,CB,CR,CG,CB],6:[CG,CG,CR,CR,CR,CR],
+    7:[CB,CB,CB,CR,CR,CR,CR],8:[CB,CB,CB,CB,CB,CB,CB,CB],
     9:[CB,CB,CB,CR,CR,CR,CG,CG,CG]
   };
   var pos=layouts[n]||layouts[1];
@@ -1349,15 +1363,24 @@ function drawTong(ctx,n,W,H,sz){
     var px=pos[i][0]*W, py=pos[i][1]*H;
     var c=colors[i]||CR;
     if(n===1){
-      // 1筒: 外圈黑色
+      // 一筒: 中心红点，外蓝圈，再外绿圈，蓝绿之间花瓣纹镂空连接
       var R1=R;
-      ctx.beginPath();ctx.arc(px,py,R1,0,Math.PI*2);ctx.fillStyle='#2a2a2a';ctx.fill();
-      ctx.beginPath();ctx.arc(px,py,R1-0.8,0,Math.PI*2);ctx.fillStyle='#2a2a2a';ctx.fill();
-      ctx.beginPath();ctx.arc(px,py,R1*0.72,0,Math.PI*2);ctx.fillStyle=CG;ctx.fill();
-      ctx.beginPath();ctx.arc(px,py,R1*0.48,0,Math.PI*2);ctx.fillStyle='#faf8f0';ctx.fill();
-      ctx.fillStyle=CR;
-      for(var a=0;a<6;a++){var angle=a*Math.PI/3;ctx.beginPath();ctx.arc(px+Math.cos(angle)*R1*0.22,py+Math.sin(angle)*R1*0.22,R1*0.1,0,Math.PI*2);ctx.fill();}
-      ctx.beginPath();ctx.arc(px,py,R1*0.06,0,Math.PI*2);ctx.fillStyle='#faf8f0';ctx.fill();
+      // 最外层绿色圈
+      ctx.beginPath();ctx.arc(px,py,R1,0,Math.PI*2);ctx.fillStyle=CG;ctx.fill();
+      // 花瓣纹镂空连接（蓝绿之间）
+      ctx.fillStyle='#fffff8';
+      for(var a=0;a<8;a++){
+        var angle=a*Math.PI/4;
+        var dx=px+Math.cos(angle)*R1*0.78;
+        var dy=py+Math.sin(angle)*R1*0.78;
+        ctx.beginPath();ctx.arc(dx,dy,R1*0.15,0,Math.PI*2);ctx.fill();
+      }
+      // 蓝色圈
+      ctx.beginPath();ctx.arc(px,py,R1*0.65,0,Math.PI*2);ctx.fillStyle=CB;ctx.fill();
+      // 中心红点
+      ctx.beginPath();ctx.arc(px,py,R1*0.22,0,Math.PI*2);ctx.fillStyle=CR;ctx.fill();
+      // 高光
+      ctx.beginPath();ctx.arc(px-R1*0.15,py-R1*0.15,R1*0.08,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,.3)';ctx.fill();
     }else{
       ctx.beginPath();ctx.arc(px,py,R,0,Math.PI*2);ctx.fillStyle='#2a2a2a';ctx.fill();
       ctx.beginPath();ctx.arc(px,py,R-0.8,0,Math.PI*2);ctx.fillStyle=c;ctx.fill();
@@ -1368,6 +1391,35 @@ function drawTong(ctx,n,W,H,sz){
 }
 
 // ═══ 条子 ═══
+// 镂空竹节样式
+function drawBambooStick(ctx,cx,cy,sw,sh,color){
+  var sx=cx-sw/2, sy=cy-sh/2;
+  // 竹节颜色
+  var colors={
+    green:{outer:'#2aaa4a',inner:'#1a8a3a',dark:'#0d6a28',tip:'#30c050',joint:'rgba(20,100,30,.4)'},
+    red:{outer:'#e84040',inner:'#d42828',dark:'#b01818',tip:'#e05050',joint:'rgba(200,40,40,.4)'},
+    blue:{outer:'#3070d0',inner:'#1a50a0',dark:'#104080',tip:'#3050a0',joint:'rgba(20,60,150,.4)'}
+  };
+  var c=colors[color]||colors.green;
+  // 外框
+  var g=ctx.createLinearGradient(sx,sy,sx,sy+sh);
+  g.addColorStop(0,c.outer);g.addColorStop(0.5,c.inner);g.addColorStop(1,c.dark);
+  ctx.strokeStyle=g;ctx.lineWidth=1.2;
+  roundRect(ctx,sx,sy,sw,sh,1.5);ctx.stroke();
+  // 内部镂空(白色)
+  ctx.fillStyle='#fffff8';
+  roundRect(ctx,sx+1,sy+2,sw-2,sh-4,1);ctx.fill();
+  // 竹节线
+  ctx.strokeStyle=c.joint;ctx.lineWidth=0.5;
+  for(var s=1;s<3;s++){
+    var jy=sy+sh*s/3;
+    ctx.beginPath();ctx.moveTo(sx+1,jy);ctx.lineTo(sx+sw-1,jy);ctx.stroke();
+  }
+  // 顶部叶尖
+  ctx.fillStyle=c.tip;
+  ctx.beginPath();ctx.moveTo(cx,sy-1.5);ctx.lineTo(cx-sw*.35,sy+1);ctx.lineTo(cx+sw*.35,sy+1);ctx.closePath();ctx.fill();
+}
+
 function drawTiao(ctx,n,W,H,sz){
   if(n===1){drawSparrow(ctx,W,H,sz);return;}
   var pad=sz==='xs'?2:sz==='s'?2.5:sz==='rv'?2.5:3.5;
@@ -1378,47 +1430,51 @@ function drawTiao(ctx,n,W,H,sz){
     case 3: positions=[[.5,.2],[.35,.72],[.65,.72]];break;
     case 4: positions=[[.25,.25],[.75,.25],[.25,.75],[.75,.75]];break;
     case 5: positions=[[.25,.22],[.75,.22],[.5,.5],[.25,.78],[.75,.78]];break;
-    case 6: positions=[[.25,.17],[.75,.17],[.25,.5],[.75,.5],[.25,.83],[.75,.83]];break;
-    case 7: positions=[[.5,.14],[.25,.46],[.5,.46],[.75,.46],[.25,.82],[.5,.82],[.75,.82]];break;
-    case 8: positions=[[.2,.32],[.38,.12],[.62,.12],[.8,.32],[.2,.68],[.38,.88],[.62,.88],[.8,.68]];break;
+    case 6: positions=[[.25,.2],[.5,.2],[.75,.2],[.25,.8],[.5,.8],[.75,.8]];break;
+    case 7: positions=[[.5,.14],[.22,.5],[.5,.5],[.78,.5],[.22,.86],[.5,.86],[.78,.86]];break;
+    case 8: positions=[[.22,.14],[.5,.14],[.78,.14],[.36,.5],[.64,.5],[.22,.86],[.5,.86],[.78,.86]];break;
     case 9: positions=[[.22,.14],[.5,.14],[.78,.14],[.22,.5],[.5,.5],[.78,.5],[.22,.86],[.5,.86],[.78,.86]];break;
     default: positions=[[.5,.5]];
   }
   var sw=sz==='xs'?2.6:sz==='s'?3.0:sz==='rv'?3.2:3.6;
   var sh=sz==='xs'?11:sz==='s'?13:sz==='rv'?13:16;
-  // 3条:中间红(1), 4条:无红, 5条:中间红(2), 7条:上方红(0), 9条:全红
-  var redMap={2:[],3:[0],4:[],5:[2],6:[],7:[0],8:[],9:[0,1,2,3,4,5,6,7,8]};
-  var redArr=redMap[n]||[];
-  var redSet={};
-  for(var r=0;r<redArr.length;r++) redSet[redArr[r]]=true;
+  // 5条中间红, 7条顶1红其余绿, 8条中间2红其余绿, 9条左绿中红右蓝
+  var colorMap={2:'green',3:'green',4:'green',5:'red5',6:'green',7:'t7',8:'t8',9:'rgb'};
+  var cm=colorMap[n]||'green';
   for(var i=0;i<positions.length;i++){
     var cx=pad+positions[i][0]*aw;
     var cy=pad+positions[i][1]*ah;
-    var sx=cx-sw/2, sy=cy-sh/2;
-    var isRed=!!redSet[i];
-    var g=ctx.createLinearGradient(sx,sy,sx,sy+sh);
-    if(isRed){g.addColorStop(0,'#e84040');g.addColorStop(0.5,'#d42828');g.addColorStop(1,'#b01818');}
-    else{g.addColorStop(0,'#2aaa4a');g.addColorStop(0.5,'#1a8a3a');g.addColorStop(1,'#0d6a28');}
-    ctx.fillStyle=g;
-    ctx.beginPath();
-    ctx.moveTo(sx+1.5,sy);ctx.lineTo(sx+sw-1.5,sy);ctx.quadraticCurveTo(sx+sw,sy,sx+sw,sy+1.5);
-    ctx.lineTo(sx+sw,sy+sh-1.5);ctx.quadraticCurveTo(sx+sw,sy+sh,sx+sw-1.5,sy+sh);
-    ctx.lineTo(sx+1.5,sy+sh);ctx.quadraticCurveTo(sx,sy+sh,sx,sy+sh-1.5);
-    ctx.lineTo(sx,sy+1.5);ctx.quadraticCurveTo(sx,sy,sx+1.5,sy);ctx.closePath();ctx.fill();
-    ctx.strokeStyle=isRed?'#8a1010':'#084a1e';ctx.lineWidth=0.5;ctx.stroke();
-    var hg=ctx.createLinearGradient(sx,sy,sx+sw*0.4,sy);
-    hg.addColorStop(0,'rgba(255,255,255,.2)');hg.addColorStop(1,'rgba(255,255,255,0)');
-    ctx.fillStyle=hg;ctx.fillRect(sx+0.8,sy+0.8,sw*0.35,sh-1.6);
-    ctx.strokeStyle='rgba(0,0,0,.18)';ctx.lineWidth=0.3;
-    for(var s=1;s<2;s++){var jy=sy+sh*s/2;ctx.beginPath();ctx.moveTo(sx+0.5,jy);ctx.lineTo(sx+sw-0.5,jy);ctx.stroke();}
-    ctx.fillStyle=isRed?'#e05050':'#30c050';
-    ctx.beginPath();ctx.moveTo(cx,sy-1.2);ctx.lineTo(cx-sw*.35,sy+1.2);ctx.lineTo(cx+sw*.35,sy+1.2);ctx.closePath();ctx.fill();
+    var isRed=false;
+    var isBlue=false;
+    if(cm==='red')isRed=true;
+    else if(cm==='red5'){
+      // 5条: 中间红(位置2)
+      isRed=(i===2);
+    }
+    else if(cm==='t7'){
+      // 7条: 顶1红, 中3绿, 底3绿
+      if(i===0)isRed=true;
+    }
+    else if(cm==='t8'){
+      // 8条: 中间2红(位置3,4), 上下各3绿
+      isRed=(i===3||i===4);
+    }
+    else if(cm==='rgb'){
+      // 9条: 左3绿(0,3,6), 中3红(1,4,7), 右3蓝(2,5,8)
+      if(i===1||i===4||i===7)isRed=true;
+      else if(i===2||i===5||i===8)isBlue=true;
+    }
+    if(isBlue){
+      drawBambooStick(ctx,cx,cy,sw,sh,'blue');
+    }else{
+      drawBambooStick(ctx,cx,cy,sw,sh,isRed?'red':'green');
+    }
   }
 }
 
-// 1条 — 侧面视图红色麻雀(鸟头朝右)
+// 1条 — 侧面视图蓝色麻雀(鸟头朝右，红色尾巴红色眼睛，拉高变瘦)
 function drawSparrow(ctx,W,H,sz){
-  var s=sz==='xs'?0.65:sz==='s'?0.75:sz==='rv'?0.75:1.0;
+  var s=sz==='xs'?0.7:sz==='s'?0.8:sz==='rv'?0.8:1.1;
   var cx=W/2,cy=H/2;
   ctx.save();ctx.translate(cx,cy);ctx.scale(s,s);
   // 竹枝
@@ -1427,31 +1483,31 @@ function drawSparrow(ctx,W,H,sz){
   // 叶子
   ctx.fillStyle='#28b050';ctx.beginPath();ctx.moveTo(14,15);ctx.quadraticCurveTo(22,8,26,11);ctx.quadraticCurveTo(22,16,14,15);ctx.fill();
   ctx.fillStyle='#20a048';ctx.beginPath();ctx.moveTo(-12,15);ctx.quadraticCurveTo(-20,7,-23,10);ctx.quadraticCurveTo(-19,15,-12,15);ctx.fill();
-  // 身体(侧面椭圆，红色渐变到绿色)
-  var bodyG=ctx.createLinearGradient(-12,-8,12,10);
-  bodyG.addColorStop(0,'#d03030');bodyG.addColorStop(0.5,'#c02828');bodyG.addColorStop(1,'#30a040');
-  ctx.fillStyle=bodyG;ctx.beginPath();ctx.ellipse(0,2,11,14,0,0,Math.PI*2);ctx.fill();
-  // 翅膀(侧面展开，红色)
-  var wingG=ctx.createLinearGradient(-10,-6,6,8);
-  wingG.addColorStop(0,'#e04040');wingG.addColorStop(0.5,'#d03030');wingG.addColorStop(1,'#b02020');
-  ctx.fillStyle=wingG;ctx.beginPath();ctx.ellipse(-2,0,9,12,-0.15,0,Math.PI*2);ctx.fill();
+  // 身体(蓝色，瘦长)
+  var bodyG=ctx.createLinearGradient(-8,-10,8,12);
+  bodyG.addColorStop(0,'#2060c0');bodyG.addColorStop(0.5,'#1a50a0');bodyG.addColorStop(1,'#104080');
+  ctx.fillStyle=bodyG;ctx.beginPath();ctx.ellipse(0,2,7,13,0,0,Math.PI*2);ctx.fill();
+  // 翅膀(蓝色渐变)
+  var wingG=ctx.createLinearGradient(-6,-5,4,8);
+  wingG.addColorStop(0,'#3070d0');wingG.addColorStop(0.5,'#2060c0');wingG.addColorStop(1,'#1050a0');
+  ctx.fillStyle=wingG;ctx.beginPath();ctx.ellipse(-2,0,6,10,-0.15,0,Math.PI*2);ctx.fill();
   // 翅膀纹理
   ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=0.4;
-  for(var f=0;f<4;f++){var fy=-5+f*3.5;ctx.beginPath();ctx.moveTo(-6,fy);ctx.lineTo(4,fy+2);ctx.stroke();}
-  // 头(侧面，朝右)
-  ctx.fillStyle='#d03030';ctx.beginPath();ctx.arc(6,-8,6,0,Math.PI*2);ctx.fill();
-  // 嘴(侧面，朝右)
-  ctx.fillStyle='#c02020';ctx.beginPath();ctx.moveTo(11,-9);ctx.lineTo(16,-7);ctx.lineTo(11,-5);ctx.closePath();ctx.fill();
-  // 眼(侧面，右侧)
-  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(8,-9,2,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#1a1a1a';ctx.beginPath();ctx.arc(9,-9,1,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(8.5,-9.5,0.5,0,Math.PI*2);ctx.fill();
-  // 羽冠(侧面，向后飘)
-  ctx.fillStyle='#b02020';ctx.beginPath();ctx.moveTo(4,-13);ctx.lineTo(1,-18);ctx.lineTo(5,-14);ctx.lineTo(2,-17);ctx.lineTo(6,-13);ctx.closePath();ctx.fill();
-  // 尾羽(侧面，向左下)
-  ctx.fillStyle='#d04040';ctx.beginPath();ctx.moveTo(-8,10);ctx.quadraticCurveTo(-16,14,-12,22);ctx.lineTo(-4,14);ctx.closePath();ctx.fill();
-  ctx.fillStyle='#30a040';ctx.beginPath();ctx.moveTo(-6,12);ctx.quadraticCurveTo(-14,18,-10,24);ctx.lineTo(-2,16);ctx.closePath();ctx.fill();
-  ctx.fillStyle='#e06030';ctx.beginPath();ctx.moveTo(-4,11);ctx.quadraticCurveTo(-10,16,-8,21);ctx.lineTo(0,15);ctx.closePath();ctx.fill();
+  for(var f=0;f<3;f++){var fy=-4+f*4;ctx.beginPath();ctx.moveTo(-4,fy);ctx.lineTo(3,fy+2.5);ctx.stroke();}
+  // 头(蓝色)
+  ctx.fillStyle='#2060c0';ctx.beginPath();ctx.arc(5,-8,5,0,Math.PI*2);ctx.fill();
+  // 嘴(红色)
+  ctx.fillStyle='#d03030';ctx.beginPath();ctx.moveTo(9,-9);ctx.lineTo(14,-7);ctx.lineTo(9,-5);ctx.closePath();ctx.fill();
+  // 眼睛(红色)
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(7,-9,1.8,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#d03030';ctx.beginPath();ctx.arc(8,-9,0.9,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(7.5,-9.5,0.4,0,Math.PI*2);ctx.fill();
+  // 羽冠(蓝色)
+  ctx.fillStyle='#1050a0';ctx.beginPath();ctx.moveTo(3,-12);ctx.lineTo(0,-16);ctx.lineTo(4,-13);ctx.lineTo(1,-15);ctx.lineTo(5,-12);ctx.closePath();ctx.fill();
+  // 尾羽(红色)
+  ctx.fillStyle='#d04040';ctx.beginPath();ctx.moveTo(-6,10);ctx.quadraticCurveTo(-12,14,-8,20);ctx.lineTo(-2,13);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#e06030';ctx.beginPath();ctx.moveTo(-4,11);ctx.quadraticCurveTo(-8,15,-5,18);ctx.lineTo(1,13);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#c03030';ctx.beginPath();ctx.moveTo(-1,10);ctx.quadraticCurveTo(-4,14,-2,16);ctx.lineTo(3,12);ctx.closePath();ctx.fill();
   // 脚
   ctx.strokeStyle='#b07020';ctx.lineWidth=0.6;
   ctx.beginPath();ctx.moveTo(-2,15);ctx.lineTo(-3,18);ctx.lineTo(-5,19);ctx.stroke();
@@ -1465,19 +1521,16 @@ function drawSparrow(ctx,W,H,sz){
 function drawHon(ctx,val,W,H,sz){
   var pad=sz==='xs'?3:sz==='s'?4:sz==='rv'?4.5:7;
   if(val==='zhong'){
-    // 红中: 红色中字 无背景
-    var fs=sz==='xs'?18:sz==='s'?20:sz==='rv'?20:28;
+    var fs=sz==='xs'?22:sz==='s'?24:sz==='rv'?24:32;
     ctx.font='900 '+fs+'px "SimSun","STSong","Microsoft YaHei",serif';
     ctx.fillStyle='#d42020';ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.fillText('中',W/2,H/2+1);
   }else if(val==='fa'){
-    // 发财: 绿色發字 无背景
-    var fs=sz==='xs'?18:sz==='s'?20:sz==='rv'?20:28;
+    var fs=sz==='xs'?22:sz==='s'?24:sz==='rv'?24:32;
     ctx.font='900 '+fs+'px "SimSun","STSong","Microsoft YaHei",serif';
     ctx.fillStyle='#1a8a3a';ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.fillText('發',W/2,H/2+1);
   }else if(val==='bai'){
-    // 白板: 不变
     var g=ctx.createLinearGradient(0,pad,0,H-pad);
     g.addColorStop(0,'#fffff5');g.addColorStop(1,'#f8f4e8');
     ctx.fillStyle=g;roundRect(ctx,pad,pad,W-pad*2,H-pad*2,2);ctx.fill();
@@ -1560,6 +1613,7 @@ function checkClaims(dp,tile){
     G.phase='action';G.pend={tile,from:dp};G.waitingClaim=true;
     const hu=byP[0].some(c=>c.type==='hu'),peng=byP[0].some(c=>c.type==='peng'),gang=byP[0].some(c=>c.type==='gang');
     showBtns(hu,peng&&!hu,gang&&!hu);
+    if(hu){setHuFan([...G.players[0].h,tile],tile,false);}else{clearHuFan();}
     setPhase('action',0);render();
     if(hu&&!G.ld[dp]){const sc=calc(detect([...G.players[0].h,tile],tile,G.players[0].m),false,false,G.wall.length===0);if(sc===null)setTimeout(()=>{if(G.pend&&G.waitingClaim)doPass()},1200)}
   }else{handleAI(claims,tile,dp)}
@@ -1741,6 +1795,14 @@ function aiPick(pi){
 // ═══════════════════════════════════════════════
 //  PLAYER ACTIONS
 // ═══════════════════════════════════════════════
+function setHuFan(hand,winTile,isSelf){
+  var el=document.getElementById('huFan');if(!el)return;
+  var pat=detect(hand,winTile,G.players[0].m);
+  var fan=calc(pat,isSelf,false,G.wall.length===0);
+  if(fan===null){el.textContent='';el.classList.remove('on');return;}
+  el.textContent=fan+'番';el.classList.add('on');
+}
+function clearHuFan(){var el=document.getElementById('huFan');if(el){el.textContent='';el.classList.remove('on');}}
 function showBtns(hu,peng,gang){
   document.getElementById('bHu').classList.toggle('on',hu);
   document.getElementById('bPeng').classList.toggle('on',peng);
@@ -1748,6 +1810,7 @@ function showBtns(hu,peng,gang){
   document.getElementById('bPass').classList.toggle('on',hu||peng||gang);
 }
 function hideBtns(){
+  clearHuFan();
   ['bHu','bPeng','bGang','bAnGang','bBuGang','bLiang','bPass','bSelf'].forEach(id=>{const e=document.getElementById(id);e.classList.remove('on');e.style.display=''});
   document.getElementById('tingHint').innerHTML='';
 }
