@@ -687,6 +687,7 @@ body{
     left:100vw;
     overflow:hidden;
   }
+  .main{min-height:0}
 }
 /* Desktop: no rotation */
 @media(min-width:1024px){
@@ -708,11 +709,11 @@ body{
     if(rotate){
       css.transform = 'rotate(90deg)';
       css.transformOrigin = 'top left';
-      css.width = '100vh';
-      css.height = '100vw';
+      css.width = window.innerHeight + 'px';
+      css.height = window.innerWidth + 'px';
       css.position = 'fixed';
       css.top = '0';
-      css.left = '100vw';
+      css.left = window.innerWidth + 'px';
     } else {
       css.transform = css.transformOrigin = css.width = css.height = css.position = css.top = css.left = '';
     }
